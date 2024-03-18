@@ -1,0 +1,38 @@
+{
+  "name": "agro",
+  "version": "1.0.0",
+  "description": "Приложение для Агро логистик",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "webpack-dev-server --config config/webpack/webpack.config.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config config/webpack/webpack.config.ts --env mode=production",
+    "crtempl": "node ./scripts/templateGenerator/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zverkovnikita09/agro.git"
+  },
+  "keywords": [
+    "agro"
+  ],
+  "author": "https://pisateli-studio.ru/",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zverkovnikita09/agro/issues"
+  },
+  "homepage": "https://github.com/zverkovnikita09/agro#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.11.29",
+    "@types/webpack": "^5.28.5",
+    "@types/webpack-dev-server": "^4.7.2",
+    "html-webpack-plugin": "^5.6.0",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.3"
+  }
+}
