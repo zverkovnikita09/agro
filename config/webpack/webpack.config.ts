@@ -12,7 +12,7 @@ export default (env: EnvVariables) => {
   const paths: BuildPaths = {
     output: resolveRoot('build'),
     entry: resolveRoot('src', 'index.tsx'),
-    html: resolveRoot('src', 'index.html'),
+    html: resolveRoot('public', 'index.html'),
   }
   const config: webpack.Configuration = buildWebpack({
     mode: env.mode ?? 'development',

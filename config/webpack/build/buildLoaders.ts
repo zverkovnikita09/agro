@@ -18,7 +18,9 @@ export const buildLoaders = (options: BuildOptions): ModuleOptions['rules'] => {
       {
         loader: "css-loader",
         options: {
+
           modules: {
+            auto: (resPath: string) => Boolean(resPath.includes('.module.')),
             localIdentName: isDev ? '[name]__[local]_[hash:base64:2]' : '[hash:base64:8]',
           },
         },
@@ -27,8 +29,32 @@ export const buildLoaders = (options: BuildOptions): ModuleOptions['rules'] => {
     ],
   };
 
+  const assetLoader = {
+    test: /\.(png|jpg|jpeg|gif)$/i,
+    type: 'asset/resource',
+  }
+
+  const svgrLoader = {
+    test: /\.svg$/i,
+    issuer: /\.[jt]sx?$/,
+    use: [
+      {
+        loader: '@svgr/webpack', options: {icon: true},
+
+      }
+    ],
+  }
+
+  const fontsLoader = {
+    test: /\.(woff|woff2|eot|ttf|otf)$/i,
+    type: 'asset/resource',
+  }
+
   return [
+    svgrLoader,
+    assetLoader,
     scssLoader,
     tsLoader,
+    fontsLoader,
   ]
 }

@@ -11,7 +11,7 @@ module.exports = async (layer, sliceName) => {
   try {
     await fs.writeFile(
       path,
-      `export { ${componentName} } from './ui/${componentName}/${componentName}';`
+      `export { ${componentName} } from './${layer !== 'shared' ? 'ui/' : ''}${componentName}/';`
     );
   } catch (e) {
     console.log("Не удалось создать PUBLIC API");
