@@ -1,45 +1,23 @@
 import {resolveRoot} from "./utils";
 import webpack from "webpack";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import type {Configuration as DevServerConfiguration} from "webpack-dev-server";
-
-type Mode = 'production' | 'development';
+import {buildWebpack} from "./build/buildWebpack";
+import {BuildMode, BuildPaths} from "./build/types/types";
 
 interface EnvVariables {
-  mode: Mode;
+  mode: BuildMode;
+  port?: number;
 }
 
 export default (env: EnvVariables) => {
-  const config: webpack.Configuration = {
-    mode: env.mode ?? 'development',
-    entry: resolveRoot('src', 'index.ts'),
-    output: {
-      path: resolveRoot('build'),
-      filename: '[name].[contenthash].js',
-      clean: true,
-    },
-    plugins: [
-      new HtmlWebpackPlugin({template: resolveRoot('src', 'index.html')}),
-    ],
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          use: 'ts-loader',
-          exclude: /node_modules/,
-        },
-      ],
-    },
-    resolve: {
-      extensions: ['.tsx', '.ts', '.js'],
-      alias: {
-        '@scripts': resolveRoot('scripts'),
-      },
-    },
-    devServer: {
-      port: 3000,
-      open: true
-    }
+  const paths: BuildPaths = {
+    output: resolveRoot('build'),
+    entry: resolveRoot('src', 'index.tsx'),
+    html: resolveRoot('src', 'index.html'),
   }
+  const config: webpack.Configuration = buildWebpack({
+    mode: env.mode ?? 'development',
+    port: env.port ?? 3000,
+    paths: paths,
+  });
   return config;
 };

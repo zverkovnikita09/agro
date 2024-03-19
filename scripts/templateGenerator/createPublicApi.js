@@ -4,8 +4,8 @@ const { firstCharUpperCase } = require("./firstCharChangeCase");
 
 module.exports = async (layer, sliceName) => {
   const path = layer === 'shared'
-    ? resolveRoot("src", layer, "ui", sliceName, 'index.ts')
-    : resolveRoot("src", layer, sliceName, 'index.ts')
+    ? resolveRoot("src", layer, "ui", sliceName, 'index.tsx')
+    : resolveRoot("src", layer, sliceName, 'index.tsx')
   const componentName = firstCharUpperCase(sliceName);
 
   try {
