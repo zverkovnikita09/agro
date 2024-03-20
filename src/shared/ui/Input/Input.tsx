@@ -1,15 +1,16 @@
 import { InputHTMLAttributes, forwardRef, useId } from 'react'
 import cn from 'classnames';
 import style from './Input.module.scss'
-import { FieldError } from 'react-hook-form';
 import { ErrorBlock } from '../ErrorBlock';
+import InputMask from 'react-input-mask';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
-  error?: FieldError
+  error?: string
   touched?: boolean | undefined
   wrapperClassName?: string
   label?: string
+  mask?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -19,21 +20,42 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     error,
     touched,
     label,
+    type,
+    value,
+    mask,
     ...otherProps
   } = props
 
   const id = useId();
 
+  const TextField = () => {
+    switch (type) {
+      case "tel": return mask ?
+        <InputMask mask={mask} id={id} type={type} className={cn(style.textField, className)} inputRef={ref} {...otherProps} /> :
+        <input
+          id={id}
+          type={type}
+          className={cn(style.textField, className)}
+          ref={ref}
+          {...otherProps}
+        />
+      default: return (
+        <input
+          id={id}
+          type={type}
+          className={cn(style.textField, className)}
+          ref={ref}
+          {...otherProps}
+        />
+      )
+    }
+  }
+
   return (
-    <div className={cn(style.input, wrapperClassName)} data-status={error ? 'error' : touched ? 'success' : ''}>
+    <div className={cn(style.input, wrapperClassName, { [style.error]: error })}>
       {label && <label htmlFor={id} className={style.label}>{label}</label>}
-      <input
-        id={id}
-        className={cn(style.textField, className)}
-        ref={ref}
-        {...otherProps}
-      />
-      {error?.message && <ErrorBlock>{error?.message}</ErrorBlock>}
+      {TextField()}
+      {error && <ErrorBlock>{error}</ErrorBlock>}
     </div>
   )
 })

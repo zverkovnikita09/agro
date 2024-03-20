@@ -3,10 +3,15 @@
 @import "./fonts.scss";
 
 * {
-  font-family: inherit;
+  font-family: Inter, sans-serif;
   scrollbar-color: var(--accent-color) transparent;
   scrollbar-width: thin;
   scroll-behavior: smooth;
+  color: inherit;
+}
+
+body {
+  color: var(--text-color);
 }
 
 *::-webkit-scrollbar {

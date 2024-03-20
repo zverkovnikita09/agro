@@ -1,0 +1,20 @@
+.title {
+  font-weight: 700;
+  line-height: 135%;
+}
+
+.size_s {
+  font-size: 24px;
+}
+
+.size_m {
+  font-size: 32px;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+.size_l {
+  font-size: 46px;
+}

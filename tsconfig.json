@@ -20,11 +20,12 @@
       "@src/*": ["./src/*"],
       "@scripts/*": ["./scripts/*"],
       "@/*": ["./*"]
-    },
+    }
   },
   "ts-node": {
     "compilerOptions": {
-      "module": "CommonJS",
+      "module": "CommonJS"
     }
   }
 }
+
