@@ -15,7 +15,7 @@
       "@widgets/*": ["./src/widgets/*"],
       "@entities/*": ["./src/entities/*"],
       "@features/*": ["./src/features/*"],
-      "@pages/*": ["./src/fullpages/*"],
+      "@pages/*": ["./src/pages/*"],
       "@providers/*": ["./src/app/providers/*"],
       "@src/*": ["./src/*"],
       "@scripts/*": ["./scripts/*"],

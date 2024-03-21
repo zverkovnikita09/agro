@@ -1,6 +1,6 @@
 import { generateUrlParams } from "./generateUrlParams"
 
-interface GetDataParams {
+export interface GetDataParams {
   url?: string
   dataFlag?: boolean // флаг для получения данных или респонса
   headers?: Record<string, string>
@@ -37,7 +37,7 @@ export const getData = async <T extends {}>
   return dataFlag ? data.data : data;
 }
 
-interface sendDataParams<T> {
+export interface sendDataParams<T> {
   baseUrl?: string
   data: T,
   url: string,
@@ -45,6 +45,7 @@ interface sendDataParams<T> {
   method?: string
   params?: Record<string, string | number | undefined>
   defaultErrorMessage?: string
+  type?: 'FormData' | 'JSON'
 }
 
 export const sendData = async <DataType extends {}>
@@ -56,12 +57,23 @@ export const sendData = async <DataType extends {}>
     method = 'post',
     params = {},
     defaultErrorMessage = "Произошла ошибка при отправке данных",
+    type = 'FormData'
   }: sendDataParams<DataType>) => {
-  const formData = new FormData();
-  Object.entries(data).forEach(([key, value]) => formData.append(key, String(value)))
+  let dataToSend;
+
+  if (type === 'FormData') {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => formData.append(key, String(value)))
+    dataToSend = formData;
+  }
+
+  if(type === 'JSON') {
+    dataToSend = JSON.stringify(data)
+  }
+
   const queryParams = JSON.stringify(params) === '{}' ? '' : '?' + generateUrlParams(params);
   const response = await fetch(`${baseUrl}${url}${queryParams}`, {
-    body: data ? formData : undefined,
+    body: data ? dataToSend : undefined,
     method,
     headers: {
       'Accept': 'application/json',
@@ -69,8 +81,10 @@ export const sendData = async <DataType extends {}>
     }
   })
   const dataJson = await response.json();
+
   if (!response.ok) {
     throw new Error(dataJson?.message ?? defaultErrorMessage)
   }
+  
   return dataJson;
 }

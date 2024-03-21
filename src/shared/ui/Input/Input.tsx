@@ -11,6 +11,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   wrapperClassName?: string
   label?: string
   mask?: string
+  maskChar?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -23,6 +24,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     type,
     value,
     mask,
+    maskChar = "_",
     ...otherProps
   } = props
 
@@ -31,7 +33,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const TextField = () => {
     switch (type) {
       case "tel": return mask ?
-        <InputMask mask={mask} id={id} type={type} className={cn(style.textField, className)} inputRef={ref} {...otherProps} /> :
+        <InputMask 
+        mask={mask} 
+        id={id} 
+        type={type} 
+        className={cn(style.textField, className)} 
+        inputRef={ref} 
+        maskChar={maskChar}
+        {...otherProps} 
+        /> :
         <input
           id={id}
           type={type}
