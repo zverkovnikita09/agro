@@ -7,17 +7,20 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
 import { useSendData } from '@shared/hook/useSendData';
 import { useEffect } from 'react';
 import { useDebounce } from '@shared/hook/useDebounce';
+import { useLocalStorage } from '@shared/hook/useLocalStorage';
 
 interface RegistrationFormProps {
   className?: string;
+  nextStep?: () => void
 }
 
 export const RegistrationForm = (props: RegistrationFormProps) => {
-  const { className } = props;
+  const { className, nextStep } = props;
+  const [, setPhoneNumber] = useLocalStorage("phoneNumberToConfirm", null);
 
-  const { register, formState: { errors }, watch } = useForm();
+  const { register, formState: { errors }, handleSubmit, getValues } = useForm();
 
-  const { handleSendData } = useSendData(
+  /* const { handleSendData: getCompaniesByInn } = useSendData(
     {
       url: "http://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party",
       baseUrl: "",
@@ -26,31 +29,38 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      type: "JSON"
-    })
+      type: "JSON",
+    }) */
 
-  const inn: string = watch('inn');
+  const { handleSendData, isSending } = useSendData({
+    url: "", onSuccess: () => {
+      setPhoneNumber(getValues("phone"))
+      nextStep()
+    }
+  })
 
-  const deb = useDebounce(() => handleSendData({ query: inn, count: 20 }), 300)
+  /* const inn: string = watch('inn');
+
+  const deb = useDebounce(() => getCompaniesByInn({ query: inn, count: 20 }), 300)
 
   useEffect(() => {
     if (typeof inn !== "undefined") {
       deb()
     }
-  }, [inn])
+  }, [inn]) */
 
   return (
-    <form className={cn(styles.registrationForm, className)}>
-      <Title>Регистрация</Title>
+    <form className={cn(styles.registrationForm, className)} onSubmit={handleSubmit(handleSendData)}>
+      <Title>Авторизация</Title>
       <p className={styles.text}>Сельхоз-хозяйственные грузоперевозки <br /> по всей России</p>
-      <Input
+      {/* <Input
         placeholder='Введите ваш ИНН'
         {...register("inn", { required: true })}
         error={errors?.phone?.message as string}
         type='tel'
         mask='999999999999'
         maskChar={null}
-      />
+      /> */}
       <Input
         placeholder='Ваш номер телефона'
         mask="+7 (999) 999-99-99"
@@ -68,6 +78,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
         className={styles.submitBtn}
         theme={ButtonTheme.ACCENT}
         size={ButtonSize.M}
+        isLoading={isSending}
         fullWidth
       >
         Далее

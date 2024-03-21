@@ -28,5 +28,9 @@ export const useLocalStorage = (key: string, initialValue: unknown) => {
     localStorage.setItem(key, JSON.stringify(value))
   }
 
-  return [value, onValueChange];
+  function onDeleteValue() {
+    localStorage.removeItem(key)
+  }
+
+  return [value, onValueChange, onDeleteValue] as const;
 }

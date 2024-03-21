@@ -1,0 +1,39 @@
+.pinConfirmInput {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.inputCell {
+  width: 51px;
+  height: 56px;
+  display: grid;
+  place-content: center;
+  border: 1px solid var(--text-color);
+  border-radius: 6px;
+  font-size: 32px;
+  position: relative;
+
+  &.active:before {
+    content: "";
+    position: absolute;
+    width: 17px;
+    height: 2px;
+    animation: blink 1s infinite;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+
+  50% {
+    background-color: var(--text-color);
+  }
+}

@@ -3,7 +3,7 @@
 @import "./fonts.scss";
 
 * {
-  font-family: Inter, sans-serif;
+  font-family: Gilroy, sans-serif;
   scrollbar-color: var(--accent-color) transparent;
   scrollbar-width: thin;
   scroll-behavior: smooth;
@@ -12,6 +12,7 @@
 
 body {
   color: var(--text-color);
+  line-height: 135%;
 }
 
 *::-webkit-scrollbar {
@@ -31,4 +32,16 @@ body {
 #root {
   height: 100vh;
   overflow: auto;
+}
+
+.hiddenInput {
+  clip: rect(0 0 0 0);
+  border: 0 !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden;
+  padding: 0 !important;
+  white-space: nowrap;
+  width: 1px !important;
+  position: absolute;
 }
