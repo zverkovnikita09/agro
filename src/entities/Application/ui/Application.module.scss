@@ -1,0 +1,11 @@
+.application {
+  background: #FFFFFF;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: var(--main-shadow);
+}
+
+.application__content{
+  display: grid;
+  grid-template-columns: 1fr 3fr 2fr;
+}

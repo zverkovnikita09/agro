@@ -6,6 +6,7 @@ import { useSetDocumentTitle } from '@shared/hook/useSetDocumentTitle';
 import { useState } from 'react';
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
 import { CodeValidationForm } from '@features/CodeValidationForm';
+import {LSKeys} from "@shared/lib/globalVariables";
 
 
 
@@ -15,7 +16,7 @@ interface RegistrationPageProps {
 
 export const RegistrationPage = (props: RegistrationPageProps) => {
   const { className } = props;
-  const [phoneNumber] = useLocalStorage("phoneNumberToConfirm", null);
+  const [phoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
   const [step, setStep] = useState(phoneNumber ? 2 : 1)
 
   useSetDocumentTitle("Авторизация");

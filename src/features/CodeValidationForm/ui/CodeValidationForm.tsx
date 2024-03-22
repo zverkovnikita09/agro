@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { PinConfirmInput } from '@shared/ui/PinConfirmInput';
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
 import { useSendData } from '@shared/hook/useSendData';
+import {LSKeys} from "@shared/lib/globalVariables";
 
 interface CodeValidationFormProps {
   className?: string;
@@ -14,7 +15,7 @@ interface CodeValidationFormProps {
 
 export const CodeValidationForm = (props: CodeValidationFormProps) => {
   const { className } = props;
-  const [phoneNumber, , deleteNumber] = useLocalStorage("phoneNumberToConfirm", null);
+  const [phoneNumber, , deleteNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
 
   const { watch, setValue } = useForm();
 
