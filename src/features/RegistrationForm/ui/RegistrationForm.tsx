@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { useDebounce } from '@shared/hook/useDebounce';
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
 import {LSKeys} from "@shared/lib/globalVariables";
+import { RegistrationFormState } from '../model/registrationForm.model';
 
 interface RegistrationFormProps {
   className?: string;
@@ -19,7 +20,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
   const { className, nextStep } = props;
   const [, setPhoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
 
-  const { register, formState: { errors }, handleSubmit, getValues } = useForm();
+  const { register, formState: { errors }, handleSubmit, getValues } = useForm<RegistrationFormState>();
 
   /* const { handleSendData: getCompaniesByInn } = useSendData(
     {
@@ -34,8 +35,8 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
     }) */
 
   const { handleSendData, isSending } = useSendData({
-    url: "", onSuccess: () => {
-      setPhoneNumber(getValues("phone"))
+    url: "/api/v1/login", onSuccess: () => {
+      setPhoneNumber(getValues("phone_number"))
       nextStep()
     }
   })
@@ -66,14 +67,14 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
         placeholder='Ваш номер телефона'
         mask="+7 (999) 999-99-99"
         type='tel'
-        {...register('phone', {
+        {...register('phone_number', {
           required: 'Необходимо заполнить номер телефона.',
           pattern: {
             value: /^[^_]*$/,
             message: 'Необходимо заполнить номер телефона.'
           }
         })}
-        error={errors?.phone?.message as string}
+        error={errors?.phone_number?.message as string}
       />
       <Button
         className={styles.submitBtn}
