@@ -3,6 +3,7 @@ import style from './Title.module.scss'
 import { ReactNode, RefObject } from 'react'
 
 export enum TitleSize {
+  APPLICATION_TITLE = 'application_title',
   S = 'size_s',
   M = 'size_m',
   L = 'size_l'

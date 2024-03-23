@@ -1,0 +1,15 @@
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  padding: 8px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+.selected {
+  background: var(--special-yellow);
+}

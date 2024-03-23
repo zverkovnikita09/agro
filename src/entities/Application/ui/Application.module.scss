@@ -1,0 +1,106 @@
+.application {
+  background: #FFFFFF;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: var(--main-shadow);
+  display: grid;
+  gap: 16px;
+}
+
+.application__content {
+  display: grid;
+  grid-template-columns: 2fr 3fr 2fr;
+  gap: 75px;
+}
+
+.application__column {
+  display: grid;
+  gap: 16px;
+}
+
+.application__trail {
+  display: grid;
+  gap: 12px;
+  position: relative;
+  align-items: center;
+
+}
+
+.application__trailItem {
+  position: relative;
+  padding-left: 13px;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:before{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 40%;
+    transform: translateY(-40%);
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    z-index: 1;
+  }
+  &:first-child:before{
+    background-color: var(--primary-yellow);
+    border: 1px solid black;
+  }
+  &:last-child:before{
+    background-color: #fff;
+    border: 1px solid black;
+  }
+
+  &:after{
+    content: '';
+    position: absolute;
+    border-left: 1px dashed #ccc;
+    height: calc(50% + 7px);
+    left: 3px;
+  }
+  &:first-child:after{
+    top: 50%;
+  }
+  &:last-child:after{
+    bottom: 50%;
+  }
+}
+
+.application__cargoInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.application__cargoItem {
+  padding: 12px;
+  background-color: var(--special-grey-color2);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.application__footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.application__info{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.buttons{
+  display: flex;
+  gap: 8px;
+}
+
+.button{
+  max-width: 104px;
+  width: 100%;
+  font-weight: 600;
+}

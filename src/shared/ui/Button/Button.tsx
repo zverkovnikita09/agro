@@ -16,6 +16,7 @@ export enum ButtonSize {
 export enum ButtonTheme {
   PRIMARY = '',
   ACCENT = 'accent',
+  ACCENT_WITH_BLACK_TEXT = 'accent_with_black_text',
   OUTLINE = 'outline',
   BLACK = 'black',
   GREY = 'grey',

@@ -3,6 +3,13 @@
   line-height: 135%;
 }
 
+.application_title{
+  font-size: 18px;
+  @media (max-width: 768px) {
+    font-size: 17px;
+  }
+}
+
 .size_s {
   font-size: 24px;
 }
