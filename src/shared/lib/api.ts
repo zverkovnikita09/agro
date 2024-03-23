@@ -1,4 +1,5 @@
 import { generateUrlParams } from "./generateUrlParams"
+import {BASE_URL} from "./globalVariables";
 
 export interface GetDataParams {
   url?: string
@@ -8,8 +9,6 @@ export interface GetDataParams {
   params?: Record<string, string | number | undefined>
   defaultErrorMessage?: string
 }
-
-const BASE_URL = 'https://remeslo.pisateli-studio.ru'
 
 export interface DataResponse<T> {
   data: T

@@ -8,6 +8,7 @@ import { useSendData } from '@shared/hook/useSendData';
 import { useEffect } from 'react';
 import { useDebounce } from '@shared/hook/useDebounce';
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
+import {LSKeys} from "@shared/lib/globalVariables";
 
 interface RegistrationFormProps {
   className?: string;
@@ -16,7 +17,7 @@ interface RegistrationFormProps {
 
 export const RegistrationForm = (props: RegistrationFormProps) => {
   const { className, nextStep } = props;
-  const [, setPhoneNumber] = useLocalStorage("phoneNumberToConfirm", null);
+  const [, setPhoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
 
   const { register, formState: { errors }, handleSubmit, getValues } = useForm();
 
