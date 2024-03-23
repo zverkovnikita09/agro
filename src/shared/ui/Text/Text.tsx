@@ -1,6 +1,5 @@
 import cn from 'classnames';
 import styles from './Text.module.scss'
-import style from "@shared/ui/Title/Title.module.scss";
 import {ReactNode} from "react";
 
 export enum TextSize {
@@ -36,9 +35,9 @@ export const Text = (props: TextProps) => {
   const {className, children, size = TextSize.M, weight = TextWeight.REGULAR, color = TextColor.MAIN_COLOR, as = "span"} = props;
   const additionalClasses = [
     className,
-    style[size],
-    style[weight],
-    style[color],
+    styles[size],
+    styles[weight],
+    styles[color],
   ]
 
   const Component = as;

@@ -1,0 +1,27 @@
+.statusBadge {
+  padding: 2px 4px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+
+}
+
+.active{
+  color: var(--primary-yellow);
+  background-color: var(--special-yellow);
+}
+
+.on_pause{
+  color: var(--grey-text-color);
+  background-color: var(--special-grey-color1);
+}
+
+.complete{
+  color: var(--special-green);
+  background-color: var(--special-green-light);
+}
+
+.in_progress{
+  color: var(--text-color);
+  background-color: var(--primary-yellow);
+}

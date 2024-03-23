@@ -10,3 +10,21 @@
 .expandedSidebar{
   width: 220px;
 }
+
+.sidebar__menu{
+  margin-top: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu__link{
+  padding: 11px 14px;
+
+}
+
+.active{
+  background-color: var(--primary-yellow);
+  color: var(--white-color);
+  border-radius: 8px;
+}

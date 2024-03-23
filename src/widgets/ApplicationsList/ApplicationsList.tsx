@@ -16,7 +16,7 @@ export const ApplicationsList = (props: ApplicationsListProps) => {
   return (
     <div className={cn(styles.applicationsList, className)}>
       {applications.map(({id}) => (
-        <div className={styles.application}>
+        <div key={id} className={styles.application}>
           <Application id={id} />
         </div>
       ))}

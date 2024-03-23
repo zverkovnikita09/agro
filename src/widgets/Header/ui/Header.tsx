@@ -20,8 +20,8 @@ export const Header = (props: HeaderProps) => {
       <div className={styles.buttonWrapper}>
         <Button
           className={styles.button}
-          theme={ButtonTheme.ACCENT}
-          size={ButtonSize.M}
+          theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+          size={ButtonSize.S}
         >
           Разместить заявку
         </Button>
