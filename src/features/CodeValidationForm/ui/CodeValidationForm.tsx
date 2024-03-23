@@ -24,7 +24,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
 
   return (
     <form className={cn(styles.codeValidationForm, className)}>
-      <Title>Авторизация</Title>
+      <Title>Вход</Title>
       <p className={styles.text}>Мы отправили вам СМС с кодом подтверждения <br /> на этот номер {phoneNumber}</p>
       <PinConfirmInput name='code' value={code} setValue={(value) => setValue('code', value)} />
       <Button

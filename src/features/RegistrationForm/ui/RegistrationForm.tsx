@@ -51,7 +51,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
 
   return (
     <form className={cn(styles.registrationForm, className)} onSubmit={handleSubmit(handleSendData)}>
-      <Title>Авторизация</Title>
+      <Title>Вход</Title>
       <p className={styles.text}>Сельхоз-хозяйственные грузоперевозки <br /> по всей России</p>
       {/* <Input
         placeholder='Введите ваш ИНН'

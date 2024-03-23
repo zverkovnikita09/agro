@@ -23,6 +23,9 @@
   },
   "homepage": "https://github.com/zverkovnikita09/agro#readme",
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.14",
     "@reduxjs/toolkit": "^2.2.1",
     "classnames": "^2.5.1",
     "lodash-es": "^4.17.21",
