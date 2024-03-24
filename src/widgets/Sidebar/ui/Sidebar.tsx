@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import styles from './Sidebar.module.scss'
 import Logo from "@images/logo.svg";
-import {Link, NavLink, useParams} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import {RouterPaths} from "@src/app/router";
 
 interface SidebarProps {
@@ -10,9 +10,7 @@ interface SidebarProps {
 
 export const Sidebar = (props: SidebarProps) => {
   const { className } = props;
-  const currentRoute = useParams();
 
-  console.log(currentRoute)
   return (
     <div className={cn(styles.sidebar, styles.expandedSidebar, className)}>
       <Logo width={85} height={32} className={styles.logo}/>

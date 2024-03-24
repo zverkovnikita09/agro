@@ -9,11 +9,12 @@ export enum SpinnerTheme {
 
 interface SpinnerProps {
   theme?: SpinnerTheme;
+  className?: string;
 }
 
-export const Spinner = ({ theme = SpinnerTheme.PRIMARY }: SpinnerProps) => {
+export const Spinner = ({ theme = SpinnerTheme.PRIMARY, className }: SpinnerProps) => {
   return (
-    <div className={cn(styles.spinner, styles[theme])}>
+    <div className={cn(styles.spinner, styles[theme], className)}>
       <Leaf className={styles.leaf} width={4} height={9} viewBox='0 0 4 9' />
       <Leaf className={styles.leaf} width={4} height={9} viewBox='0 0 4 9' />
       <Leaf className={styles.leaf} width={4} height={9} viewBox='0 0 4 9' />

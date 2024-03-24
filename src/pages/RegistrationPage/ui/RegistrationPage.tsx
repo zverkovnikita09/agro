@@ -7,8 +7,13 @@ import { useState } from 'react';
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
 import { CodeValidationForm } from '@features/CodeValidationForm';
 import {LSKeys} from "@shared/lib/globalVariables";
-
-
+import {useDispatch, useSelector} from "react-redux";
+import {UserSelectors} from "@entities/User/model/User.selectors";
+import {useGetData} from "@shared/hook/useGetData";
+import {setUser} from "@entities/User/model/User.slice";
+import {Navigate} from "react-router-dom";
+import {RouterPaths} from "@src/app/router";
+import {LoadingBlock} from "@shared/ui/LoadingBlock";
 
 interface RegistrationPageProps {
   className?: string;
@@ -19,7 +24,23 @@ export const RegistrationPage = (props: RegistrationPageProps) => {
   const [phoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
   const [step, setStep] = useState(phoneNumber ? 2 : 1)
 
-  useSetDocumentTitle("Вход");
+  const user = useSelector(UserSelectors.selectUserData);
+  const token = useSelector(UserSelectors.selectToken);
+  const dispatch = useDispatch();
+
+  const {isLoading} = useGetData({
+    url: '/api/v1/user',
+    withAuthToken: true,
+    isEnabled: !!token,
+    dataFlag: true,
+    onSuccess: (user) => {dispatch(setUser(user))},
+  });
+
+  if (isLoading) return <LoadingBlock />
+
+  if (user) return <Navigate to={RouterPaths.MAIN} replace={true}/>
+
+  /*useSetDocumentTitle("Вход");*/
 
   const CurrentStepAuthForm = () => {
     switch (step) {
@@ -28,6 +49,8 @@ export const RegistrationPage = (props: RegistrationPageProps) => {
       default: return null
     }
   }
+
+  console.log(phoneNumber)
 
   return (
     <div className={cn(styles.registrationPage, className)}>

@@ -103,7 +103,7 @@ export const Button = (props: ComponentButtonProps) => {
       >
         {isLoading ?
           <div className={style.loading}>
-            {loadingText ?? 'Отправка'} <Spinner theme={SpinnerTheme.SECONDARY} />
+            {loadingText ?? 'Отправка'} <Spinner className={style.spinner} theme={SpinnerTheme.SECONDARY} />
           </div>
           : children
         }

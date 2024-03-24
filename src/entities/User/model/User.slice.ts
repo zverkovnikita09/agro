@@ -3,7 +3,7 @@ import { UserState } from './User.model';
 import { LSKeys } from '@shared/lib/globalVariables';
 
 const initialState: UserState = {
-  token: localStorage.getItem(LSKeys.TOKEN) ?? null,
+  token: JSON.parse(localStorage.getItem(LSKeys.TOKEN)) ?? null,
   user: null
 };
 

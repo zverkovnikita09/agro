@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const useLocalStorage = (key: string, initialValue: unknown) => {
+export const useLocalStorage = (key: string, initialValue?: unknown) => {
   if (!window.localStorage) {
     throw new Error("Local storage недоступен");
   }
@@ -11,7 +11,7 @@ export const useLocalStorage = (key: string, initialValue: unknown) => {
     const storageValue = localStorage.getItem(key);
 
     if (!storageValue) {
-      localStorage.setItem(key, JSON.stringify(value));
+      localStorage.removeItem(key);
 
       return value;
     }
@@ -28,9 +28,5 @@ export const useLocalStorage = (key: string, initialValue: unknown) => {
     localStorage.setItem(key, JSON.stringify(value))
   }
 
-  function onDeleteValue() {
-    localStorage.removeItem(key)
-  }
-
-  return [value, onValueChange, onDeleteValue] as const;
+  return [value, onValueChange] as const;
 }
