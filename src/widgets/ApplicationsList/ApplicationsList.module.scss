@@ -1,5 +1,7 @@
 .applicationsList {
-  margin-top: 27px;
   display: grid;
   gap: 12px;
+  overflow: auto;
+  padding: 18px 16px 24px 16px;
+
 }

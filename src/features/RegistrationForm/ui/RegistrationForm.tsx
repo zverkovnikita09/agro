@@ -82,6 +82,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
         size={ButtonSize.M}
         isLoading={isSending}
         fullWidth
+        type='submit'
       >
         Далее
       </Button>

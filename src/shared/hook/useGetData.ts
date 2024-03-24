@@ -1,17 +1,15 @@
-import {getData} from "@shared/lib/api";
+import {getData, GetDataParams} from "@shared/lib/api";
 /* import {NotificationType, useNotification} from "@providers/NotificationsProvider"; */
 import {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {UserSelectors} from "@entities/User/model/User.selectors";
 /* import {useSession} from "next-auth/react"; */
 
-interface useGetDataProps {
-  url: string,
-  defaultErrorMessage?: string
+interface useGetDataProps extends GetDataParams{
   onSuccess?: (...args: any[]) => any
   onError?: (...args: any[]) => any
   withAuthToken?: boolean
-  params?: Record<string, string | number | undefined>
   isEnabled?: boolean
-  headers?: Record<string, string>
 }
 
 export const useGetData = <DataType extends {}>
@@ -24,23 +22,23 @@ export const useGetData = <DataType extends {}>
    params,
    isEnabled = true,
    headers = {},
+   ...otherParams
  }: useGetDataProps) => {
-  const [isSending, setIsSending] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<DataType>();
+  const token = useSelector(UserSelectors.selectToken);
   /* const {addNotification} = useNotification(); */
-
- /*  const {data: sessionData} = useSession(); */
 
   useEffect(() => {
     if (isEnabled) {
       (async function () {
         try {
-          /* const headers = (withAuthToken && sessionData?.user.token) ? {Authorization: `Bearer ${sessionData.user.token}`} : undefined; */
-          setIsSending(true);
-          const response = await getData<DataType>({url, headers, defaultErrorMessage, params})
+          const headersWithAuth = (withAuthToken && token) ? {...headers, Authorization: `Bearer ${token}`} : headers;
+          setIsLoading(true);
+          const response = await getData<DataType>({url, headers: headersWithAuth, defaultErrorMessage, params, ...otherParams})
 
           setIsSuccess(true);
           onSuccess?.(response);
@@ -53,11 +51,11 @@ export const useGetData = <DataType extends {}>
             onError?.(error);
           }
         } finally {
-          setIsSending(false);
+          setIsLoading(false);
         }
       })()
     }
   }, [isEnabled]);
 
-  return {isSuccess, isSending, data, isError, error} as const
+  return {isSuccess, isLoading, data, isError, error} as const
 }
