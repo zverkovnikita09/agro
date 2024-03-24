@@ -19,7 +19,7 @@ export const RegistrationPage = (props: RegistrationPageProps) => {
   const [phoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
   const [step, setStep] = useState(phoneNumber ? 2 : 1)
 
-  useSetDocumentTitle("Авторизация");
+  useSetDocumentTitle("Вход");
 
   const CurrentStepAuthForm = () => {
     switch (step) {
