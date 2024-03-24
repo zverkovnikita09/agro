@@ -1,15 +1,15 @@
 import cn from 'classnames';
 import styles from './RegistrationForm.module.scss'
-import { Input } from '@shared/ui/Input';
-import { useForm } from 'react-hook-form';
-import { Title } from '@shared/ui/Title';
-import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
-import { useSendData } from '@shared/hook/useSendData';
-import { useEffect } from 'react';
-import { useDebounce } from '@shared/hook/useDebounce';
-import { useLocalStorage } from '@shared/hook/useLocalStorage';
+import {Input} from '@shared/ui/Input';
+import {useForm} from 'react-hook-form';
+import {Title} from '@shared/ui/Title';
+import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button';
+import {useSendData} from '@shared/hook/useSendData';
+import {useEffect} from 'react';
+import {useDebounce} from '@shared/hook/useDebounce';
+import {useLocalStorage} from '@shared/hook/useLocalStorage';
 import {LSKeys} from "@shared/lib/globalVariables";
-import { RegistrationFormState } from '../model/registrationForm.model';
+import {RegistrationFormState} from '../model/registrationForm.model';
 
 interface RegistrationFormProps {
   className?: string;
@@ -17,10 +17,10 @@ interface RegistrationFormProps {
 }
 
 export const RegistrationForm = (props: RegistrationFormProps) => {
-  const { className, nextStep } = props;
+  const {className, nextStep} = props;
   const [, setPhoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
 
-  const { register, formState: { errors }, handleSubmit, getValues } = useForm<RegistrationFormState>();
+  const {register, formState: {errors}, handleSubmit, getValues} = useForm<RegistrationFormState>();
 
   /* const { handleSendData: getCompaniesByInn } = useSendData(
     {
@@ -34,9 +34,10 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
       type: "JSON",
     }) */
 
-  const { handleSendData, isSending } = useSendData({
-    url: "/api/v1/login", onSuccess: () => {
+  const {handleSendData, isSending} = useSendData({
+    url: "/api/v1/login", onSuccess: ({data: {user: {code}}}) => {
       setPhoneNumber(getValues("phone_number"))
+      alert(code)
       nextStep()
     }
   })
@@ -54,7 +55,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
   return (
     <form className={cn(styles.registrationForm, className)} onSubmit={handleSubmit(handleSendData)}>
       <Title>Вход</Title>
-      <p className={styles.text}>Сельхоз-хозяйственные грузоперевозки <br /> по всей России</p>
+      <p className={styles.text}>Сельхоз-хозяйственные грузоперевозки <br/> по всей России</p>
       {/* <Input
         placeholder='Введите ваш ИНН'
         {...register("inn", { required: true })}

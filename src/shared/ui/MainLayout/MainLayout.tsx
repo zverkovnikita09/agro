@@ -5,7 +5,6 @@ import {Header} from "@widgets/Header";
 import {Sidebar} from "@widgets/Sidebar";
 import {useDispatch, useSelector} from "react-redux";
 import {UserSelectors} from "@entities/User/model/User.selectors";
-import {useEffect} from "react";
 import {RouterPaths} from "@src/app/router";
 import {useGetData} from "@shared/hook/useGetData";
 import {LoadingBlock} from "@shared/ui/LoadingBlock";
@@ -20,7 +19,6 @@ export const MainLayout = (props: MainLayoutProps) => {
   const outlet = useOutlet();
   const navigate = useNavigate();
 
-  const user = useSelector(UserSelectors.selectUserData);
   const token = useSelector(UserSelectors.selectToken);
   const dispatch = useDispatch();
 

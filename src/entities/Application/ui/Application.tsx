@@ -4,6 +4,8 @@ import {Title, TitleSize} from "@shared/ui/Title";
 import {Text, TextColor, TextSize} from "@shared/ui/Text";
 import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
 import {StatusBadge, StatusType} from "@shared/ui/StatusBadge";
+import Eye from '@images/eye.svg'
+import {ApplicationIcons, ApplicationProperty} from "@shared/ui/ApplicationProperty";
 
 interface ApplicationProps {
   className?: string;
@@ -54,24 +56,38 @@ export const Application = (props: ApplicationProps) => {
         </div>
         <div className={styles.application__column}>
           <div className={styles.application__cargoInfo}>
-            <div className={styles.application__cargoItem}>
+            <ApplicationProperty
+              icon={ApplicationIcons.BOX}
+            >
               Пшеница
-            </div>
-            <div className={styles.application__cargoItem}>
-              1500 ₽ Без НДС
-            </div>
-            <div className={styles.application__cargoItem}>
+            </ApplicationProperty>
+            <ApplicationProperty
+              icon={ApplicationIcons.CARD_COIN}
+              additionalText='Без НДС'
+            >
+              1500 ₽
+            </ApplicationProperty>
+            <ApplicationProperty
+              icon={ApplicationIcons.ROUTING}
+            >
               1800 км
-            </div>
-            <div className={styles.application__cargoItem}>
+            </ApplicationProperty>
+            <ApplicationProperty
+              icon={ApplicationIcons.BOX_3D}
+            >
               10 тонн
-            </div>
+            </ApplicationProperty>
           </div>
         </div>
       </div>
       <div className={styles.application__footer}>
         <div className={styles.application__info}>
-          <div>36</div>
+          <div
+            className={styles.viewCount}
+          >
+            <Eye width={18} height={18} />
+            36
+          </div>
           <StatusBadge status={StatusType.ACTIVE} />
         </div>
         <div className={styles.buttons}>
