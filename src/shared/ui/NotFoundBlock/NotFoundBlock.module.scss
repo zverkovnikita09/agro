@@ -6,15 +6,16 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
+  color: var(--grey-text-color);
 }
 
 .title {
   font-size: 18px;
   font-weight: 600;
+  color: var(--text-color);
 }
 
 .additionalText {
   font-weight: 500;
   font-size: 14px;
-  color: var(--grey-text-color);
 }

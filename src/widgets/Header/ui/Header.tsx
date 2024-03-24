@@ -12,7 +12,7 @@ export const Header = (props: HeaderProps) => {
 
   return (
     <div className={cn(styles.header, className)}>
-      <div className={styles.city}>город</div>
+      <div className={styles.city}>Санкт-Петербург</div>
       <Input
         className={styles.search}
         placeholder='Введите пункт погрузки'

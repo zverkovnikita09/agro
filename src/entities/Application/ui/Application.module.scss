@@ -77,14 +77,6 @@
   gap: 12px;
 }
 
-.application__cargoItem {
-  padding: 12px;
-  background-color: var(--special-grey-color2);
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
 .application__footer{
   display: flex;
   justify-content: space-between;
@@ -95,6 +87,14 @@
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.viewCount{
+  color: var(--disabled-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
 }
 
 .buttons{

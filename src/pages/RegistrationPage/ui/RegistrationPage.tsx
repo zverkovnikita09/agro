@@ -50,8 +50,6 @@ export const RegistrationPage = (props: RegistrationPageProps) => {
     }
   }
 
-  console.log(phoneNumber)
-
   return (
     <div className={cn(styles.registrationPage, className)}>
       <Logo width={110} height={40} className={styles.logo} />

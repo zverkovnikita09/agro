@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {isNull} from "lodash-es";
 
 export const useLocalStorage = (key: string, initialValue?: unknown) => {
   if (!window.localStorage) {
@@ -11,7 +12,7 @@ export const useLocalStorage = (key: string, initialValue?: unknown) => {
     const storageValue = localStorage.getItem(key);
 
     if (!storageValue) {
-      localStorage.removeItem(key);
+      localStorage.setItem(key, JSON.stringify(value));
 
       return value;
     }
@@ -20,7 +21,7 @@ export const useLocalStorage = (key: string, initialValue?: unknown) => {
   }
 
   function onValueChange(value: unknown) {
-    if (!value) {
+    if (typeof value === 'undefined' || isNull(value)) {
       localStorage.removeItem(key);
       return;
     }
