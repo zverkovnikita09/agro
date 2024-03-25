@@ -18,7 +18,7 @@ export enum ButtonTheme {
   ACCENT = 'accent',
   ACCENT_WITH_BLACK_TEXT = 'accent_with_black_text',
   OUTLINE = 'outline',
-  BLACK = 'black',
+  OUTLINE_ACCENT = 'outline_accent',
   GREY = 'grey',
 }
 

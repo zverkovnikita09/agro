@@ -11,7 +11,7 @@ export const buildPlugins = ({ mode, paths }: BuildOptions): Configuration['plug
   const env = dotenv.config().parsed;
 
   // сделаем reduce, чтобы сделать объект
-  const envKeys = Object.keys(env).reduce((prev, next) => {
+  const envKeys = Object.keys(env ?? {}).reduce((prev, next) => {
     //@ts-ignore
     prev[`process.env.${next}`] = JSON.stringify(env[next]);
     return prev;

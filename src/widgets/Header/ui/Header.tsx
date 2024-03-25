@@ -1,21 +1,38 @@
 import cn from 'classnames';
-import styles from './Header.module.scss'
-import {Input} from "@shared/ui/Input";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
+import { Input } from "@shared/ui/Input";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { Select } from '@shared/ui/Select';
+import { useState } from 'react';
+import LocationIcon from '@images/location.svg'
+import styles from './Header.module.scss';
 
 interface HeaderProps {
   className?: string;
 }
 
 export const Header = (props: HeaderProps) => {
-  const {className} = props;
+  const { className } = props;
+  const [value, setValue] = useState("");
 
   return (
     <div className={cn(styles.header, className)}>
-      <div className={styles.city}>Санкт-Петербург</div>
+      <div className={cn(styles.city, { [styles.placeholder]: !value })}>
+        <LocationIcon className={styles.location} />
+        <Select
+          options={["Вся Россия", "Москва", "Воронеж", "Ханты-Мансийский Автономный округ"]}
+          setValue={setValue}
+          value={value}
+          className={styles.citySelect}
+          togglerClassName={styles.selectToggler}
+          placeholder='Выберите город'
+          noArrow
+        />
+      </div>
       <Input
         className={styles.search}
         placeholder='Введите пункт погрузки'
+        autoComplete='off'
+        withSearchIcon
       />
       <div className={styles.buttonWrapper}>
         <Button

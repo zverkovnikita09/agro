@@ -1,5 +1,6 @@
 .input {
   width: 100%;
+  position: relative;
 
   &.error {
     .textField {
@@ -21,12 +22,24 @@
 
 .textField {
   width: 100%;
-  padding: 17px 20px;
+  padding: 16px 20px;
   border-radius: 10px;
   border: 1px solid var(--text-color);
+  font-size: 14px;
+  line-height: 135%;
 
-  @media (max-width: 768px) {
-    padding: 15px 20px;
+  &:focus {
+    outline: none;
+  }
+
+  &.withSearchIcon {
+    &.icon_left {
+      padding-left: 42px;
+    }
+
+    &.icon_right {
+      padding-right: 42px;
+    }
   }
 
   &::-webkit-input-placeholder {
@@ -36,5 +49,19 @@
   &::-moz-placeholder {
     color: var(--text-color);
     opacity: 1;
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  &.icon_left {
+    left: 16px;
+  }
+
+  &.icon_right {
+    right: 16px;
   }
 }

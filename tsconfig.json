@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
     "noImplicitAny": true,
-    "module": "ESNext",
+    "module": "esnext",
     "target": "ESNext",
     "jsx": "react-jsx",
     "allowJs": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "baseUrl": ".",
+    "incremental": true,
+    "strict": true,
     "paths": {
       "@images/*": ["./src/shared/images/*"],
       "@shared/*": ["./src/shared/*"],
@@ -26,6 +28,6 @@
     "compilerOptions": {
       "module": "CommonJS"
     }
-  }
+  },
 }
 

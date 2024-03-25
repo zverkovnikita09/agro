@@ -107,7 +107,6 @@ export const Application = (props: ApplicationProps) => {
           </Button>
         </div>
       </div>
-
     </div>
   )
 }

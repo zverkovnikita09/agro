@@ -1,7 +1,8 @@
+import { Nullable } from "@shared/lib/globalTypes";
 import {createContext, PropsWithChildren, useState} from "react";
 
 interface TabsContext {
-  value: number;
+  value: Nullable<number>;
   setValue: (value: number) => void;
 }
 

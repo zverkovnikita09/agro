@@ -3,6 +3,7 @@ import {getData, GetDataParams} from "@shared/lib/api";
 import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {UserSelectors} from "@entities/User/model/User.selectors";
+import { Nullable } from "@shared/lib/globalTypes";
 /* import {useSession} from "next-auth/react"; */
 
 interface useGetDataProps extends GetDataParams{
@@ -27,7 +28,7 @@ export const useGetData = <DataType extends {}>
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Nullable<string>>(null);
   const [data, setData] = useState<DataType>();
   const token = useSelector(UserSelectors.selectToken);
   /* const {addNotification} = useNotification(); */

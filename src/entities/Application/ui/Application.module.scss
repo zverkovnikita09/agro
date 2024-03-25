@@ -1,5 +1,5 @@
 .application {
-  background: #FFFFFF;
+  background: var(--white-color);
   padding: 16px;
   border-radius: 12px;
   box-shadow: var(--main-shadow);
@@ -48,14 +48,14 @@
   }
   &:last-child:before{
     top: calc(50% + 12px / 2);
-    background-color: #fff;
+    background-color: var(--white-color);
     border: 1px solid black;
   }
 
   &:after{
     content: '';
     position: absolute;
-    border-left: 1px dashed #ccc;
+    border-left: 1px dashed var(--disabled-color);
     height: 50%;
     left: 3px;
   }

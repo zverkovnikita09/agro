@@ -3,6 +3,7 @@ import cn from 'classnames';
 import style from './Input.module.scss'
 import { ErrorBlock } from '../ErrorBlock';
 import InputMask from 'react-input-mask';
+import SearchIcon from '@images/search.svg'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
@@ -12,6 +13,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   mask?: string
   maskChar?: string
+  withSearchIcon?: boolean;
+  searchIconPosition?: "left" | "right"
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -25,27 +28,35 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     value,
     mask,
     maskChar = "_",
+    withSearchIcon,
+    searchIconPosition = "left",
     ...otherProps
   } = props
 
   const id = useId();
 
+  const additionalInputClasses = [
+    className,
+    { [style.withSearchIcon]: withSearchIcon },
+    style[`icon_${searchIconPosition}`]
+  ]
+
   const TextField = () => {
     switch (type) {
       case "tel": return mask ?
-        <InputMask 
-        mask={mask} 
-        id={id} 
-        type={type} 
-        className={cn(style.textField, className)} 
-        inputRef={ref} 
-        maskChar={maskChar}
-        {...otherProps} 
+        <InputMask
+          mask={mask}
+          id={id}
+          type={type}
+          className={cn(style.textField, ...additionalInputClasses)}
+          inputRef={ref}
+          maskChar={maskChar}
+          {...otherProps}
         /> :
         <input
           id={id}
           type={type}
-          className={cn(style.textField, className)}
+          className={cn(style.textField, ...additionalInputClasses)}
           ref={ref}
           {...otherProps}
         />
@@ -53,7 +64,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         <input
           id={id}
           type={type}
-          className={cn(style.textField, className)}
+          className={cn(style.textField, ...additionalInputClasses)}
           ref={ref}
           {...otherProps}
         />
@@ -63,7 +74,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
 
   return (
     <div className={cn(style.input, wrapperClassName, { [style.error]: error })}>
-      {label && <label htmlFor={id} className={style.label}>{label}</label>}
+      {/*  {label && <label htmlFor={id} className={style.label}>{label}</label>} */}
+      {withSearchIcon && <SearchIcon className={cn(style.searchIcon, style[`icon_${searchIconPosition}`])} width={18} height={18} />}
       {TextField()}
       {error && <ErrorBlock>{error}</ErrorBlock>}
     </div>

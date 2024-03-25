@@ -1,5 +1,7 @@
+import { Nullable } from "@shared/lib/globalTypes";
+
 export interface UserState {
-  token?: string;
-  user?: Record<string, string>
+  token?: Nullable<string>;
+  user?: Nullable<Record<string, string>>
 }
 
