@@ -22,17 +22,17 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
 
   const {register, formState: {errors}, handleSubmit, getValues} = useForm<RegistrationFormState>();
 
-  /* const { handleSendData: getCompaniesByInn } = useSendData(
+  const { handleSendData: getCompaniesByInn } = useSendData(
     {
       url: "http://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party",
       baseUrl: "",
       headers: {
-        Authorization: 'Token 68137e7299f43f1d4869c08e43345f085af8fdf0',
+        Authorization: `Token ${process.env.DADATA_TOKEN}}`,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
       type: "JSON",
-    }) */
+    })
 
   const {handleSendData, isSending} = useSendData({
     url: "/api/v1/login", onSuccess: ({data: {user: {code}}}) => {

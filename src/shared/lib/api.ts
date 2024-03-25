@@ -1,5 +1,4 @@
 import { generateUrlParams } from "./generateUrlParams"
-import {BASE_URL} from "./globalVariables";
 
 export interface GetDataParams {
   url?: string
@@ -18,7 +17,7 @@ export interface DataResponse<T> {
 
 export const getData = async <T extends {}>
   ({
-    baseUrl = BASE_URL,
+    baseUrl = process.env.BASE_URL,
     dataFlag,
     url,
     headers = {},
@@ -49,7 +48,7 @@ export interface sendDataParams<T> {
 
 export const sendData = async <DataType extends {}>
   ({
-    baseUrl = BASE_URL,
+    baseUrl = process.env.BASE_URL,
     data,
     url,
     headers = {},

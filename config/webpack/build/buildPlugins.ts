@@ -1,13 +1,25 @@
-import webpack, {Configuration} from "webpack";
+import webpack, { Configuration } from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import {BuildOptions} from "./types/types";
+import { BuildOptions } from "./types/types";
+import dotenv from 'dotenv';
 
-export const buildPlugins = ({mode, paths}: BuildOptions): Configuration['plugins'] => {
+export const buildPlugins = ({ mode, paths }: BuildOptions): Configuration['plugins'] => {
   const isDev = mode === 'development';
 
+  // dotenv вернет объект с полем parsed 
+  const env = dotenv.config().parsed;
+
+  // сделаем reduce, чтобы сделать объект
+  const envKeys = Object.keys(env).reduce((prev, next) => {
+    //@ts-ignore
+    prev[`process.env.${next}`] = JSON.stringify(env[next]);
+    return prev;
+  }, {});
+
   const plugins: Configuration['plugins'] = [
-    new HtmlWebpackPlugin({template: paths.html}),
+    new HtmlWebpackPlugin({ template: paths.html }),
+    new webpack.DefinePlugin(envKeys)
   ];
 
   if (isDev) {
