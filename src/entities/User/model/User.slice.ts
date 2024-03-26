@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { UserState } from './User.model';
 import { LSKeys } from '@shared/lib/globalVariables';
+import { UserState } from './User.model';
 
 const initialState: UserState = {
   token: JSON.parse(localStorage.getItem(LSKeys.TOKEN) ?? "") ?? null,

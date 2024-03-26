@@ -2,7 +2,7 @@ import { sendData, sendDataParams } from "@shared/lib/api";
 /* import {NotificationType, useNotification} from "@providers/NotificationsProvider"; */
 import { useState } from "react";
 import {useSelector} from "react-redux";
-import {UserSelectors} from "@entities/User/model/User.selectors";
+import {UserSelectors} from "@entities/User";
 import { Nullable } from "@shared/lib/globalTypes";
 /* import {useSession} from "next-auth/react"; */
 

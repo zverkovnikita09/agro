@@ -4,11 +4,11 @@ import { Navigate, useNavigate, useOutlet } from "react-router-dom";
 import { Header } from "@widgets/Header";
 import { Sidebar } from "@widgets/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import { UserSelectors } from "@entities/User/model/User.selectors";
+import { UserSelectors } from "@entities/User";
 import { RouterPaths } from "@src/app/router";
 import { useGetData } from "@shared/hook/useGetData";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
-import { setUser } from "@entities/User/model/User.slice";
+import { setUser } from "@entities/User";
 
 interface MainLayoutProps {
   className?: string;

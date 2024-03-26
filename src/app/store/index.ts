@@ -1,4 +1,4 @@
-import { userReduser } from "@entities/User/model/User.slice";
+import { userReduser } from "@entities/User";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({

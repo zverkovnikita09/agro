@@ -1,11 +1,12 @@
 import cn from 'classnames';
 import styles from './Application.module.scss'
-import {Title, TitleSize} from "@shared/ui/Title";
-import {Text, TextColor, TextSize} from "@shared/ui/Text";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-import {StatusBadge, StatusType} from "@shared/ui/StatusBadge";
+import { Title, TitleSize } from "@shared/ui/Title";
+import { Text, TextColor, TextSize } from "@shared/ui/Text";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { StatusBadge, StatusType } from "@shared/ui/StatusBadge";
 import Eye from '@images/eye.svg'
-import {ApplicationIcons, ApplicationProperty} from "@shared/ui/ApplicationProperty";
+import { ApplicationIcons, ApplicationProperty } from "@shared/ui/ApplicationProperty";
+import { CardContainer } from '@shared/ui/CardContainer';
 
 interface ApplicationProps {
   className?: string;
@@ -13,10 +14,10 @@ interface ApplicationProps {
 }
 
 export const Application = (props: ApplicationProps) => {
-  const {className, id} = props;
+  const { className, id } = props;
 
   return (
-    <div className={cn(styles.application, className)}>
+    <CardContainer className={cn(styles.application, className)}>
       <div className={styles.application__content}>
         <div className={styles.application__column}>
           <Title size={TitleSize.APPLICATION_TITLE}>
@@ -107,6 +108,6 @@ export const Application = (props: ApplicationProps) => {
           </Button>
         </div>
       </div>
-    </div>
+    </CardContainer>
   )
 }

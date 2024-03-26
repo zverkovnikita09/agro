@@ -5,6 +5,7 @@ import { Select } from '@shared/ui/Select';
 import { useState } from 'react';
 import LocationIcon from '@images/location.svg'
 import styles from './Header.module.scss';
+import { Calendar } from '@shared/ui/Calendar';
 
 interface HeaderProps {
   className?: string;
@@ -17,7 +18,8 @@ export const Header = (props: HeaderProps) => {
   return (
     <div className={cn(styles.header, className)}>
       <div className={cn(styles.city, { [styles.placeholder]: !value })}>
-        <LocationIcon className={styles.location} />
+        <Calendar />
+        {/* <LocationIcon className={styles.location} />
         <Select
           options={["Вся Россия", "Москва", "Воронеж", "Ханты-Мансийский Автономный округ"]}
           setValue={setValue}
@@ -26,7 +28,7 @@ export const Header = (props: HeaderProps) => {
           togglerClassName={styles.selectToggler}
           placeholder='Выберите город'
           noArrow
-        />
+        /> */}
       </div>
       <Input
         className={styles.search}

@@ -1,6 +1,5 @@
 import cn from 'classnames';
 import styles from './CodeValidationForm.module.scss'
-import { Input } from '@shared/ui/Input';
 import { Title } from '@shared/ui/Title';
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
 import { useForm } from 'react-hook-form';
@@ -9,7 +8,7 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
 import { useSendData } from '@shared/hook/useSendData';
 import { LSKeys } from "@shared/lib/globalVariables";
 import { CodeValidationFormState } from '../model/codeValidationForm.model';
-import { setToken, setUser } from '@entities/User/model/User.slice';
+import { setToken, setUser } from '@entities/User';
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from '@src/app/store/model/hook';
 

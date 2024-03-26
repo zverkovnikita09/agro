@@ -2,15 +2,14 @@ import cn from 'classnames';
 import styles from './RegistrationPage.module.scss'
 import Logo from '@shared/images/logo.svg'
 import { RegistrationForm } from '@features/RegistrationForm';
-import { useSetDocumentTitle } from '@shared/hook/useSetDocumentTitle';
 import { useState } from 'react';
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
 import { CodeValidationForm } from '@features/CodeValidationForm';
 import {LSKeys} from "@shared/lib/globalVariables";
 import {useDispatch, useSelector} from "react-redux";
-import {UserSelectors} from "@entities/User/model/User.selectors";
+import {UserSelectors} from "@entities/User";
 import {useGetData} from "@shared/hook/useGetData";
-import {setUser} from "@entities/User/model/User.slice";
+import {setUser} from "@entities/User";
 import {Navigate} from "react-router-dom";
 import {RouterPaths} from "@src/app/router";
 import {LoadingBlock} from "@shared/ui/LoadingBlock";
