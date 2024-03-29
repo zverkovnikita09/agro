@@ -1,11 +1,12 @@
-import cn from 'classnames';
 import { Input } from "@shared/ui/Input";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { Select } from '@shared/ui/Select';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LocationIcon from '@images/location.svg'
 import styles from './Header.module.scss';
-import { Calendar } from '@shared/ui/Calendar';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { RouterPaths } from '@src/app/router';
+import cn from 'classnames';
 
 interface HeaderProps {
   className?: string;
@@ -17,8 +18,7 @@ export const Header = (props: HeaderProps) => {
 
   return (
     <div className={cn(styles.header, className)}>
-      <div className={cn(styles.city, { [styles.placeholder]: !value })}>
-
+      {/* <div className={cn(styles.city, { [styles.placeholder]: !value })}>
         <LocationIcon className={styles.location} />
         <Select
           options={["Вся Россия", "Москва", "Воронеж", "Ханты-Мансийский Автономный округ"]}
@@ -29,7 +29,7 @@ export const Header = (props: HeaderProps) => {
           placeholder='Выберите город'
           noArrow
         />
-      </div>
+      </div> */}
       <Input
         className={styles.search}
         placeholder='Введите пункт погрузки'
@@ -41,6 +41,11 @@ export const Header = (props: HeaderProps) => {
           className={styles.button}
           theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
           size={ButtonSize.S}
+          as={Link}
+          to={RouterPaths.NEW_APPLICATION}
+          state={{
+            allowPrevUrl: true
+          }}
         >
           Разместить заявку
         </Button>

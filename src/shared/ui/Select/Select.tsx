@@ -8,7 +8,7 @@ import { FieldError } from "react-hook-form";
 import { ErrorBlock } from "../ErrorBlock";
 import { useToggleDropdown } from "@shared/hook/useToggleDropdown";
 import style from './Select.module.scss'
-import { Text } from "../Text";
+import { Text, TextSize } from "../Text";
 
 interface OptionType {
   name: string
@@ -117,7 +117,7 @@ export const Select = (props: SelectProps) => {
         {!noArrow && <ArrowDown
           className={cn(style.arrowDown, { [style.rotated]: isDropdownOpen })}
         />}
-        {!multiple && <Text className={cn(style.togglerText)}>{(valueToShow(value ?? '') || placeholder)}</Text>}
+        {!multiple && <Text className={cn(style.togglerText)} size={TextSize.L}>{(valueToShow(value ?? '') || placeholder)}</Text>}
         {multiple && (value?.length ?
           (value.map((item) => (
             <div key={item} className={style.valueItem} onClick={e => e.stopPropagation()}>
@@ -157,7 +157,7 @@ export const Select = (props: SelectProps) => {
                 </div>
               )
             })
-            : <p className={cn(style.text, 'greyText')}>Нет доступных элементов</p>
+            : <p className={style.text}>Нет доступных элементов</p>
           }
         </Dropdown>
       </div>

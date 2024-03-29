@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { ButtonHTMLAttributes, MouseEvent, ReactNode, RefCallback, RefObject } from 'react'
+import { ButtonHTMLAttributes, MouseEvent, PropsWithChildren, RefCallback, RefObject } from 'react'
 import { Spinner, SpinnerTheme } from '../Spinner/Spinner';
 import style from './Button.module.scss'
 import { Link } from 'react-router-dom';
@@ -23,13 +23,13 @@ export enum ButtonTheme {
 }
 
 interface ButtonProps {
-  children?: ReactNode
   size?: ButtonSize
   theme?: ButtonTheme
   isLoading?: boolean
   loadingText?: string
   as?: "button"
   to?: string
+  state?: Record<string, any>
   buttonRef?: RefObject<HTMLButtonElement> | RefCallback<HTMLButtonElement>
   type?: ButtonHTMLAttributes<HTMLButtonElement>['type']
   onClick?: (e?: MouseEvent<HTMLButtonElement, MouseEvent>) => void
@@ -45,12 +45,12 @@ interface AnchorProps extends Omit<ButtonProps, "as" | "buttonRef" | "onClick"> 
   onClick?: (e?: MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
-type ComponentButtonProps =
+export type ComponentButtonProps =
   (ButtonProps | AnchorProps)
 /*  & ({ withAlert?: true, alertPopupProps: Omit<ConfirmPopupProps, keyof PopupProps> }
    | { withAlert?: false, alertPopupProps?: Omit<ConfirmPopupProps, keyof PopupProps> }); */
 
-export const Button = (props: ComponentButtonProps) => {
+export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
   const {
     type = 'button',
     className,
@@ -63,6 +63,7 @@ export const Button = (props: ComponentButtonProps) => {
     as = "button",
     buttonRef,
     fullWidth,
+    state,
     /*  withAlert,
      alertPopupProps, */
     /*     onClick, */
@@ -97,6 +98,7 @@ export const Button = (props: ComponentButtonProps) => {
         disabled={isLoading || disabled}
         //@ts-ignore
         ref={buttonRef}
+        state={state}
         //@ts-ignore
         /* onClick={!withAlert ? onClick : openConfirm} */
         {...otherProps}

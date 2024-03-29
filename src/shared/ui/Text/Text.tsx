@@ -1,11 +1,12 @@
 import cn from 'classnames';
 import styles from './Text.module.scss'
-import {ReactNode} from "react";
+import { ReactNode } from "react";
 
 export enum TextSize {
   S = 'size_s',
   M = 'size_m',
-  L = 'size_l'
+  L = 'size_l',
+  XL = 'size_xl'
 }
 
 export enum TextWeight {
@@ -32,7 +33,7 @@ interface TextProps {
 }
 
 export const Text = (props: TextProps) => {
-  const {className, children, size = TextSize.M, weight = TextWeight.REGULAR, color = TextColor.MAIN_COLOR, as = "span"} = props;
+  const { className, children, size = TextSize.M, weight = TextWeight.REGULAR, color = TextColor.MAIN_COLOR, as = "span" } = props;
   const additionalClasses = [
     className,
     styles[size],
@@ -42,6 +43,6 @@ export const Text = (props: TextProps) => {
 
   const Component = as;
 
-  return<Component className={cn(styles.text, additionalClasses)}>{children}</Component>
+  return <Component className={cn(styles.text, additionalClasses)}>{children}</Component>
 
 }

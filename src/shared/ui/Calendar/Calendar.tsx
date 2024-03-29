@@ -1,8 +1,8 @@
 import cn from 'classnames';
 import styles from './Calendar.module.scss'
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {DatePicker} from '@mui/x-date-pickers/DatePicker';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale'
 import 'dayjs/locale/ru';
@@ -13,12 +13,12 @@ interface DatePickerProps {
 }
 
 const popperSx = {
-  "& .MuiDateCalendar-root":{
-    height: '350px',
+  "& .MuiDateCalendar-root": {
+    height: '375px',
     maxHeight: 'unset',
-    width: '330px'
+    width: '360px'
   },
-  "& .MuiPickersCalendarHeader-label":{
+  "& .MuiPickersCalendarHeader-label": {
     fontSize: '18px',
     fontWeight: '600'
   },
@@ -30,21 +30,21 @@ const popperSx = {
   },
   "& .MuiPickersArrowSwitcher-root": {
     gap: '8px',
-    "& span":{
+    "& span": {
       display: 'none'
     }
   },
   "& .MuiDayCalendar-slideTransition": {
-    minHeight: '250px',
+    minHeight: '280px',
   },
   "& .MuiDayCalendar-header": {
-    gap: '5px',
+    gap: '10px',
   },
   "& .MuiDayCalendar-weekContainer": {
-    "&:not(:first-child)":{
-      margin: '4px 0',
+    "&:not(:first-child)": {
+      margin: '10px 0',
     },
-    gap: '5px'
+    gap: '10px'
   },
   "& .MuiPickersArrowSwitcher-button": {
     padding: '4px',
@@ -53,7 +53,7 @@ const popperSx = {
   },
   "& .MuiPickersCalendarHeader-switchViewButton": {
     borderRadius: '6px',
-    "& span":{
+    "& span": {
       display: 'none'
     }
   },
@@ -63,7 +63,7 @@ const popperSx = {
     fontSize: '16px',
     outline: '1px solid var(--special-grey-color2)',
     borderRadius: '6px',
-    "& span":{
+    "& span": {
       display: 'none'
     },
     "&:focus": {
@@ -80,7 +80,7 @@ const popperSx = {
     borderRadius: '6px',
     backgroundColor: 'var(--primary-yellow)',
 
-    "&:hover":{
+    "&:hover": {
       backgroundColor: 'var(--accent-hover-color)'
     }
   },
@@ -113,7 +113,7 @@ const popperSx = {
 }
 
 export const Calendar = (props: DatePickerProps) => {
-  const {className} = props;
+  const { className } = props;
 
   dayjs.extend(updateLocale);
   dayjs.updateLocale('ru', {
@@ -124,11 +124,11 @@ export const Calendar = (props: DatePickerProps) => {
   })
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} localeText={{cancelButtonLabel: 'Отменить', okButtonLabel: 'Подтвердить'}} adapterLocale='ru'>
+    <LocalizationProvider dateAdapter={AdapterDayjs} localeText={{ cancelButtonLabel: 'Отменить', okButtonLabel: 'Подтвердить' }} adapterLocale='ru'>
       <DatePicker
         format="DD.MM.YYYY"
         defaultValue={dayjs(new Date())}
-        className={styles.calendar}
+        className={cn(styles.calendar, className)}
         dayOfWeekFormatter={(weekday) => `${weekday.format('dd')}`}
         sx={{
           "& .MuiOutlinedInput-root": {
@@ -138,11 +138,14 @@ export const Calendar = (props: DatePickerProps) => {
           "& .MuiOutlinedInput-notchedOutline": {
             border: 'none'
           },
+          "& .MuiInputBase-input": {
+            padding: '15px 20px'
+          },
           "& .MuiIconButton-root": {
             "&:hover": {
               backgroundColor: 'transparent',
             },
-            "& span":{
+            "& span": {
               display: 'none',
             }
           },
@@ -151,18 +154,18 @@ export const Calendar = (props: DatePickerProps) => {
           openPickerIcon: CalendarIcon,
         }}
         slotProps={{
-          desktopPaper: { style: {marginTop: '8px', borderRadius: '12px'} },
-          mobilePaper: {style: {margin: '0'}},
+          desktopPaper: { style: { marginTop: '8px', borderRadius: '12px' } },
+          mobilePaper: { style: { margin: '0' } },
           popper: {
             sx: popperSx,
           },
           layout: {
             sx: popperSx
           },
-          toolbar: {hidden: true},
+          toolbar: { hidden: true },
           actionBar: {
-            sx:{
-              "& .MuiButton-root":{
+            sx: {
+              "& .MuiButton-root": {
                 "&:hover": {
                   backgroundColor: 'var(--special-grey-color2)'
                 },
@@ -170,7 +173,7 @@ export const Calendar = (props: DatePickerProps) => {
                   display: 'none'
                 },
               },
-              "& .MuiButton-text":{
+              "& .MuiButton-text": {
                 color: 'var(--accent-color)'
               },
             },

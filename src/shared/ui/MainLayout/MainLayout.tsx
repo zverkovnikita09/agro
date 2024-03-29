@@ -9,15 +9,23 @@ import { RouterPaths } from "@src/app/router";
 import { useGetData } from "@shared/hook/useGetData";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
 import { setUser } from "@entities/User";
+import { createContext, useState } from 'react';
 
-interface MainLayoutProps {
-  className?: string;
+interface MainLayoutContextProps {
+  openOverlay: () => void;
+  closeOverlay: () => void;
 }
 
-export const MainLayout = (props: MainLayoutProps) => {
-  const { className } = props;
+export const MainLayoutContext = createContext<MainLayoutContextProps>({ openOverlay: () => { }, closeOverlay: () => { } })
+
+export const MainLayout = () => {
   const outlet = useOutlet();
   const navigate = useNavigate();
+
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+
+  const openOverlay = () => setIsOverlayOpen(true)
+  const closeOverlay = () => setIsOverlayOpen(false)
 
   const token = useSelector(UserSelectors.selectToken);
   const dispatch = useDispatch();
@@ -36,22 +44,25 @@ export const MainLayout = (props: MainLayoutProps) => {
   if (isLoading) return <LoadingBlock />
 
   return (
-    <div className={cn(styles.mainLayout, className)}>
-      <iframe className={styles.map}
-        src="https://yandex.ru/map-widget/v1/?um=constructor%3A092c91191bf318e7ef6c8d42a695041151c46080253a6e3101f230ae4bbe8988&amp;source=constructor"
-        width="100%" height="100%" frameBorder="0" />
+    <MainLayoutContext.Provider value={{ openOverlay, closeOverlay }}>
+      <div className={cn(styles.overlay, { [styles.active]: isOverlayOpen })} />
+      <div className={styles.mainLayout}>
+        <iframe className={styles.map}
+          src="https://yandex.ru/map-widget/v1/?um=constructor%3A092c91191bf318e7ef6c8d42a695041151c46080253a6e3101f230ae4bbe8988&amp;source=constructor"
+          width="100%" height="100%" frameBorder="0" />
 
-      <div className={styles.header}>
-        <Header />
+        <div className={styles.header}>
+          <Header />
+        </div>
+
+        <div className={styles.sidebar}>
+          <Sidebar />
+        </div>
+
+        {outlet &&
+          <div className={styles.content}>{outlet}</div>
+        }
       </div>
-
-      <div className={styles.sidebar}>
-        <Sidebar />
-      </div>
-
-      {outlet &&
-        <div className={styles.content}>{outlet}</div>
-      }
-    </div>
+    </MainLayoutContext.Provider>
   )
 }

@@ -1,0 +1,54 @@
+.textarea {
+  transition: height 0s;
+
+  &.error {
+    .textField {
+      border-color: var(--error-color);
+      color: var(--error-color);
+
+      &:focus {
+        box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 6px #ce8483;
+      }
+    }
+  }
+}
+
+.textField {
+  width: 100%;
+  height: 138px;
+  resize: none;
+  border-radius: 10px;
+  border: 1px solid var(--text-color);
+  background: var(--white-color);
+
+  padding: 8px 20px;
+
+  font-size: 16px;
+
+  line-height: 135%;
+
+  &::-webkit-input-placeholder {
+    color: var(--text-color);
+    font-weight: 400;
+  }
+
+  &::-moz-placeholder {
+    color: var(--text-color);
+    opacity: 1;
+  }
+
+}
+
+.label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  display: block;
+}
+
+.inputLike {
+  padding: 17px 20px;
+
+  @media (max-width: 768px) {
+    padding: 15px 20px;
+  }
+}

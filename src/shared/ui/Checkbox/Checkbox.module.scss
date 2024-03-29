@@ -1,0 +1,20 @@
+.checkbox {
+  display: flex;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.inputBox {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-content: center;
+  border: 1.5px solid var(--text-color);
+  border-radius: 6px;
+  font-size: 18px;
+}
+
+.input:checked ~ .inputBox {
+  background-color: var(--primary-yellow);
+}

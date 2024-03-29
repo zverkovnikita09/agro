@@ -2,12 +2,13 @@
   position: relative;
   background-color: var(--white-color);
   line-height: 135%;
+  width: 100%;
 }
 
 .toggler {
   min-height: 100%;
-  border: 1px solid var(--dark-grey-color);
-  border-radius: 10px;
+  border: 1px solid var(--text-color);
+  border-radius: 6px;
   cursor: pointer;
   user-select: none;
   padding: 15px 54px 15px 20px;

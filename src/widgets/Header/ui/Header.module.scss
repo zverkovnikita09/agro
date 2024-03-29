@@ -25,6 +25,7 @@
 .selectToggler {
   padding: 12px 16px;
   padding-left: 38px;
+  border: none;
 }
 
 .location {
@@ -39,6 +40,7 @@
   padding: 12px 16px;
   box-shadow: var(--shadow-bottom);
   border: none;
+  font-size: 14px;
 
   &::-webkit-input-placeholder {
     color: var(--disabled-color);
