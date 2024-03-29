@@ -5,7 +5,8 @@ import {ReactNode} from "react";
 export enum TextSize {
   S = 'size_s',
   M = 'size_m',
-  L = 'size_l'
+  L = 'size_l',
+  XL = 'size_xl',
 }
 
 export enum TextWeight {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import ArrowDown from "@images/arrow-down.svg";
+import ArrowDown from "@images/chevron-down.svg";
 import { Button } from "@shared/ui/Button";
 /* import { IoClose } from "react-icons/io5"; */
 import { Dropdown } from "@shared/ui/Dropdown";
