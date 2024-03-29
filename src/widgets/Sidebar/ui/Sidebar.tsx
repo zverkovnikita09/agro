@@ -10,7 +10,7 @@ import Global from '@images/global.svg';
 import Archive from '@images/archive.svg';
 import Truck from '@images/truck.svg';
 import UserCircle from '@images/user-circle.svg'
-import ArrowLeft from '@images/arrow-left.svg'
+import ArrowLeft from '@images/chevron-left.svg'
 import {useLocalStorage} from "@shared/hook/useLocalStorage";
 import {LSKeys} from "@shared/lib/globalVariables";
 import {Button} from "@shared/ui/Button";

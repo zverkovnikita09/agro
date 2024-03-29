@@ -7,6 +7,7 @@ import { StatusBadge, StatusType } from "@shared/ui/StatusBadge";
 import Eye from '@images/eye.svg'
 import { ApplicationIcons, ApplicationProperty } from "@shared/ui/ApplicationProperty";
 import { CardContainer } from '@shared/ui/CardContainer';
+import {TrailBlock} from "@shared/ui/TrailBlock";
 
 interface ApplicationProps {
   className?: string;
@@ -46,14 +47,10 @@ export const Application = (props: ApplicationProps) => {
               ООО “Агротехервис”
             </Text>
           </div>
-          <div className={styles.application__trail}>
-            <div className={styles.application__trailItem}>
-              Ростовская обл., р-н Верхнедонский, п. Суходольный
-            </div>
-            <div className={styles.application__trailItem}>
-              Московская обл., г. Москва
-            </div>
-          </div>
+          <TrailBlock
+            destinationFrom={'Ростовская обл., р-н Верхнедонский, п. Суходольный'}
+            destinationTo={'Московская обл., г. Москва'}
+          />
         </div>
         <div className={styles.application__column}>
           <div className={styles.application__cargoInfo}>
