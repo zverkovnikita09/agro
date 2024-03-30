@@ -3,18 +3,23 @@ import styles from './Sidebar.module.scss'
 import Logo from "@images/logo.svg";
 import LogoIcon from "@images/logo-icon.svg";
 import LogoText from "@images/logo-text.svg"
-import {NavLink} from "react-router-dom";
+import {Link, NavLink, useNavigate} from "react-router-dom";
 import {RouterPaths} from "@src/app/router";
 import UserSquare from '@images/user-square.svg';
 import Global from '@images/global.svg';
 import Archive from '@images/archive.svg';
 import Truck from '@images/truck.svg';
-import UserCircle from '@images/user-circle.svg'
-import ArrowLeft from '@images/chevron-left.svg'
+import UserCircle from '@images/user-circle.svg';
+import ArrowLeft from '@images/chevron-left.svg';
+import Logout from '@images/logout.svg';
 import {useLocalStorage} from "@shared/hook/useLocalStorage";
 import {LSKeys} from "@shared/lib/globalVariables";
 import {Button} from "@shared/ui/Button";
 import {Text, TextWeight} from "@shared/ui/Text";
+import {useRef, useState} from "react";
+import {Dropdown} from "@shared/ui/Dropdown";
+import {useDispatch} from "react-redux";
+import {removeUserData, setToken} from "@entities/User";
 
 interface SidebarProps {
   className?: string;
@@ -23,9 +28,24 @@ interface SidebarProps {
 export const Sidebar = (props: SidebarProps) => {
   const {className} = props;
   const [isExpanded, setIsExpanded] = useLocalStorage(LSKeys.SIDEBAR_STATE, true);
+  const [isDropdownOpen, setisDropdownOpen] = useState(false);
+  const profileButtonRef = useRef<HTMLButtonElement>(null);
+  const [, setLSToken] = useLocalStorage(LSKeys.TOKEN);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleExpandClick = () => {
     setIsExpanded(!Boolean(isExpanded));
+  }
+
+  const toggleDropdown = () =>{
+    setisDropdownOpen((prev) => !prev)
+  }
+
+  const logout = () =>{
+    setLSToken(null);
+    dispatch(removeUserData());
+    navigate('/login');
   }
 
   return (
@@ -66,11 +86,19 @@ export const Sidebar = (props: SidebarProps) => {
         </NavLink>
       </div>
       <div className={styles.sidebarControl}>
-        <Button className={styles.profileInfo}>
+        <Button buttonRef={profileButtonRef} className={styles.profileInfo} onClick={toggleDropdown}>
           <UserCircle width={24} height={24}/>
           <Text className={styles.linkText} weight={TextWeight.MEDIUM}>ИП “Транс-Агро”</Text>
         </Button>
         <ArrowLeft className={styles.expandBtn} width={24} height={24} onClick={handleExpandClick}/>
+        <Dropdown className={styles.profileInfo__dropdown} fullWidth targetRef={profileButtonRef} isOpen={isDropdownOpen} onClose={toggleDropdown} >
+          <Button as={Link} className={styles.profileItem}>
+            <UserCircle width={24} height={24} /> ИП “Транс-Агро”
+          </Button>
+          <Button className={styles.profileItem} onClick={logout}>
+            <Logout width={24} height={24} /> Выйти
+          </Button>
+        </Dropdown>
       </div>
     </div>
   )

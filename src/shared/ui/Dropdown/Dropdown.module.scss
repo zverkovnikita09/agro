@@ -2,7 +2,7 @@
   position: absolute;
   overflow-y: auto;
   z-index: 10;
-  /* padding: 10px; */
+  padding: 16px;
 }
 
 .top {
@@ -11,4 +11,8 @@
 
 .bottom {
   bottom: calc(100% + 8px);
+}
+
+.fullWidth {
+  width: 100%;
 }
