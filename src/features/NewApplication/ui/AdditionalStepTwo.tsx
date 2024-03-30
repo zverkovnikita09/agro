@@ -7,6 +7,7 @@ import ArrowLeft from '@images/arrow-full-left.svg'
 import { MultiCheckbox, NestedCheckbox, ControlCheckbox } from '@shared/ui/MultiCheckbox'
 import { useForm } from 'react-hook-form'
 import { InputRange } from '@shared/ui/InputRange'
+import { RadioButton } from '@shared/ui/RadioButton'
 
 interface AdditionalStepOneProps {
   prevStep: () => void
@@ -20,9 +21,6 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
 
   const loadingOnSaturday = watch("loadingOnSaturday");
   const loadingOnSunday = watch("loadingOnSunday");
-
-  const from = watch("from");
-  const to = watch("to");
 
   return (
     <>
@@ -84,17 +82,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           Где происходит погрузка
         </Text>
         <Input placeholder='Где будет осуществляться погрузка' />
-        <InputRange
-          names={{ from: 'from', to: 'to' }}
-          setValue={setValue}
-          value={[from, to]}
-          step={500}
-          max={10000}
-          min={0}
-          units='км'
-          prevValueTextFrom='от'
-          prevValueTextTo='до'
-        />
+        <RadioButton>Кнопачка</RadioButton>
       </div>
       <div className={styles.buttonsContainer}>
         <Button className={styles.additionalButton} onClick={toMainPart}>

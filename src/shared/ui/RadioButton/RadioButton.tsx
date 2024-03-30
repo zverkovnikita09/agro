@@ -1,16 +1,33 @@
-import cn from 'classnames';
-import styles from './RadioButton.module.scss'
+import styles from "./RadioButton.module.scss";
+import { forwardRef, useId } from "react";
+import cn from "classnames";
+import { Text, TextSize, TextWeight } from "../Text";
 
-interface RadioButtonProps {
-  className?: string;
+interface RadioButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  children?: React.ReactNode,
+  className?: string
 }
 
-export const RadioButton = (props: RadioButtonProps) => {
-  const { className } = props;
+export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>((props, ref) => {
+  const id = useId();
+  const {
+    children,
+    className = '',
+    ...otherProps
+  } = props;
 
   return (
-    <div className={cn(styles.radioButton, className)}>
-    
-    </div>
+    <label className={cn(styles.radioButton, className)}>
+      <input
+        id={id}
+        className={cn(styles.input, 'hiddenInput')}
+        type='radio'
+        ref={ref}
+        {...otherProps}
+      />
+      <div className={styles.inputBox} />
+      <Text size={TextSize.L} weight={TextWeight.MEDIUM}>{children}</Text>
+    </label>
   )
 }
+)

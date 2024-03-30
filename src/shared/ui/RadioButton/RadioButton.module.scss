@@ -1,3 +1,28 @@
 .radioButton {
+  display: flex;
+  gap: 8px;
+  cursor: pointer;
+}
 
+.input {
+  &:checked~.inputBox {
+    border-color: var(--primary-yellow);
+
+    &::before{
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--primary-yellow);
+    }
+  }
+}
+
+.inputBox {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-color);
+  display: grid;
+  place-content: center;
 }
