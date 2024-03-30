@@ -6,11 +6,7 @@ export enum TextSize {
   S = 'size_s',
   M = 'size_m',
   L = 'size_l',
-<<<<<<< HEAD
-  XL = 'size_xl'
-=======
   XL = 'size_xl',
->>>>>>> 3f9e561858e625f73cc29cc275c9bf1078537bdd
 }
 
 export enum TextWeight {
