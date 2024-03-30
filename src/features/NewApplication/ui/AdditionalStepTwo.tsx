@@ -6,6 +6,7 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import ArrowLeft from '@images/arrow-full-left.svg'
 import { MultiCheckbox, NestedCheckbox, ControlCheckbox } from '@shared/ui/MultiCheckbox'
 import { useForm } from 'react-hook-form'
+import { InputRange } from '@shared/ui/InputRange'
 
 interface AdditionalStepOneProps {
   prevStep: () => void
@@ -19,6 +20,9 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
 
   const loadingOnSaturday = watch("loadingOnSaturday");
   const loadingOnSunday = watch("loadingOnSunday");
+
+  const from = watch("from");
+  const to = watch("to");
 
   return (
     <>
@@ -54,8 +58,21 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
         <div className={styles.inputsRow}>
           <MultiCheckbox hideNested>
             <ControlCheckbox>Все</ControlCheckbox>
-            <NestedCheckbox checked={loadingOnSaturday} className={styles.nestedCheckbox} setChecked={setValue} name='loadingOnSaturday'>СБ</NestedCheckbox>
-            <NestedCheckbox checked={loadingOnSunday} setChecked={setValue} name='loadingOnSunday'>ВС</NestedCheckbox>
+            <NestedCheckbox
+              checked={loadingOnSaturday}
+              className={styles.nestedCheckbox}
+              setChecked={setValue}
+              name='loadingOnSaturday'
+            >
+              СБ
+            </NestedCheckbox>
+            <NestedCheckbox
+              checked={loadingOnSunday}
+              setChecked={setValue}
+              name='loadingOnSunday'
+            >
+              ВС
+            </NestedCheckbox>
           </MultiCheckbox>
         </div>
       </div>
@@ -67,6 +84,17 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           Где происходит погрузка
         </Text>
         <Input placeholder='Где будет осуществляться погрузка' />
+        <InputRange
+          names={{ from: 'from', to: 'to' }}
+          setValue={setValue}
+          value={[from, to]}
+          step={500}
+          max={10000}
+          min={0}
+          units='км'
+          prevValueTextFrom='от'
+          prevValueTextTo='до'
+        />
       </div>
       <div className={styles.buttonsContainer}>
         <Button className={styles.additionalButton} onClick={toMainPart}>

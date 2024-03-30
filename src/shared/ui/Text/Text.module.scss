@@ -10,6 +10,10 @@
   font-size: 14px;
 }
 
+.size_ml {
+  font-size: 15px;
+}
+
 .size_l {
   font-size: 16px;
 }
@@ -18,27 +22,30 @@
   font-size: 18px;
 }
 
-.thin{
+.thin {
   font-weight: 100;
 }
 
-.regular{
+.regular {
   font-weight: 400;
 }
-.medium{
+
+.medium {
   font-weight: 500;
 }
-.semi_bold{
+
+.semi_bold {
   font-weight: 600;
 }
-.bold{
+
+.bold {
   font-weight: 700;
 }
 
-.main_color{
+.main_color {
   color: var(--text-color);
 }
 
-.grey{
+.grey {
   color: var(--grey-text-color);
 }

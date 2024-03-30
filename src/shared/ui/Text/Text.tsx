@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 export enum TextSize {
   S = 'size_s',
   M = 'size_m',
+  ML = 'size_ml',
   L = 'size_l',
   XL = 'size_xl',
 }
