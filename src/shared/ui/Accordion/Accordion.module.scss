@@ -1,3 +1,32 @@
 .accordion {
 
 }
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+.contentWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.2s, padding 0s 0.2s;
+  &.open {
+    grid-template-rows: 1fr;
+    padding-bottom: 16px;
+    transition-delay: 0s;
+
+    @media (max-width: 767px) {
+      padding: 10px;
+    }
+  }
+}
+
+.content{
+  display: grid;
+  gap: 6px;
+}

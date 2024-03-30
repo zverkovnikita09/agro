@@ -1,23 +1,29 @@
-import { Input } from "@shared/ui/Input";
-import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
-import { Select } from '@shared/ui/Select';
-import { useEffect, useRef, useState } from 'react';
-import LocationIcon from '@images/location.svg'
+import {Input} from "@shared/ui/Input";
+import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
+import {useState} from 'react';
+import FilterIcon from "@images/filter.svg";
 import styles from './Header.module.scss';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { RouterPaths } from '@src/app/router';
+import {Link} from 'react-router-dom';
+import {RouterPaths} from '@src/app/router';
 import cn from 'classnames';
+import {Text, TextSize, TextWeight} from "@shared/ui/Text";
 
 interface HeaderProps {
   className?: string;
+  isFiltersOpen?: boolean;
+  toggleFiltersOpen: () => void;
 }
 
 export const Header = (props: HeaderProps) => {
-  const { className } = props;
+  const { className, isFiltersOpen, toggleFiltersOpen } = props;
   const [value, setValue] = useState("");
 
   return (
     <div className={cn(styles.header, className)}>
+      <Button className={cn(styles.filter, {[styles.activeFilter]: isFiltersOpen})} onClick={toggleFiltersOpen}>
+        <FilterIcon width={18} height={18} />
+        <Text weight={TextWeight.MEDIUM} size={TextSize.M}>Фильтры</Text>
+      </Button>
       {/* <div className={cn(styles.city, { [styles.placeholder]: !value })}>
         <LocationIcon className={styles.location} />
         <Select

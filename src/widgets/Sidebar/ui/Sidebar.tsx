@@ -1,6 +1,5 @@
 import cn from 'classnames';
 import styles from './Sidebar.module.scss'
-import Logo from "@images/logo.svg";
 import LogoIcon from "@images/logo-icon.svg";
 import LogoText from "@images/logo-text.svg"
 import {Link, NavLink, useNavigate} from "react-router-dom";
@@ -28,7 +27,7 @@ interface SidebarProps {
 export const Sidebar = (props: SidebarProps) => {
   const {className} = props;
   const [isExpanded, setIsExpanded] = useLocalStorage(LSKeys.SIDEBAR_STATE, true);
-  const [isDropdownOpen, setisDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
   const [, setLSToken] = useLocalStorage(LSKeys.TOKEN);
   const dispatch = useDispatch();
@@ -38,11 +37,13 @@ export const Sidebar = (props: SidebarProps) => {
     setIsExpanded(!Boolean(isExpanded));
   }
 
-  const toggleDropdown = () =>{
-    setisDropdownOpen((prev) => !prev)
+  const toggleDropdown = () => {
+    setIsExpanded(true);
+    // TO FIX
+    setTimeout(() => setIsDropdownOpen((prev) => !prev), isExpanded ? 0 : 150)
   }
 
-  const logout = () =>{
+  const logout = () => {
     setLSToken(null);
     dispatch(removeUserData());
     navigate('/login');
@@ -51,8 +52,8 @@ export const Sidebar = (props: SidebarProps) => {
   return (
     <div className={cn(styles.sidebar, {[styles.expandedSidebar]: isExpanded}, className)}>
       <div className={styles.logo}>
-        <LogoIcon width={18} height={32} />
-        <LogoText width={63} height={31} />
+        <LogoIcon width={18} height={32}/>
+        <LogoText width={63} height={31}/>
       </div>
       {/*<Logo width={85} height={32} className={styles.logo}/>*/}
       <div className={styles.sidebar__menu}>
@@ -91,12 +92,13 @@ export const Sidebar = (props: SidebarProps) => {
           <Text className={styles.linkText} weight={TextWeight.MEDIUM}>ИП “Транс-Агро”</Text>
         </Button>
         <ArrowLeft className={styles.expandBtn} width={24} height={24} onClick={handleExpandClick}/>
-        <Dropdown className={styles.profileInfo__dropdown} fullWidth targetRef={profileButtonRef} isOpen={isDropdownOpen} onClose={toggleDropdown} >
+        <Dropdown className={styles.profileInfo__dropdown} fullWidth targetRef={profileButtonRef}
+                  isOpen={isDropdownOpen} onClose={toggleDropdown}>
           <Button as={Link} className={styles.profileItem}>
-            <UserCircle width={24} height={24} /> ИП “Транс-Агро”
+            <UserCircle width={24} height={24}/> ИП “Транс-Агро”
           </Button>
           <Button className={styles.profileItem} onClick={logout}>
-            <Logout width={24} height={24} /> Выйти
+            <Logout width={24} height={24}/> Выйти
           </Button>
         </Dropdown>
       </div>

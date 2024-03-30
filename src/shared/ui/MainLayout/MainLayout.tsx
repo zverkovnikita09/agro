@@ -1,15 +1,21 @@
 import cn from 'classnames';
 import styles from './MainLayout.module.scss'
-import { Navigate, useNavigate, useOutlet } from "react-router-dom";
-import { Header } from "@widgets/Header";
-import { Sidebar } from "@widgets/Sidebar";
-import { useDispatch, useSelector } from "react-redux";
-import { UserSelectors } from "@entities/User";
-import { RouterPaths } from "@src/app/router";
-import { useGetData } from "@shared/hook/useGetData";
-import { LoadingBlock } from "@shared/ui/LoadingBlock";
-import { setUser } from "@entities/User";
-import { createContext, useState } from 'react';
+import {Navigate, useNavigate, useOutlet} from "react-router-dom";
+import {Header} from "@widgets/Header";
+import {Sidebar} from "@widgets/Sidebar";
+import {useDispatch, useSelector} from "react-redux";
+import {setUser, UserSelectors} from "@entities/User";
+import {RouterPaths} from "@src/app/router";
+import {useGetData} from "@shared/hook/useGetData";
+import {LoadingBlock} from "@shared/ui/LoadingBlock";
+import {createContext, useState} from 'react';
+import {CardContainer} from "@shared/ui/CardContainer";
+import {Button} from "@shared/ui/Button";
+import {Text, TextColor, TextSize, TextWeight} from "@shared/ui/Text";
+import {Accordion} from "@shared/ui/Accordion";
+import {InputRange} from "@shared/ui/InputRange";
+import {useForm} from "react-hook-form";
+import {Filters} from "@widgets/Filters";
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
@@ -23,6 +29,12 @@ export const MainLayout = () => {
   const navigate = useNavigate();
 
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+
+  const [isFiltersActive, setIsFiltersActive] = useState(false);
+
+  const toggleFiltersOpen = () => {
+    setIsFiltersActive((prev) => !prev);
+  }
 
   const openOverlay = () => setIsOverlayOpen(true)
   const closeOverlay = () => setIsOverlayOpen(false)
@@ -39,6 +51,8 @@ export const MainLayout = () => {
     onError: () => navigate(RouterPaths.LOGIN),
   });
 
+
+
   if (!token) return <Navigate to={RouterPaths.LOGIN} replace={true} />
 
   if (isLoading) return <LoadingBlock />
@@ -52,7 +66,8 @@ export const MainLayout = () => {
           width="100%" height="100%" frameBorder="0" />
 
         <div className={styles.header}>
-          <Header />
+          <Header toggleFiltersOpen={toggleFiltersOpen} isFiltersOpen={isFiltersActive} />
+          <Filters isOpen={isFiltersActive} closeFilters={() => setIsFiltersActive(false)} />
         </div>
 
         <div className={styles.sidebar}>
