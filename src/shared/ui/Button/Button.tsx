@@ -10,7 +10,8 @@ import { usePopupState } from '@shared/hook/usePopupState';
 export enum ButtonSize {
   PRIMARY = '',
   S = 'size_s',
-  M = 'size_m'
+  SM = 'size_sm',
+  M = 'size_m',
 }
 
 export enum ButtonTheme {

@@ -1,0 +1,66 @@
+.filters {
+  display: none;
+  position: absolute;
+  top: 75px;
+  left: 16px;
+  width: 356px;
+  max-height: calc(100vh - 90px);
+  overflow: hidden;
+  z-index: 5;
+  padding-bottom: 0;
+
+  &.activeFilter {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.body {
+  overflow: auto;
+  //-ms-overflow-style: none;
+  //scrollbar-width: none;
+}
+
+//.body::-webkit-scrollbar {
+//  width: 0;
+//  height: 0;
+//}
+
+.footer{
+  display: flex;
+  background: var(--white-color);
+  border-radius: 12px;
+  padding: 3.5px 4px;
+  box-shadow: var(--shadow-bottom);
+  margin: 0 -16px;
+}
+
+.inputRow{
+  display: flex;
+  gap: 12px;
+}
+
+.checkboxContainer{
+  &>*:not(:first-child){
+    padding-left: 30px;
+  }
+}
+
+.controlCheckbox{
+  margin-left: -30px;
+}
+
+.accordion {
+  border-top: 1px solid var(--special-grey-color2);
+
+  &:last-child {
+    border-bottom: 1px solid var(--special-grey-color2);
+  }
+}
