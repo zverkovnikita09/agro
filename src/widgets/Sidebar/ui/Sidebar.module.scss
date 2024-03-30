@@ -50,6 +50,7 @@
   }
 
   .sidebarControl {
+    position: relative;
     flex-direction: row;
   }
 
@@ -114,4 +115,18 @@
 .expandBtn {
   cursor: pointer;
   transform: scale(-1);
+}
+
+.profileInfo__dropdown{
+  display: grid;
+  gap: 14px;
+}
+
+.profileItem{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  &:last-child{
+    color: var(--special-error);
+  }
 }
