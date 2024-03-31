@@ -1,9 +1,11 @@
-import { InputHTMLAttributes, forwardRef, useId } from 'react'
+import { InputHTMLAttributes, RefObject, forwardRef, useId, useRef, useState } from 'react'
 import cn from 'classnames';
 import style from './Input.module.scss'
 import { ErrorBlock } from '../ErrorBlock';
 import InputMask from 'react-input-mask';
 import SearchIcon from '@images/search.svg'
+import { Dropdown } from '../Dropdown';
+import { useToggleDropdown } from '@shared/hook/useToggleDropdown';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
@@ -15,6 +17,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   maskChar?: string
   withSearchIcon?: boolean;
   searchIconPosition?: "left" | "right"
+  autocompleteItems?: string[]
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -30,6 +33,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     maskChar = "_",
     withSearchIcon,
     searchIconPosition = "left",
+    autocompleteItems,
     ...otherProps
   } = props
 
@@ -41,6 +45,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     style[`icon_${searchIconPosition}`]
   ]
 
+  const [isDropdownOpen, toggleDropdown] = useToggleDropdown(false);
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const TextField = () => {
     switch (type) {
       case "tel": return mask ?
@@ -49,7 +56,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           id={id}
           type={type}
           className={cn(style.textField, ...additionalInputClasses)}
-          inputRef={ref}
+          inputRef={ref ?? inputRef}
           maskChar={maskChar}
           {...otherProps}
         /> :
@@ -57,7 +64,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           id={id}
           type={type}
           className={cn(style.textField, ...additionalInputClasses)}
-          ref={ref}
+          ref={ref ?? inputRef}
           {...otherProps}
         />
       default: return (
@@ -65,7 +72,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           id={id}
           type={type}
           className={cn(style.textField, ...additionalInputClasses)}
-          ref={ref}
+          ref={ref ?? inputRef}
           {...otherProps}
         />
       )
@@ -78,6 +85,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       {withSearchIcon && <SearchIcon className={cn(style.searchIcon, style[`icon_${searchIconPosition}`])} width={18} height={18} />}
       {TextField()}
       {error && <ErrorBlock>{error}</ErrorBlock>}
+      {!!autocompleteItems?.length && (
+        <Dropdown isOpen={isDropdownOpen} onClose={toggleDropdown} targetRef={inputRef}>
+          {autocompleteItems.map((item) => item)}
+        </Dropdown>
+      )}
     </div>
   )
 })

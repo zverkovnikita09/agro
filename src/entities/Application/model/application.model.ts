@@ -1,11 +1,11 @@
-export interface ApplicationModel{
+export interface ApplicationModel {
   crop: string;
   volume: string;
   distance: number;
   tariff: number;
   nds_percent?: number;
   terminal_name: string;
-  terminal_address:string;
+  terminal_address: string;
   terminal_inn: string;
   exporter_name: string;
   exporter_inn: string;
@@ -31,8 +31,8 @@ export interface ApplicationModel{
   loader_power?: number;
   load_method: string;
   tolerance_to_the_norm?: number;
-  start_order_at?: number;
-  end_order_at?: number;
+  start_order_at?: string;
+  end_order_at?: string;
   load_latitude: string;
   load_longitude: string;
   unload_latitude: string;

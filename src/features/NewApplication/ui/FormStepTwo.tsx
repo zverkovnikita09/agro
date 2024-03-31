@@ -10,12 +10,11 @@ import { useForm } from 'react-hook-form'
 import { NestedCheckbox } from '@shared/ui/MultiCheckbox/NestedCheckbox'
 
 interface FormStepTwoProps {
-  nextStep: () => void
   prevStep: () => void
 }
 
 export const FormStepTwo = (props: FormStepTwoProps) => {
-  const { nextStep, prevStep } = props;
+  const { prevStep } = props;
   const { setValue, watch } = useForm();
 
   const any = watch("any");
@@ -86,7 +85,7 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
           theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
           size={ButtonSize.S}
           className={styles.button}
-          onClick={nextStep}
+          type='submit'
         >
           Далее
         </Button>

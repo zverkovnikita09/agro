@@ -6,7 +6,6 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import ArrowLeft from '@images/arrow-full-left.svg'
 import { MultiCheckbox, NestedCheckbox, ControlCheckbox } from '@shared/ui/MultiCheckbox'
 import { useForm } from 'react-hook-form'
-import { InputRange } from '@shared/ui/InputRange'
 import { RadioButton } from '@shared/ui/RadioButton'
 
 interface AdditionalStepOneProps {

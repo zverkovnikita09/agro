@@ -8,8 +8,11 @@ import updateLocale from 'dayjs/plugin/updateLocale'
 import 'dayjs/locale/ru';
 import CalendarIcon from '@images/calendar.svg'
 
-interface DatePickerProps {
+interface CalendarProps {
   className?: string;
+  placeholder?: string;
+  value?: string;
+  onChange: (value: dayjs.Dayjs | null) => void
 }
 
 const popperSx = {
@@ -67,7 +70,7 @@ const popperSx = {
       display: 'none'
     },
     "&:focus": {
-      backgroundColor: 'var(--disabled-color)',
+      backgroundColor: 'var(--special-grey-color2)',
     },
     "&:focus.Mui-selected": {
       backgroundColor: 'var(--accent-hover-color)',
@@ -112,8 +115,8 @@ const popperSx = {
   },
 }
 
-export const Calendar = (props: DatePickerProps) => {
-  const { className } = props;
+export const Calendar = (props: CalendarProps) => {
+  const { className, placeholder = 'ДД.ММ.ГГГГ', value, onChange } = props;
 
   dayjs.extend(updateLocale);
   dayjs.updateLocale('ru', {
@@ -127,9 +130,11 @@ export const Calendar = (props: DatePickerProps) => {
     <LocalizationProvider dateAdapter={AdapterDayjs} localeText={{ cancelButtonLabel: 'Отменить', okButtonLabel: 'Подтвердить' }} adapterLocale='ru'>
       <DatePicker
         format="DD.MM.YYYY"
-        defaultValue={dayjs(new Date())}
+        /* defaultValue={dayjs(new Date())} */
         className={cn(styles.calendar, className)}
         dayOfWeekFormatter={(weekday) => `${weekday.format('dd')}`}
+        /* value={dayjs(value)} */
+        /*  onChange={(value) => onChange(value?.format("DD.MM.YYYY"))} */
         sx={{
           "& .MuiOutlinedInput-root": {
             border: 'none',
@@ -154,6 +159,7 @@ export const Calendar = (props: DatePickerProps) => {
           openPickerIcon: CalendarIcon,
         }}
         slotProps={{
+          textField: { InputProps: { placeholder } },
           desktopPaper: { style: { marginTop: '8px', borderRadius: '12px' } },
           mobilePaper: { style: { margin: '0' } },
           popper: {

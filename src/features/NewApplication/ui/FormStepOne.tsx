@@ -4,14 +4,17 @@ import { Calendar } from '@shared/ui/Calendar'
 import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
+import { useContext } from 'react'
+import { NewApplicationContext } from './NewApplication'
+import { Controller } from 'react-hook-form'
 
 interface FormStepOneProps {
-  nextStep: () => void
   onCancel: () => void
 }
 
 export const FormStepOne = (props: FormStepOneProps) => {
-  const { nextStep, onCancel } = props;
+  const { onCancel } = props;
+  const { control, } = useContext(NewApplicationContext)
   return (
     <>
       <div className={styles.inputBlock}>
@@ -22,8 +25,30 @@ export const FormStepOne = (props: FormStepOneProps) => {
           Дата перевозки
         </Text>
         <div className={styles.inputsRow}>
-          <Calendar />
-          <Calendar />
+          <Controller
+            name="start_order_at"
+            control={control}
+            rules={{ required: true }}
+            render={(props) => (
+              <Calendar
+                placeholder='Дата начала перевозки'
+                value={props.field.value}
+                onChange={props.field.onChange}
+              />
+            )}
+          />
+          <Controller
+            name="end_order_at"
+            control={control}
+            rules={{ required: true }}
+            render={(props) => (
+              <Calendar
+                placeholder='Дата окончания перевозки'
+                value={props.field.value}
+                onChange={props.field.onChange}
+              />
+            )}
+          />
         </div>
       </div>
       <div className={styles.inputBlock}>
@@ -58,7 +83,7 @@ export const FormStepOne = (props: FormStepOneProps) => {
           theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
           size={ButtonSize.S}
           className={styles.button}
-          onClick={nextStep}
+          type='submit'
         >
           Далее
         </Button>

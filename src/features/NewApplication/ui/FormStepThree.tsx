@@ -8,11 +8,11 @@ import { Select } from '@shared/ui/Select'
 
 interface FormStepThreeProps {
   prevStep: () => void
-  nextStep: () => void
+  toAdditional: () => void
 }
 
 export const FormStepThree = (props: FormStepThreeProps) => {
-  const { prevStep, nextStep } = props;
+  const { prevStep, toAdditional } = props;
   return (
     <>
       <div className={styles.inputBlock}>
@@ -49,7 +49,7 @@ export const FormStepThree = (props: FormStepThreeProps) => {
         <TextArea placeholder='Укажите доп. информацию' />
       </div>
       <div className={styles.buttonsContainer}>
-        <Button className={styles.additionalButton} onClick={nextStep}>
+        <Button className={styles.additionalButton} onClick={toAdditional}>
           <BurgerIcon />
           Дополнительные параметры заявки
         </Button>

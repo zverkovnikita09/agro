@@ -1,17 +1,15 @@
 import { Text, TextSize, TextWeight } from '@shared/ui/Text'
 import styles from './NewApplication.module.scss'
-import { Select } from '@shared/ui/Select'
 import { Input } from '@shared/ui/Input'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import ArrowLeft from '@images/arrow-full-left.svg'
 
 interface AdditionalStepOneProps {
-  nextStep: () => void
   toMainPart: () => void
 }
 
 export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
-  const { nextStep, toMainPart } = props;
+  const { toMainPart } = props;
 
   return (
     <>
@@ -62,7 +60,7 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
           theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
           size={ButtonSize.S}
           className={styles.button}
-          onClick={nextStep}
+          type='submit'
         >
           Далее
         </Button>
