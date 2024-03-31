@@ -42,10 +42,8 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   const { handleSubmit, watch, control, register } = useForm<ApplicationModel>();
 
-  const changeStep = (number: number) => () => {
-    setFormStep(number)
-    console.log();
-  }
+  const changeStep = (number: number) => () => setFormStep(number)
+
 
   const FormContent = () => {
     switch (formStep) {

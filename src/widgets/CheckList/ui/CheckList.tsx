@@ -23,13 +23,13 @@ export const CheckList = (props: CheckListProps) => {
           <Tab value={3}>Завершенные</Tab>
         </div>
         <TabPanel value={0}>
-          <ApplicationsList applications={[{id:1},{id:2},{id:1},{id:2},{id:1},{id:2}]} />
+          <ApplicationsList status={'Все'} />
         </TabPanel>
         <TabPanel value={1}>
-          <LoadingBlock />
+          <ApplicationsList status={'Активные'} />
         </TabPanel>
         <TabPanel value={2}>
-          <ApplicationsList applications={[{id:5},{id:6}]} />
+          <ApplicationsList status={'На паузе'} />
         </TabPanel>
         <TabPanel value={3}>
           <NotFoundBlock title='Заявок не найдено' additionalText='Вы не взяли ни одной заявки'/>

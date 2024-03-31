@@ -24,14 +24,14 @@
 
 .body {
   overflow: auto;
-  //-ms-overflow-style: none;
-  //scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-//.body::-webkit-scrollbar {
-//  width: 0;
-//  height: 0;
-//}
+.body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 
 .footer{
   display: flex;

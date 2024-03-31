@@ -26,6 +26,8 @@ export const Filters = (props: FiltersProps) => {
   const location = useLocation();
 
   const { setValue, watch } = useForm();
+  const from = watch('from');
+  const to = watch('to');
 
   useEffect(() => {
     closeFilters();
@@ -47,7 +49,7 @@ export const Filters = (props: FiltersProps) => {
         <Accordion className={styles.accordion} accordionTitle={'Расстояние'}>
           <InputRange
             setValue={setValue}
-            value={[0, 10000]}
+            value={[from, to]}
             names={{from: 'from', to: 'to'}}
             min={0}
             max={10000}
@@ -106,7 +108,7 @@ export const Filters = (props: FiltersProps) => {
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Целевой</Checkbox>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>В общем доступе</Checkbox>
         </Accordion>
-        <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Отображать цену (НДС/б.НДС)'}>
+        <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Тип транспорта'}>
           <MultiCheckbox>
             <ControlCheckbox className={styles.controlCheckbox}>Любой</ControlCheckbox>
             <NestedCheckbox

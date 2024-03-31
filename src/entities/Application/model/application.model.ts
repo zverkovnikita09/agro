@@ -1,8 +1,10 @@
 export interface ApplicationModel {
+  id: string;
   crop: string;
   volume: string;
   distance: number;
   tariff: number;
+  deadlines: string;
   nds_percent?: number;
   terminal_name: string;
   terminal_address: string;
@@ -21,7 +23,8 @@ export interface ApplicationModel {
   contact_name: string;
   contact_phone: string;
   cargo_shortrage_rate?: number;
-  unit_of_measurement_for_cargo_shortage_rate?: number;
+  cargo_shortage_rate: number;
+  unit_of_measurement_for_cargo_shortage_rate?: string;
   cargo_price?: number;
   load_place: string;
   approach?: string;
@@ -42,4 +45,5 @@ export interface ApplicationModel {
   cargo_weight: number;
   description?: string;
   load_types: string[];
+  order_number: number;
 }
