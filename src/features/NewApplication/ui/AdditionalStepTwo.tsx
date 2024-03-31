@@ -81,7 +81,6 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           Где происходит погрузка
         </Text>
         <Input placeholder='Где будет осуществляться погрузка' />
-        <RadioButton>Кнопачка</RadioButton>
       </div>
       <div className={styles.buttonsContainer}>
         <Button className={styles.additionalButton} onClick={toMainPart}>
