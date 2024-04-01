@@ -9,7 +9,14 @@ export enum StatusType {
 }
 interface StatusBadgeProps {
   className?: string;
-  status: StatusType
+  status: StatusType;
+}
+
+const Status: Record<StatusType, string> = {
+  [StatusType.ACTIVE]: 'Активная',
+  [StatusType.COMPLETE]: 'Завешено',
+  [StatusType.IN_PROGRESS]: 'В работе',
+  [StatusType.ON_PAUSE]: 'На паузе'
 }
 
 export const StatusBadge = (props: StatusBadgeProps) => {
@@ -22,7 +29,7 @@ export const StatusBadge = (props: StatusBadgeProps) => {
 
   return (
     <div className={cn(styles.statusBadge, additionalClasses)}>
-      Активная
+      {Status[status]}
     </div>
   )
 }

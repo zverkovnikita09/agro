@@ -28,7 +28,7 @@ export const FormStepOne = (props: FormStepOneProps) => {
           <Controller
             name="start_order_at"
             control={control}
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={(props) => (
               <Calendar
                 placeholder='Дата начала перевозки'
@@ -40,7 +40,7 @@ export const FormStepOne = (props: FormStepOneProps) => {
           <Controller
             name="end_order_at"
             control={control}
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={(props) => (
               <Calendar
                 placeholder='Дата окончания перевозки'
