@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale'
 import 'dayjs/locale/ru';
 import CalendarIcon from '@images/calendar.svg'
+import { deDE } from '@mui/x-date-pickers/locales';
 
 interface CalendarProps {
   className?: string;
@@ -127,7 +128,18 @@ export const Calendar = (props: CalendarProps) => {
   })
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} localeText={{ cancelButtonLabel: 'Отменить', okButtonLabel: 'Подтвердить' }} adapterLocale='ru'>
+    <LocalizationProvider
+      dateAdapter={AdapterDayjs} localeText={
+        {
+          cancelButtonLabel: 'Отменить',
+          okButtonLabel: 'Подтвердить',
+          fieldYearPlaceholder: () => 'ГГГГ',
+          fieldMonthPlaceholder: () => 'ММ',
+          fieldDayPlaceholder: () => 'ДД'
+        }
+      }
+      adapterLocale='ru'
+    >
       <DatePicker
         format="DD.MM.YYYY"
         /* defaultValue={dayjs(new Date())} */
@@ -160,7 +172,7 @@ export const Calendar = (props: CalendarProps) => {
         }}
         slotProps={{
           textField: { InputProps: { placeholder } },
-          desktopPaper: { style: { marginTop: '8px', borderRadius: '12px' } },
+          desktopPaper: { style: { marginTop: '8px', borderRadius: '12px' }, className: styles.popper },
           mobilePaper: { style: { margin: '0' } },
           popper: {
             sx: popperSx,
