@@ -45,8 +45,9 @@ const popperSx = {
     gap: '10px',
   },
   "& .MuiDayCalendar-weekContainer": {
-    "&:not(:first-child)": {
-      margin: '10px 0',
+    margin: '10px 0',
+    "&[aria-rowindex='1']":{
+      marginTop: '1px'
     },
     gap: '10px'
   },
