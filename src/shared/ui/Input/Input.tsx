@@ -1,4 +1,4 @@
-import { FocusEvent, InputHTMLAttributes, forwardRef, useId, useRef } from 'react'
+import {FocusEvent, InputHTMLAttributes, forwardRef, useId, useRef, useEffect} from 'react'
 import cn from 'classnames';
 import style from './Input.module.scss'
 import { ErrorBlock } from '../ErrorBlock';
@@ -14,7 +14,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   mask?: string
   maskChar?: string
   withSearchIcon?: boolean;
-  searchIconPosition?: "left" | "right"
+  searchIconPosition?: "left" | "right";
+  inputAutoFocus?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -30,6 +31,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     maskChar = "_",
     withSearchIcon,
     searchIconPosition = "left",
+    inputAutoFocus,
     ...otherProps
   } = props
 
@@ -42,6 +44,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   ]
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputAutoFocus) inputRef?.current?.focus();
+  }, []);
 
   const TextField = () => {
     switch (type) {

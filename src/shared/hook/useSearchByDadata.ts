@@ -2,16 +2,17 @@ import { useEffect, useState } from "react"
 import { useSendData } from "./useSendData"
 import { useDebounce } from "./useDebounce"
 
-interface useSearchByDadataProps {
+interface useSearchByDadataProps<T> {
   query: string //запрос
   target: 'address' | 'party' //address - поиск адреса по строке, party - поиск компании по инн или названию
   queryParams?: Record<string, string>
-  debuonceTime?: number
+  debounceTime?: number
   minQueryLength?: number
+  onSuccess?: (data: T) => void
 }
 
-export const useSearchByDadata = <T extends {}>({ query, target, queryParams, debuonceTime = 300, minQueryLength = 1 }: useSearchByDadataProps) => {
-  const { handleSendData, isError, isSuccess, responseData } = useSendData(
+export const useSearchByDadata = <T extends {}>({ query, target, queryParams, debounceTime = 300, minQueryLength = 1, onSuccess }: useSearchByDadataProps<T>) => {
+  const { handleSendData, isError, isSuccess, responseData, isSending } = useSendData(
     {
       url: `http://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/${target}`,
       baseUrl: "",
@@ -21,9 +22,10 @@ export const useSearchByDadata = <T extends {}>({ query, target, queryParams, de
         "Content-Type": "application/json",
       },
       type: "JSON",
+      onSuccess
     })
 
-  const debouncedQuery = useDebounce(() => handleSendData({ query, ...queryParams }), debuonceTime)
+  const debouncedQuery = useDebounce(() => handleSendData({ query, ...queryParams }), debounceTime)
 
   useEffect(() => {
     if (query && query.length >= minQueryLength) {
@@ -31,5 +33,5 @@ export const useSearchByDadata = <T extends {}>({ query, target, queryParams, de
     }
   }, [query])
 
-  return { data: responseData as T, isError, isSuccess } as const;
+  return { data: responseData as T, isError, isSuccess, isSending } as const;
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import {ChangeEvent, useCallback, useEffect, useRef, useState} from "react"
 import ArrowDown from "@images/chevron-down.svg";
 import { Button } from "@shared/ui/Button";
 /* import { IoClose } from "react-icons/io5"; */
@@ -27,6 +27,9 @@ interface CommonSelectProps {
   noArrow?: boolean
   togglerClassName?: string;
   withInputSearch?: boolean;
+  onSearchInput?: (value: string) => void;
+  minLengthForOptions?: number;
+  hideOptions?: boolean;
 }
 
 interface MultipleSelectProps {
@@ -57,6 +60,9 @@ export const Select = (props: SelectProps) => {
     noArrow,
     withInputSearch,
     togglerClassName,
+    onSearchInput,
+    minLengthForOptions = 1,
+    hideOptions,
   } = props
 
   const [, setIsFocused] = useState(false);
@@ -100,6 +106,10 @@ export const Select = (props: SelectProps) => {
       return value
     }
 
+    if (!options.length) {
+      return value
+    }
+
     return (options.find(item => (item as OptionType).value === value) as OptionType)?.name || ''
   }
 
@@ -115,13 +125,30 @@ export const Select = (props: SelectProps) => {
     }
   }, [value])
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    onSearchInput?.(e.target.value);
+  }
+  console.log(value)
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div className={cn(style.select, className,
         { [style.fullWidth]: fullWidth },
         { [style.noArrow]: noArrow }
       )}>
-        {label && <p className={style.label}>{label}</p>}
+        {withInputSearch && isDropdownOpen &&
+          <Input
+            className={cn(style.input, { [style.noArrow]: noArrow })}
+            inputAutoFocus
+            value={inputValue}
+            onChange={handleInputChange}
+            autoComplete={"off"}
+            defaultValue={value}
+            onFocus={() => {
+              if (typeof value === 'string' && value) onSearchInput?.(value);
+            }}
+          />
+        }
         <div
           className={cn(style.toggler, togglerClassName)}
           tabIndex={0}
@@ -130,7 +157,7 @@ export const Select = (props: SelectProps) => {
           ref={elementRef}
           onClick={handleClick}
         >
-          {withInputSearch && isDropdownOpen && <Input />}
+
           {!noArrow && <ArrowDown
             className={cn(style.arrowDown, { [style.rotated]: isDropdownOpen })}
           />}
@@ -144,7 +171,7 @@ export const Select = (props: SelectProps) => {
             )))
             : placeholder)}
           <Popper
-            open={isDropdownOpen}
+            open={isDropdownOpen && !hideOptions && (withInputSearch ? inputValue.length >= minLengthForOptions : true) }
             anchorEl={dropdownAnchorEl}
             className={style.dropdown}
             style={{ width: dropdownAnchorEl?.clientWidth }}
@@ -157,8 +184,8 @@ export const Select = (props: SelectProps) => {
               },
             ]}
           >
-            {availableOptions?.length
-              ? availableOptions.map((option) => {
+            {(multiple ? availableOptions : options)?.length
+              ? (multiple ? availableOptions : options).map((option) => {
                 if (typeof option === "string") {
                   return (
                     <div
