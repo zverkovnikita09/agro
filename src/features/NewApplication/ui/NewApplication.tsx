@@ -12,7 +12,7 @@ import { MainLayoutContext } from '@shared/ui/MainLayout';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CloseButton } from '@shared/ui/CloseButton';
 import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
-import { Control, UseFormRegister, UseFormWatch, useForm } from 'react-hook-form';
+import { Control, UseFormRegister, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
 import { ApplicationModel } from '@entities/Application/model/application.model';
 
 interface NewApplicationProps {
@@ -23,9 +23,10 @@ interface NewApplicationContextPros {
   watch: UseFormWatch<ApplicationModel>
   register: UseFormRegister<ApplicationModel>
   control: Control<ApplicationModel, any>
+  setValue: UseFormSetValue<ApplicationModel>
 }
 
-export const NewApplicationContext = createContext<Partial<NewApplicationContextPros>>({})
+export const NewApplicationContext = createContext<NewApplicationContextPros>({} as NewApplicationContextPros)
 
 export const NewApplication = (props: NewApplicationProps) => {
   const { className } = props;
@@ -40,7 +41,7 @@ export const NewApplication = (props: NewApplicationProps) => {
     else navigate("/")
   }
 
-  const { handleSubmit, watch, control, register } = useForm<ApplicationModel>();
+  const { handleSubmit, watch, control, register, setValue } = useForm<ApplicationModel>();
 
   const changeStep = (number: number) => () => setFormStep(number)
 
@@ -86,7 +87,7 @@ export const NewApplication = (props: NewApplicationProps) => {
       <CardContainer className={styles.container}>
         <CloseButton onClick={closeForm} className={styles.closeBtn} />
         <Title size={TitleSize.S}>Новая заявка</Title>
-        <NewApplicationContext.Provider value={{ watch, control, register }}>
+        <NewApplicationContext.Provider value={{ watch, control, register, setValue }}>
           <form className={styles.form} onSubmit={handleSubmit(onSubmit())}>
             {FormContent()}
           </form>

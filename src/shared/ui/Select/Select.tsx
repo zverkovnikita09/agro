@@ -9,6 +9,8 @@ import { ErrorBlock } from "../ErrorBlock";
 import { useToggleDropdown } from "@shared/hook/useToggleDropdown";
 import style from './Select.module.scss'
 import { Text, TextSize } from "../Text";
+import { Input } from "../Input";
+import { ClickAwayListener, Popper } from "@mui/material";
 
 interface OptionType {
   name: string
@@ -24,6 +26,7 @@ interface CommonSelectProps {
   fullWidth?: boolean
   noArrow?: boolean
   togglerClassName?: string;
+  withInputSearch?: boolean;
 }
 
 interface MultipleSelectProps {
@@ -52,13 +55,25 @@ export const Select = (props: SelectProps) => {
     className,
     fullWidth,
     noArrow,
+    withInputSearch,
     togglerClassName,
   } = props
 
   const [, setIsFocused] = useState(false);
-  const [isDropdownOpen, toggleDropdown] = useToggleDropdown();
+  /* const [isDropdownOpen, toggleDropdown] = useToggleDropdown(); */
   const [availableOptions, setAvailableOptions] = useState(options);
-  const elementRef = useRef<HTMLDivElement>(null)
+  const elementRef = useRef<HTMLDivElement>(null);
+  const [inputValue, setInputValue] = useState("");
+
+  const [dropdownAnchorEl, setDropdownAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setDropdownAnchorEl(dropdownAnchorEl ? null : event.currentTarget);
+  };
+
+  const handleClose = () => setDropdownAnchorEl(null);
+
+  const isDropdownOpen = Boolean(dropdownAnchorEl);
 
   const isOptionStringArray = (options: (string | OptionType)[]): options is string[] => {
     return !!(options?.length && typeof options[0] === 'string')
@@ -67,7 +82,7 @@ export const Select = (props: SelectProps) => {
   const addValue = useCallback((selectValue: string) => () => {
     if (multiple) {
       setValue([...(value ?? []), selectValue]);
-      toggleDropdown();
+      handleClose()
       return;
     }
 
@@ -101,32 +116,74 @@ export const Select = (props: SelectProps) => {
   }, [value])
 
   return (
-    <div className={cn(style.select, className,
-      { [style.fullWidth]: fullWidth },
-      { [style.noArrow]: noArrow }
-    )}>
-      {label && <p className={style.label}>{label}</p>}
-      <div
-        className={cn(style.toggler, togglerClassName)}
-        tabIndex={0}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        ref={elementRef}
-        onClick={toggleDropdown}
-      >
-        {!noArrow && <ArrowDown
-          className={cn(style.arrowDown, { [style.rotated]: isDropdownOpen })}
-        />}
-        {!multiple && <Text className={cn(style.togglerText)} size={TextSize.L}>{(valueToShow(value ?? '') || placeholder)}</Text>}
-        {multiple && (value?.length ?
-          (value.map((item) => (
-            <div key={item} className={style.valueItem} onClick={e => e.stopPropagation()}>
-              {valueToShow(item)}
-              <Button onClick={deleteValue(item)}>{/* <IoClose /> */}</Button>
-            </div>
-          )))
-          : placeholder)}
-        <Dropdown
+    <ClickAwayListener onClickAway={handleClose}>
+      <div className={cn(style.select, className,
+        { [style.fullWidth]: fullWidth },
+        { [style.noArrow]: noArrow }
+      )}>
+        {label && <p className={style.label}>{label}</p>}
+        <div
+          className={cn(style.toggler, togglerClassName)}
+          tabIndex={0}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          ref={elementRef}
+          onClick={handleClick}
+        >
+          {withInputSearch && isDropdownOpen && <Input />}
+          {!noArrow && <ArrowDown
+            className={cn(style.arrowDown, { [style.rotated]: isDropdownOpen })}
+          />}
+          {!multiple && <Text className={cn(style.togglerText)} size={TextSize.L}>{(valueToShow(value ?? '') || placeholder)}</Text>}
+          {multiple && (value?.length ?
+            (value.map((item) => (
+              <div key={item} className={style.valueItem} onClick={e => e.stopPropagation()}>
+                {valueToShow(item)}
+                <Button onClick={deleteValue(item)}>{/* <IoClose /> */}</Button>
+              </div>
+            )))
+            : placeholder)}
+          <Popper
+            open={isDropdownOpen}
+            anchorEl={dropdownAnchorEl}
+            className={style.dropdown}
+            style={{ width: dropdownAnchorEl?.clientWidth }}
+            modifiers={[
+              {
+                name: "offset",
+                options: {
+                  offset: [0, 10],
+                },
+              },
+            ]}
+          >
+            {availableOptions?.length
+              ? availableOptions.map((option) => {
+                if (typeof option === "string") {
+                  return (
+                    <div
+                      key={option}
+                      className={cn(style.item, { [style.selected]: option === value })}
+                      onClick={addValue(option)}
+                    >
+                      {option}
+                    </div>
+                  )
+                }
+                return (
+                  <div
+                    key={option.name}
+                    className={cn(style.item, { [style.selected]: option.value === value })}
+                    onClick={addValue(option.value)}
+                  >
+                    {option.name}
+                  </div>
+                )
+              })
+              : <p className={style.text}>Нет доступных элементов</p>
+            }
+          </Popper>
+          {/* <Dropdown
           isOpen={isDropdownOpen}
           onClose={toggleDropdown}
           targetRef={elementRef}
@@ -134,34 +191,11 @@ export const Select = (props: SelectProps) => {
           width="100%"
           className={style.dropdown}
         >
-          {availableOptions?.length
-            ? availableOptions.map((option) => {
-              if (typeof option === "string") {
-                return (
-                  <div
-                    key={option}
-                    className={cn(style.item, { [style.selected]: option === value })}
-                    onClick={addValue(option)}
-                  >
-                    {option}
-                  </div>
-                )
-              }
-              return (
-                <div
-                  key={option.name}
-                  className={cn(style.item, { [style.selected]: option.value === value })}
-                  onClick={addValue(option.value)}
-                >
-                  {option.name}
-                </div>
-              )
-            })
-            : <p className={style.text}>Нет доступных элементов</p>
-          }
-        </Dropdown>
+          
+        </Dropdown> */}
+        </div>
+        {error?.message && <ErrorBlock>{error?.message}</ErrorBlock>}
       </div>
-      {error?.message && <ErrorBlock>{error?.message}</ErrorBlock>}
-    </div>
+    </ClickAwayListener>
   )
 }

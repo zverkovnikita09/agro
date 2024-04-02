@@ -44,11 +44,12 @@
 }
 
 .dropdown {
-  border-radius: 10px;
-  min-height: 58px;
-  padding-block: 8px;
-  cursor: default;
   padding: 10px;
+  overflow: auto;
+  z-index: 9999;
+  border: 1px solid var(--text-color);
+  border-radius: 6px;
+  background-color: var(--white-color);
 }
 
 .valueItem {
@@ -79,6 +80,5 @@
 }
 
 .text {
-  margin-left: 20px;
-  margin-top: 10px;
+  text-align: center;
 }

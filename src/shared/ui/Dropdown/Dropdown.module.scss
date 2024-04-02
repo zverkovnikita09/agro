@@ -3,6 +3,7 @@
   overflow-y: auto;
   z-index: 10;
   padding: 16px;
+  border: 1px solid var(--text-color);
 }
 
 .top {
@@ -15,4 +16,8 @@
 
 .fullWidth {
   width: 100%;
+}
+
+.noBorder {
+  border: none;
 }

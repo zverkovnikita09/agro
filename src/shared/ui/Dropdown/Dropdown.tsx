@@ -1,8 +1,8 @@
 import cn from 'classnames';
-import {PropsWithChildren, RefObject, useLayoutEffect, useRef, useState} from 'react';
-import {ClickAwayListener} from '@mui/base/ClickAwayListener';
-import {useDocumentEvent} from '@shared/hook/useDocumentEvent';
-import {CardContainer} from '../CardContainer';
+import { PropsWithChildren, RefObject, useLayoutEffect, useRef, useState } from 'react';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
+import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
+import { CardContainer } from '../CardContainer';
 import style from './Dropdown.module.scss'
 
 interface SelectDropdownProps {
@@ -14,6 +14,7 @@ interface SelectDropdownProps {
   isOpen: boolean
   onClose: () => void
   fullWidth?: boolean
+  noBorder?: boolean
 }
 
 export const Dropdown = (props: PropsWithChildren<SelectDropdownProps>) => {
@@ -27,6 +28,7 @@ export const Dropdown = (props: PropsWithChildren<SelectDropdownProps>) => {
     isOpen,
     onClose,
     fullWidth,
+    noBorder,
   } = props;
 
   const [verticalPosition, setVerticalPosition] = useState<"top" | "bottom">("top")
@@ -61,8 +63,13 @@ export const Dropdown = (props: PropsWithChildren<SelectDropdownProps>) => {
     <ClickAwayListener onClickAway={onClose}>
       <CardContainer
         ref={dropdownRef}
-        className={cn(style.dropdown, className, style[verticalPosition], {[style.fullWidth]: fullWidth})}
-        style={{[horizontalPosition]: 0, width, maxHeight}}>
+        className={cn(style.dropdown,
+          className,
+          style[verticalPosition],
+          { [style.fullWidth]: fullWidth },
+          { [style.noBorder]: noBorder }
+        )}
+        style={{ [horizontalPosition]: 0, width, maxHeight }}>
         {children}
       </CardContainer>
     </ClickAwayListener>

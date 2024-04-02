@@ -7,6 +7,8 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import { useContext } from 'react'
 import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
+import { useSearchByDadata } from '@shared/hook/useSearchByDadata'
+import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 
 interface FormStepOneProps {
   onCancel: () => void
@@ -14,7 +16,13 @@ interface FormStepOneProps {
 
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
-  const { control, } = useContext(NewApplicationContext)
+  const { control, watch, setValue } = useContext(NewApplicationContext)
+
+  const load_place_name: string = watch('load_place_name');
+
+  const { data: loadPlaceNameAddresses } = useSearchByDadata<{ suggestions: any[] }>({ query: load_place_name, target: 'address', debuonceTime: 700, minQueryLength: 3 });
+  const loadPlaceNameOptions = loadPlaceNameAddresses?.suggestions.map(item => item.value);
+
   return (
     <>
       <div className={styles.inputBlock}>
@@ -60,7 +68,11 @@ export const FormStepOne = (props: FormStepOneProps) => {
         </Text>
         <div className={styles.inputsRow}>
           <div className={styles.inputBlock}>
-            <Input placeholder='Укажите пункт погрузки' />
+            <InputAutocomplete
+              placeholder='Укажите пункт погрузки'
+              value={load_place_name}
+              setValue={(value) => setValue("load_place_name", value)}
+            />
             <Select placeholder='Грузополучатель/терминал выгрузки' options={[]} value={''} setValue={() => { }} />
             <Input placeholder='Экспортер' />
           </div>
