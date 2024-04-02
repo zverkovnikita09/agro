@@ -13,7 +13,7 @@
   user-select: none;
   padding: 15px 54px 15px 20px;
   width: 100%;
-
+  position: relative;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -32,11 +32,26 @@
   color: inherit;
 }
 
+.input{
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding-right: 54px;
+  width: 100%;
+  background-color: var(--white-color);
+  z-index: 1;
+
+  &.noArrow {
+    padding-right: 20px;
+  }
+}
+
 .arrowDown {
   position: absolute;
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 2;
 
   &.rotated {
     transform: translateY(-50%) rotate(180deg);
@@ -50,6 +65,7 @@
   border: 1px solid var(--text-color);
   border-radius: 6px;
   background-color: var(--white-color);
+  max-height: 270px;
 }
 
 .valueItem {

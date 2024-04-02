@@ -4,7 +4,7 @@ import { Calendar } from '@shared/ui/Calendar'
 import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
-import { useContext } from 'react'
+import {useContext, useState} from 'react'
 import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
 import { useSearchByDadata } from '@shared/hook/useSearchByDadata'
@@ -16,12 +16,24 @@ interface FormStepOneProps {
 
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
-  const { control, watch, setValue } = useContext(NewApplicationContext)
+  const { control, watch, setValue } = useContext(NewApplicationContext);
+  const [searchPlace, setSearchPlace] = useState('');
+  const [placeOptions, setPlaceOptions] = useState<string[]>([]);
+  const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
 
   const load_place_name: string = watch('load_place_name');
+  const unload_place_name: string = watch('unload_place_name');
 
-  const { data: loadPlaceNameAddresses } = useSearchByDadata<{ suggestions: any[] }>({ query: load_place_name, target: 'address', debuonceTime: 700, minQueryLength: 3 });
-  const loadPlaceNameOptions = loadPlaceNameAddresses?.suggestions.map(item => item.value);
+  useSearchByDadata<{ suggestions: any[] }>({
+    query: searchPlace,
+    target: 'address',
+    debounceTime: 700,
+    minQueryLength: 3,
+    onSuccess: (data ) => {
+      setPlaceOptions(data?.suggestions.map(item => item.value) ?? []);
+      setIsPlaceOptionsLoading(false);
+    },
+  });
 
   return (
     <>
@@ -68,16 +80,52 @@ export const FormStepOne = (props: FormStepOneProps) => {
         </Text>
         <div className={styles.inputsRow}>
           <div className={styles.inputBlock}>
-            <InputAutocomplete
+            {/*<InputAutocomplete*/}
+            {/*  placeholder='Укажите пункт погрузки'*/}
+            {/*  value={load_place_name}*/}
+            {/*  setValue={(value) => setValue("load_place_name", value)}*/}
+            {/*/>*/}
+            <Select
               placeholder='Укажите пункт погрузки'
+              withInputSearch
+              onSearchInput={value => {
+                if (value.length < 3) {
+                  setPlaceOptions([]);
+                  return;
+                }
+                setIsPlaceOptionsLoading(true);
+                setSearchPlace(value);
+              }}
+              hideOptions={isPlaceOptionsLoading}
+              options={placeOptions}
+              minLengthForOptions={3}
               value={load_place_name}
-              setValue={(value) => setValue("load_place_name", value)}
+              setValue={(value) => setValue('load_place_name', value)}
+              noArrow
             />
+
             <Select placeholder='Грузополучатель/терминал выгрузки' options={[]} value={''} setValue={() => { }} />
             <Input placeholder='Экспортер' />
           </div>
           <div className={styles.inputBlock}>
-            <Input placeholder='Укажите пункт выгрузки' />
+            <Select
+              placeholder='Укажите пункт выгрузки'
+              withInputSearch
+              onSearchInput={value => {
+                if (value.length < 3) {
+                  setPlaceOptions([]);
+                  return;
+                }
+                setIsPlaceOptionsLoading(true);
+                setSearchPlace(value);
+              }}
+              hideOptions={isPlaceOptionsLoading}
+              options={placeOptions}
+              minLengthForOptions={3}
+              value={unload_place_name}
+              setValue={(value) => setValue('unload_place_name', value)}
+              noArrow
+            />
             <Select placeholder='Таймслот' options={[]} value={''} setValue={() => { }} />
           </div>
         </div>
