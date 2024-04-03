@@ -27,6 +27,13 @@
   }
 }
 
+.error{
+  color: var(--error-color);
+  .inputCell {
+    border-color: var(--error-color);
+  }
+}
+
 @keyframes blink {
   0%,
   100% {
