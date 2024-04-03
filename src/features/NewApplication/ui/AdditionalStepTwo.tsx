@@ -7,6 +7,8 @@ import ArrowLeft from '@images/arrow-full-left.svg'
 import { MultiCheckbox, NestedCheckbox, ControlCheckbox } from '@shared/ui/MultiCheckbox'
 import { useForm } from 'react-hook-form'
 import { RadioButton } from '@shared/ui/RadioButton'
+import { useContext } from 'react'
+import { NewApplicationContext } from './NewApplication'
 
 interface AdditionalStepOneProps {
   prevStep: () => void
@@ -16,10 +18,17 @@ interface AdditionalStepOneProps {
 export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
   const { toMainPart, prevStep } = props;
 
-  const { setValue, watch } = useForm();
+  const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
-  const loadingOnSaturday = watch("loadingOnSaturday");
-  const loadingOnSunday = watch("loadingOnSunday");
+  /* const cargo_price = watch('unl') */ // тип выгрузки
+  const load_place = watch('work_time') // время
+  const approach = watch('approach') // подъезд
+  const is_load_in_weekend = watch("is_load_in_weekend"); //грузят ли в выходные
+  const clarification_of_the_weekend = watch("clarification_of_the_weekend") //Сб Вс или СБ и ВС
+  const charter = watch("charter")
+
+  /*   const loadingOnSaturday = watch("loadingOnSaturday");
+  const loadingOnSunday = watch("loadingOnSunday"); */
 
   return (
     <>
@@ -53,7 +62,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           <Input placeholder='Ограничение по высоте' />
         </div>
         <div className={styles.inputsRow}>
-          <MultiCheckbox hideNested>
+          {/* <MultiCheckbox hideNested>
             <ControlCheckbox>Все</ControlCheckbox>
             <NestedCheckbox
               checked={loadingOnSaturday}
@@ -70,7 +79,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
             >
               ВС
             </NestedCheckbox>
-          </MultiCheckbox>
+          </MultiCheckbox> */}
         </div>
       </div>
       <div className={styles.inputBlock}>

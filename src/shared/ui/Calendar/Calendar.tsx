@@ -172,7 +172,7 @@ export const Calendar = (props: CalendarProps) => {
           openPickerIcon: CalendarIcon,
         }}
         slotProps={{
-          textField: { InputProps: { placeholder, classes: { input: styles.input } } },
+          textField: { InputProps: { placeholder } },
           desktopPaper: { style: { marginTop: '8px', borderRadius: '12px' }, className: styles.popper },
           mobilePaper: { style: { margin: '0' } },
           popper: {

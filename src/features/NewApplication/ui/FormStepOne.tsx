@@ -24,6 +24,11 @@ export const FormStepOne = (props: FormStepOneProps) => {
   const load_place_name: string = watch('load_place_name');
   const unload_place_name: string = watch('unload_place_name');
 
+  const sdfsdf = watch('terminal_address') //терминал выгрузки
+  const timeslot = watch('timeslot')
+
+  const sfgdfgh = watch('exporter_name'); //экспортер
+
   useSearchByDadata<{ suggestions: any[] }>({
     query: searchPlace,
     target: 'address',

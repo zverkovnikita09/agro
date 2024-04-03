@@ -3,6 +3,8 @@ import styles from './NewApplication.module.scss'
 import { Input } from '@shared/ui/Input'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import ArrowLeft from '@images/arrow-full-left.svg'
+import { useContext } from 'react'
+import { NewApplicationContext } from './NewApplication'
 
 interface AdditionalStepOneProps {
   toMainPart: () => void
@@ -10,6 +12,13 @@ interface AdditionalStepOneProps {
 
 export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
   const { toMainPart } = props;
+
+  const { control, watch, setValue, register } = useContext(NewApplicationContext);
+
+  const cargo_price = watch('cargo_price') // стоимость груза
+  const load_place = watch('load_place') // где происходит погрузка
+  const approach = watch('approach') // подъезд
+
 
   return (
     <>

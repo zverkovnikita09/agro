@@ -2,11 +2,9 @@ import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
 import ArrowDown from "@images/chevron-down.svg";
 import { Button } from "@shared/ui/Button";
 /* import { IoClose } from "react-icons/io5"; */
-import { Dropdown } from "@shared/ui/Dropdown";
 import cn from 'classnames'
 import { FieldError } from "react-hook-form";
 import { ErrorBlock } from "../ErrorBlock";
-import { useToggleDropdown } from "@shared/hook/useToggleDropdown";
 import style from './Select.module.scss'
 import { Text, TextSize } from "../Text";
 import { Input } from "../Input";
@@ -65,10 +63,7 @@ export const Select = (props: SelectProps) => {
     hideOptions,
   } = props
 
-  console.log(value);
-
   const [, setIsFocused] = useState(false);
-  /* const [isDropdownOpen, toggleDropdown] = useToggleDropdown(); */
   const [availableOptions, setAvailableOptions] = useState(options);
   const elementRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState("");

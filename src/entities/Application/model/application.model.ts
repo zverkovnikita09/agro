@@ -46,4 +46,5 @@ export interface ApplicationModel {
   description?: string;
   load_types: string[];
   order_number: number;
+  charter?: string;
 }

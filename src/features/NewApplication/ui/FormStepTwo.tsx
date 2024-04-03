@@ -8,6 +8,8 @@ import { MultiCheckbox } from '@shared/ui/MultiCheckbox'
 import { ControlCheckbox } from '@shared/ui/MultiCheckbox/ControlCheckbox'
 import { useForm } from 'react-hook-form'
 import { NestedCheckbox } from '@shared/ui/MultiCheckbox/NestedCheckbox'
+import { useContext } from 'react'
+import { NewApplicationContext } from './NewApplication'
 
 interface FormStepTwoProps {
   prevStep: () => void
@@ -15,10 +17,30 @@ interface FormStepTwoProps {
 
 export const FormStepTwo = (props: FormStepTwoProps) => {
   const { prevStep } = props;
-  const { setValue, watch } = useForm();
+  const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
-  const any = watch("any");
-  const scepky = watch("scepky");
+  const crop = watch('crop') // груз
+  const volume = watch('volume') //объем
+  const tariff = watch('tariff') //тариф без ндс
+  const nds_percent = watch('nds_percent');
+
+  const distance = watch('distance'); //расстояние
+  const daily_load_rate = watch('daily_load_rate'); //суточ норма погрузки
+
+  const load_types = watch("load_types"); //массив id (чекбоксы)
+
+  const load_method = watch("load_method"); //способ погрузки
+
+  const scale_lenght = watch("scale_lenght"); //длина весов
+
+  const height_limit = watch("height_limit");
+
+  const tolerance_to_the_norm = watch("tolerance_to_the_norm") //допуск к норме
+
+  const is_overload = watch("is_overload") //возможность перегруза
+
+/*   const any = watch("any");
+  const scepky = watch("scepky"); */
 
   return (
     <>
@@ -50,9 +72,9 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
           Детали погрузки
         </Text>
         <div className={styles.inputsRow}>
-          <Checkbox checked={scepky} setChecked={setValue} name='scepky'>Сцепки</Checkbox>
+          {/* <Checkbox checked={scepky} setChecked={setValue} name='scepky'>Сцепки</Checkbox>
           <Checkbox checked={any} setChecked={setValue} name='any'>Полуприцеп</Checkbox>
-          <Checkbox checked={scepky} setChecked={setValue} name='scepky'>Тонар</Checkbox>
+          <Checkbox checked={scepky} setChecked={setValue} name='scepky'>Тонар</Checkbox> */}
         </div>
         <div className={styles.inputsRow}>
           <Select placeholder='Способ погрузки' options={[]} value={''} setValue={() => { }} />

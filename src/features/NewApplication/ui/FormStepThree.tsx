@@ -5,6 +5,8 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import { TextArea } from '@shared/ui/TextArea'
 import BurgerIcon from '@images/two-lines-burger.svg'
 import { Select } from '@shared/ui/Select'
+import { useContext } from 'react'
+import { NewApplicationContext } from './NewApplication'
 
 interface FormStepThreeProps {
   prevStep: () => void
@@ -13,6 +15,15 @@ interface FormStepThreeProps {
 
 export const FormStepThree = (props: FormStepThreeProps) => {
   const { prevStep, toAdditional } = props;
+  const { control, watch, setValue, register } = useContext(NewApplicationContext);
+
+  const outage_begin = watch('outage_begin') // начало простоя
+  const outage_price = watch('outage_price') //цена простоя
+  const contact_name = watch('contact_name') //контакт
+  const contact_phone = watch('contact_phone') //телефон
+
+  const description = watch('description') //примечание
+
   return (
     <>
       <div className={styles.inputBlock}>
