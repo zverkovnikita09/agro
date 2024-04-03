@@ -157,7 +157,12 @@ export const Calendar = (props: CalendarProps) => {
             border: 'none'
           },
           "& .MuiInputBase-input": {
-            padding: '15px 20px'
+            padding: '15px 20px',
+            "&::placeholder": {
+              fontFamily: 'Gilroy, sans-serif',
+              color: 'var(--text-color) !important',
+              opacity: '1 !important',
+            }
           },
           "& .MuiIconButton-root": {
             "&:hover": {
