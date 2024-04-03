@@ -1,15 +1,15 @@
 import cn from 'classnames';
 import styles from './RegistrationForm.module.scss'
-import {Input} from '@shared/ui/Input';
-import {useForm} from 'react-hook-form';
-import {Title} from '@shared/ui/Title';
-import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button';
-import {useSendData} from '@shared/hook/useSendData';
-import {useEffect} from 'react';
-import {useDebounce} from '@shared/hook/useDebounce';
-import {useLocalStorage} from '@shared/hook/useLocalStorage';
-import {LSKeys} from "@shared/lib/globalVariables";
-import {RegistrationFormState} from '../model/registrationForm.model';
+import { Input } from '@shared/ui/Input';
+import { Controller, useForm } from 'react-hook-form';
+import { Title } from '@shared/ui/Title';
+import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
+import { useSendData } from '@shared/hook/useSendData';
+import { useEffect } from 'react';
+import { useDebounce } from '@shared/hook/useDebounce';
+import { useLocalStorage } from '@shared/hook/useLocalStorage';
+import { LSKeys } from "@shared/lib/globalVariables";
+import { RegistrationFormState } from '../model/registrationForm.model';
 
 interface RegistrationFormProps {
   className?: string;
@@ -17,10 +17,10 @@ interface RegistrationFormProps {
 }
 
 export const RegistrationForm = (props: RegistrationFormProps) => {
-  const {className, nextStep} = props;
+  const { className, nextStep } = props;
   const [, setPhoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
 
-  const {register, formState: {errors}, handleSubmit, getValues} = useForm<RegistrationFormState>();
+  const { formState: { errors }, handleSubmit, getValues, control } = useForm<RegistrationFormState>({ defaultValues: { phone_number: '' } });
 
   /* const { handleSendData: getCompaniesByInn } = useSendData(
     {
@@ -34,48 +34,37 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
       type: "JSON",
     }) */
 
-  const {handleSendData, isSending} = useSendData({
-    url: "/api/v1/login", onSuccess: ({data: {user: {code}}}) => {
+  const { handleSendData, isSending } = useSendData({
+    url: "/api/v1/login", onSuccess: ({ data: { user: { code } } }) => {
       setPhoneNumber(getValues("phone_number"))
       alert(code)
       nextStep?.()
     }
   })
 
-  /* const inn: string = watch('inn');
-
-  const deb = useDebounce(() => getCompaniesByInn({ query: inn, count: 20 }), 300)
-
-  useEffect(() => {
-    if (typeof inn !== "undefined") {
-      deb()
-    }
-  }, [inn]) */
-
   return (
     <form className={cn(styles.registrationForm, className)} onSubmit={handleSubmit(handleSendData)}>
       <Title>Вход</Title>
-      <p className={styles.text}>Сельхоз-хозяйственные грузоперевозки <br/> по всей России</p>
-      {/* <Input
-        placeholder='Введите ваш ИНН'
-        {...register("inn", { required: true })}
-        error={errors?.phone?.message as string}
-        type='tel'
-        mask='999999999999'
-        maskChar={null}
-      /> */}
-      <Input
-        placeholder='Ваш номер телефона'
-        mask="+7 (999) 999-99-99"
-        type='tel'
-        {...register('phone_number', {
-          required: 'Необходимо заполнить номер телефона.',
-          pattern: {
+      <p className={styles.text}>Сельхоз-хозяйственные грузоперевозки <br /> по всей России</p>
+      <Controller
+        name="phone_number"
+        control={control}
+        rules={{
+          required: 'Необходимо заполнить номер телефона.', pattern: {
             value: /^[^_]*$/,
             message: 'Необходимо заполнить номер телефона.'
           }
-        })}
-        error={errors?.phone_number?.message as string}
+        }}
+        render={({ formState: { errors }, field: { value, onChange } }) => (
+          <Input
+            placeholder='Ваш номер телефона'
+            mask="+7 (999) 999-99-99"
+            type='tel'
+            value={value}
+            onChange={onChange}
+            error={errors?.phone_number?.message as string}
+          />
+        )}
       />
       <Button
         className={styles.submitBtn}

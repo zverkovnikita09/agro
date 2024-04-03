@@ -61,7 +61,7 @@
   border: none;
   background-color: transparent;
 
-  &.focus ~ .togglerText {
+  &.focus~.togglerText {
     display: none;
   }
 
@@ -88,6 +88,7 @@
   left: 19px;
   transform: translateY(-50%);
   cursor: pointer;
+  transition: 0.1s;
 
   &.fixed {
     font-size: 12px;
@@ -96,7 +97,14 @@
   }
 
   &.focused {
-    display: none;
+    font-size: 12px;
+    top: 5px;
+    transform: translateY(0);
+
+    &.withInput {
+      display: none;
+      transition: 0s;
+    }
   }
 }
 

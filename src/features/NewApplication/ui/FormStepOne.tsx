@@ -17,26 +17,45 @@ interface FormStepOneProps {
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
   const { control, watch, setValue, register } = useContext(NewApplicationContext);
-  const [searchPlace, setSearchPlace] = useState('');
-  const [placeOptions, setPlaceOptions] = useState<string[]>([]);
-  const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
 
   const load_place_name: string = watch('load_place_name');
   const unload_place_name: string = watch('unload_place_name');
 
-  const sdfsdf = watch('terminal_address') //терминал выгрузки
-  const timeslot = watch('timeslot')
+  const [searchPlace, setSearchPlace] = useState('');
+  const [placeOptions, setPlaceOptions] = useState<string[]>([]);
+  const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
+  const minPlaceQueryLength = 3;
 
-  const sfgdfgh = watch('exporter_name'); //экспортер
+  const terminal_name = watch('terminal_name')
+  const exporter_name = watch('exporter_name');
+
+  const [searchCompany, setSearchCompany] = useState('');
+  const [companyOptions, setCompanyOptions] = useState<string[]>([]);
+  const [isCompanyOptionsLoading, setIsCompanyOptionsLoading] = useState(false);
+  const minCompanyQueryLength = 2;
+
+  const timeslot = watch('timeslot')
+  const timeslotOptions = ['Целевой', 'В общем доступе']
 
   useSearchByDadata<{ suggestions: any[] }>({
     query: searchPlace,
     target: 'address',
     debounceTime: 700,
-    minQueryLength: 3,
+    minQueryLength: minPlaceQueryLength,
     onSuccess: (data) => {
       setPlaceOptions(data?.suggestions.map(item => item.value) ?? []);
       setIsPlaceOptionsLoading(false);
+    },
+  });
+
+  useSearchByDadata<{ suggestions: any[] }>({
+    query: searchCompany,
+    target: 'party',
+    debounceTime: 700,
+    minQueryLength: minCompanyQueryLength,
+    onSuccess: (data) => {
+      setCompanyOptions(data?.suggestions.map(item => item.value) ?? []);
+      setIsCompanyOptionsLoading(false);
     },
   });
 
@@ -85,16 +104,11 @@ export const FormStepOne = (props: FormStepOneProps) => {
         </Text>
         <div className={styles.inputsRow}>
           <div className={styles.inputBlock}>
-            {/*<InputAutocomplete*/}
-            {/*  placeholder='Укажите пункт погрузки'*/}
-            {/*  value={load_place_name}*/}
-            {/*  setValue={(value) => setValue("load_place_name", value)}*/}
-            {/*/>*/}
             <Select
               label='Укажите пункт погрузки'
               withInputSearch
               onSearchInput={value => {
-                if (value.length < 3) {
+                if (value.length < minPlaceQueryLength) {
                   setPlaceOptions([]);
                   return;
                 }
@@ -103,21 +117,54 @@ export const FormStepOne = (props: FormStepOneProps) => {
               }}
               hideOptions={isPlaceOptionsLoading}
               options={placeOptions}
-              minLengthForOptions={3}
+              minLengthForOptions={minPlaceQueryLength}
               value={load_place_name}
               setValue={(value) => setValue('load_place_name', value)}
               noArrow
             />
-
-            <Select placeholder='Грузополучатель/терминал выгрузки' options={[]} value={''} setValue={() => { }} />
-            <Input {...register("approach")} label='Экспортер' />
+            <Select
+              label='Грузополучатель/терминал выгрузки'
+              withInputSearch
+              onSearchInput={value => {
+                if (value.length < minCompanyQueryLength) {
+                  setCompanyOptions([]);
+                  return;
+                }
+                setIsCompanyOptionsLoading(true);
+                setSearchCompany(value);
+              }}
+              hideOptions={isCompanyOptionsLoading}
+              options={companyOptions}
+              minLengthForOptions={minCompanyQueryLength}
+              value={terminal_name}
+              setValue={(value) => setValue('terminal_name', value)}
+              noArrow
+            />
+            <Select
+              label='Экспортер'
+              withInputSearch
+              onSearchInput={value => {
+                if (value.length < minCompanyQueryLength) {
+                  setCompanyOptions([]);
+                  return;
+                }
+                setIsCompanyOptionsLoading(true);
+                setSearchCompany(value);
+              }}
+              hideOptions={isCompanyOptionsLoading}
+              options={companyOptions}
+              minLengthForOptions={minCompanyQueryLength}
+              value={exporter_name}
+              setValue={(value) => setValue('exporter_name', value)}
+              noArrow
+            />
           </div>
           <div className={styles.inputBlock}>
             <Select
               label='Укажите пункт выгрузки'
               withInputSearch
               onSearchInput={value => {
-                if (value.length < 3) {
+                if (value.length < minPlaceQueryLength) {
                   setPlaceOptions([]);
                   return;
                 }
@@ -126,12 +173,17 @@ export const FormStepOne = (props: FormStepOneProps) => {
               }}
               hideOptions={isPlaceOptionsLoading}
               options={placeOptions}
-              minLengthForOptions={3}
+              minLengthForOptions={minPlaceQueryLength}
               value={unload_place_name}
               setValue={(value) => setValue('unload_place_name', value)}
               noArrow
             />
-            <Select placeholder='Таймслот' options={[]} value={''} setValue={() => { }} />
+            <Select
+              label='Таймслот'
+              options={timeslotOptions}
+              value={timeslot}
+              setValue={(value) => setValue('timeslot', value)}
+            />
           </div>
         </div>
       </div>

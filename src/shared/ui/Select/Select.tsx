@@ -168,7 +168,10 @@ export const Select = (props: SelectProps) => {
           {label &&
             <label className={cn(style.label,
               { [style.fixed]: (typeof value === 'string' ? value : value?.length) },
-              { [style.focused]: isDropdownOpen })}>
+              { [style.focused]: isDropdownOpen },
+              { [style.withInput]: withInputSearch}
+            )}
+            >
               {label}
             </label>
           }
