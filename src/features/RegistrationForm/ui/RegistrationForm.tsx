@@ -19,6 +19,7 @@ interface RegistrationFormProps {
 export const RegistrationForm = (props: RegistrationFormProps) => {
   const { className, nextStep } = props;
   const [, setPhoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
+  const [timerTime, setTimerTime] = useLocalStorage(LSKeys.TIMER_STATE, null);
 
   const { formState: { errors }, handleSubmit, getValues, control } = useForm<RegistrationFormState>({ defaultValues: { phone_number: '' } });
 
@@ -38,6 +39,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
     url: "/api/v1/login", onSuccess: ({ data: { user: { code } } }) => {
       setPhoneNumber(getValues("phone_number"))
       alert(code)
+      setTimerTime(Date.now() + 30000)
       nextStep?.()
     }
   })
