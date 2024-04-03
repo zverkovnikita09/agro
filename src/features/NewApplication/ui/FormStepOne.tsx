@@ -4,7 +4,7 @@ import { Calendar } from '@shared/ui/Calendar'
 import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
-import {useContext, useState} from 'react'
+import { useContext, useState } from 'react'
 import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
 import { useSearchByDadata } from '@shared/hook/useSearchByDadata'
@@ -16,7 +16,7 @@ interface FormStepOneProps {
 
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
-  const { control, watch, setValue } = useContext(NewApplicationContext);
+  const { control, watch, setValue, register } = useContext(NewApplicationContext);
   const [searchPlace, setSearchPlace] = useState('');
   const [placeOptions, setPlaceOptions] = useState<string[]>([]);
   const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
@@ -29,7 +29,7 @@ export const FormStepOne = (props: FormStepOneProps) => {
     target: 'address',
     debounceTime: 700,
     minQueryLength: 3,
-    onSuccess: (data ) => {
+    onSuccess: (data) => {
       setPlaceOptions(data?.suggestions.map(item => item.value) ?? []);
       setIsPlaceOptionsLoading(false);
     },
@@ -86,7 +86,7 @@ export const FormStepOne = (props: FormStepOneProps) => {
             {/*  setValue={(value) => setValue("load_place_name", value)}*/}
             {/*/>*/}
             <Select
-              placeholder='Укажите пункт погрузки'
+              label='Укажите пункт погрузки'
               withInputSearch
               onSearchInput={value => {
                 if (value.length < 3) {
@@ -105,11 +105,11 @@ export const FormStepOne = (props: FormStepOneProps) => {
             />
 
             <Select placeholder='Грузополучатель/терминал выгрузки' options={[]} value={''} setValue={() => { }} />
-            <Input placeholder='Экспортер' />
+            <Input {...register("approach")} label='Экспортер' />
           </div>
           <div className={styles.inputBlock}>
             <Select
-              placeholder='Укажите пункт выгрузки'
+              label='Укажите пункт выгрузки'
               withInputSearch
               onSearchInput={value => {
                 if (value.length < 3) {

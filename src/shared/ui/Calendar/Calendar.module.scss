@@ -3,6 +3,17 @@
   width: 100%;
 }
 
+.input {
+  &::-webkit-input-placeholder {
+    color: var(--text-color) !important;
+  }
+
+  &::-moz-placeholder {
+    color: var(--text-color) !important;
+    opacity: 1 !important;
+  }
+}
+
 .popper {
   transition: 0s !important;
 }

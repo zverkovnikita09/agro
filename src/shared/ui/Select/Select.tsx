@@ -1,4 +1,4 @@
-import {ChangeEvent, useCallback, useEffect, useRef, useState} from "react"
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
 import ArrowDown from "@images/chevron-down.svg";
 import { Button } from "@shared/ui/Button";
 /* import { IoClose } from "react-icons/io5"; */
@@ -65,6 +65,8 @@ export const Select = (props: SelectProps) => {
     hideOptions,
   } = props
 
+  console.log(value);
+
   const [, setIsFocused] = useState(false);
   /* const [isDropdownOpen, toggleDropdown] = useToggleDropdown(); */
   const [availableOptions, setAvailableOptions] = useState(options);
@@ -129,7 +131,11 @@ export const Select = (props: SelectProps) => {
     setInputValue(e.target.value);
     onSearchInput?.(e.target.value);
   }
-  console.log(value)
+
+  useEffect(() => {
+    setInputValue(value ? typeof value === "string" ? value : value?.join("") : "")
+  }, [isDropdownOpen])
+
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div className={cn(style.select, className,
@@ -139,25 +145,38 @@ export const Select = (props: SelectProps) => {
         {withInputSearch && isDropdownOpen &&
           <Input
             className={cn(style.input, { [style.noArrow]: noArrow })}
+            wrapperClassName={style.inputWrapper}
             inputAutoFocus
             value={inputValue}
             onChange={handleInputChange}
             autoComplete={"off"}
-            defaultValue={value}
+            label={label}
+            fixLabel={typeof value === "string" ? !!value : !!value?.length}
             onFocus={() => {
               if (typeof value === 'string' && value) onSearchInput?.(value);
             }}
           />
         }
         <div
-          className={cn(style.toggler, togglerClassName)}
+          className={cn(style.toggler,
+            togglerClassName,
+            { [style.withInput]: withInputSearch },
+            { [style.withLabel]: label },
+            { [style.hideValue]: withInputSearch && isDropdownOpen }
+          )}
           tabIndex={0}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           ref={elementRef}
           onClick={handleClick}
         >
-
+          {label &&
+            <label className={cn(style.label,
+              { [style.fixed]: (typeof value === 'string' ? value : value?.length) },
+              { [style.focused]: isDropdownOpen })}>
+              {label}
+            </label>
+          }
           {!noArrow && <ArrowDown
             className={cn(style.arrowDown, { [style.rotated]: isDropdownOpen })}
           />}
@@ -171,7 +190,7 @@ export const Select = (props: SelectProps) => {
             )))
             : placeholder)}
           <Popper
-            open={isDropdownOpen && !hideOptions && (withInputSearch ? inputValue.length >= minLengthForOptions : true) }
+            open={isDropdownOpen && !hideOptions && (withInputSearch ? inputValue.length >= minLengthForOptions : true)}
             anchorEl={dropdownAnchorEl}
             className={style.dropdown}
             style={{ width: dropdownAnchorEl?.clientWidth }}
@@ -210,16 +229,6 @@ export const Select = (props: SelectProps) => {
               : <p className={style.text}>Нет доступных элементов</p>
             }
           </Popper>
-          {/* <Dropdown
-          isOpen={isDropdownOpen}
-          onClose={toggleDropdown}
-          targetRef={elementRef}
-          horizontalPosition="left"
-          width="100%"
-          className={style.dropdown}
-        >
-          
-        </Dropdown> */}
         </div>
         {error?.message && <ErrorBlock>{error?.message}</ErrorBlock>}
       </div>

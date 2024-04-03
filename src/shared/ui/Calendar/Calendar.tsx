@@ -46,7 +46,7 @@ const popperSx = {
   },
   "& .MuiDayCalendar-weekContainer": {
     margin: '10px 0',
-    "&[aria-rowindex='1']":{
+    "&[aria-rowindex='1']": {
       marginTop: '1px'
     },
     gap: '10px'
@@ -172,7 +172,7 @@ export const Calendar = (props: CalendarProps) => {
           openPickerIcon: CalendarIcon,
         }}
         slotProps={{
-          textField: { InputProps: { placeholder } },
+          textField: { InputProps: { placeholder, classes: { input: styles.input } } },
           desktopPaper: { style: { marginTop: '8px', borderRadius: '12px' }, className: styles.popper },
           mobilePaper: { style: { margin: '0' } },
           popper: {

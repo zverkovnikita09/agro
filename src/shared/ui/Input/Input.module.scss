@@ -11,13 +11,41 @@
         box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 6px #ce8483;
       }
     }
+
+    /* .label {
+      color: var(--error-color);
+    } */
+  }
+
+  &.focused .label {
+    font-size: 12px;
+    top: 6px;
+    transform: translateY(0);
   }
 }
 
+.inputContainer {
+  width: 100%;
+  position: relative;
+  height: 100%;
+}
+
 .label {
-  margin-bottom: 12px;
-  font-weight: 600;
+  position: absolute;
   display: block;
+  z-index: 1;
+  font-size: 16px;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  cursor: text;
+  transition: 0.1s;
+
+  &.fixed {
+    font-size: 12px;
+    top: 6px;
+    transform: translateY(0);
+  }
 }
 
 .textField {
@@ -27,9 +55,14 @@
   border: 1px solid var(--text-color);
   font-size: 16px;
   line-height: 135%;
+  height: 100%;
 
   &:focus {
     outline: none;
+  }
+
+  &.withLabel {
+    padding-block: 24px 6px;
   }
 
   &.withSearchIcon {
