@@ -6,12 +6,11 @@ import {Accordion} from "@shared/ui/Accordion";
 import {InputRange} from "@shared/ui/InputRange";
 import {CardContainer} from "@shared/ui/CardContainer";
 import {useForm} from "react-hook-form";
-import {Select} from "@shared/ui/Select";
-import {Link, useLocation} from "react-router-dom";
-import {RouterPaths} from "@src/app/router";
+import {Select, SelectTheme} from "@shared/ui/Select";
+import {useLocation} from "react-router-dom";
 import {Checkbox} from "@shared/ui/Checkbox";
 import {RadioButton} from "@shared/ui/RadioButton";
-import {Input} from "@shared/ui/Input";
+import {Input, InputTheme} from "@shared/ui/Input";
 import {ControlCheckbox, MultiCheckbox, NestedCheckbox} from "@shared/ui/MultiCheckbox";
 import {useEffect} from "react";
 
@@ -60,12 +59,12 @@ export const Filters = (props: FiltersProps) => {
           />
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Область погрузки'}>
-          <Select placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => {}}/>
-          <Select placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => {}}/>
+          <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => {}}/>
+          <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => {}}/>
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Область выгрузки'}>
-          <Select placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => {}}/>
-          <Select placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => {}}/>
+          <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => {}}/>
+          <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => {}}/>
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Отображать новые территории'}>
           <RadioButton>Да</RadioButton>
@@ -80,8 +79,8 @@ export const Filters = (props: FiltersProps) => {
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Стоимость перевозки'}>
           <div className={styles.inputRow}>
-            <Input placeholder='От' />
-            <Input placeholder='До' />
+            <Input theme={InputTheme.FILTERS} placeholder='От' />
+            <Input theme={InputTheme.FILTERS} placeholder='До' />
           </div>
         </Accordion>
         <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Отображать цену (НДС/б.НДС)'}>
@@ -150,10 +149,10 @@ export const Filters = (props: FiltersProps) => {
           <RadioButton>Нет</RadioButton>
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Длина весов (не менее) м'}>
-          <Input placeholder='Укажите длину' />
+          <Input theme={InputTheme.FILTERS} placeholder='Укажите длину' />
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Ограничение по высоте (не менее) м'}>
-          <Input placeholder='Укажите длину' />
+          <Input theme={InputTheme.FILTERS} placeholder='Укажите длину' />
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Дополнительные фильтры'}>
           <Accordion className={styles.accordion} accordionTitle={'Тип выгрузки'}>

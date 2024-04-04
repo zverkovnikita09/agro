@@ -53,10 +53,10 @@ export const InputRange = (props: InputRangeProps) => {
         step={step}
       />
       <div className={styles.textContainer}>
-        <Text size={TextSize.ML} weight={TextWeight.MEDIUM}>
+        <Text size={TextSize.L} weight={TextWeight.MEDIUM}>
           {prevValueTextFrom} {from} {units}
         </Text>
-        <Text size={TextSize.ML} weight={TextWeight.MEDIUM}>
+        <Text size={TextSize.L} weight={TextWeight.MEDIUM}>
           {prevValueTextTo} {to} {units}
         </Text>
       </div>
