@@ -40,6 +40,12 @@
   gap: 16px;
 }
 
+.inputsThreeRow {
+  display: grid;
+  grid-template-columns: repeat(3, calc(33% - 8px));
+  gap: 16px;
+}
+
 .inputBlock {
   display: flex;
   flex-direction: column;
@@ -67,4 +73,8 @@
 
 .nestedCheckbox {
   margin-left: auto;
+}
+
+.additionalText {
+  margin-top: 8px;
 }

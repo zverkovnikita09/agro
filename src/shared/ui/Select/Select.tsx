@@ -3,7 +3,6 @@ import ArrowDown from "@images/chevron-down.svg";
 import { Button } from "@shared/ui/Button";
 /* import { IoClose } from "react-icons/io5"; */
 import cn from 'classnames'
-import { FieldError } from "react-hook-form";
 import { ErrorBlock } from "../ErrorBlock";
 import style from './Select.module.scss'
 import { Text, TextSize } from "../Text";
@@ -18,7 +17,7 @@ interface OptionType {
 interface CommonSelectProps {
   options: (string | OptionType)[]
   placeholder?: string
-  error?: FieldError
+  error?: string
   label?: string
   className?: string
   fullWidth?: boolean
@@ -157,7 +156,8 @@ export const Select = (props: SelectProps) => {
             togglerClassName,
             { [style.withInput]: withInputSearch },
             { [style.withLabel]: label },
-            { [style.hideValue]: withInputSearch && isDropdownOpen }
+            { [style.hideValue]: withInputSearch && isDropdownOpen },
+            { [style.error]: error }
           )}
           tabIndex={0}
           onFocus={() => setIsFocused(true)}
@@ -169,7 +169,7 @@ export const Select = (props: SelectProps) => {
             <label className={cn(style.label,
               { [style.fixed]: (typeof value === 'string' ? value : value?.length) },
               { [style.focused]: isDropdownOpen },
-              { [style.withInput]: withInputSearch}
+              { [style.withInput]: withInputSearch }
             )}
             >
               {label}
@@ -228,7 +228,7 @@ export const Select = (props: SelectProps) => {
             }
           </Popper>
         </div>
-        {error?.message && <ErrorBlock>{error?.message}</ErrorBlock>}
+        {error && <ErrorBlock>{error}</ErrorBlock>}
       </div>
     </ClickAwayListener>
   )

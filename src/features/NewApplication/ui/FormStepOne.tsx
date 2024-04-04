@@ -16,25 +16,18 @@ interface FormStepOneProps {
 
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
-  const { control, watch, setValue, register } = useContext(NewApplicationContext);
-
-  const load_place_name: string = watch('load_place_name');
-  const unload_place_name: string = watch('unload_place_name');
+  const { control } = useContext(NewApplicationContext);
 
   const [searchPlace, setSearchPlace] = useState('');
   const [placeOptions, setPlaceOptions] = useState<string[]>([]);
   const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
   const minPlaceQueryLength = 3;
 
-  const terminal_name = watch('terminal_name')
-  const exporter_name = watch('exporter_name');
-
   const [searchCompany, setSearchCompany] = useState('');
   const [companyOptions, setCompanyOptions] = useState<string[]>([]);
   const [isCompanyOptionsLoading, setIsCompanyOptionsLoading] = useState(false);
   const minCompanyQueryLength = 2;
 
-  const timeslot = watch('timeslot')
   const timeslotOptions = ['Целевой', 'В общем доступе']
 
   useSearchByDadata<{ suggestions: any[] }>({
@@ -102,90 +95,130 @@ export const FormStepOne = (props: FormStepOneProps) => {
         >
           Маршрут перевозки
         </Text>
-        <div className={styles.inputsRow}>
-          <div className={styles.inputBlock}>
-            <Select
-              label='Укажите пункт погрузки'
-              withInputSearch
-              onSearchInput={value => {
-                if (value.length < minPlaceQueryLength) {
-                  setPlaceOptions([]);
-                  return;
-                }
-                setIsPlaceOptionsLoading(true);
-                setSearchPlace(value);
-              }}
-              hideOptions={isPlaceOptionsLoading}
-              options={placeOptions}
-              minLengthForOptions={minPlaceQueryLength}
-              value={load_place_name}
-              setValue={(value) => setValue('load_place_name', value)}
-              noArrow
+        <div className={styles.inputBlock}>
+          <div className={styles.inputsRow}>
+            <Controller
+              name="load_place_name"
+              control={control}
+              rules={{ required: "Поле обязательно к заполнению" }}
+              render={({ field: { value, name, onChange }, formState: { errors } }) => (
+                <Select
+                  label='Укажите пункт погрузки'
+                  withInputSearch
+                  onSearchInput={(value) => {
+                    if (value.length < minPlaceQueryLength) {
+                      setPlaceOptions([]);
+                      return;
+                    }
+                    setIsPlaceOptionsLoading(true);
+                    setSearchPlace(value);
+                  }}
+                  hideOptions={isPlaceOptionsLoading}
+                  options={placeOptions}
+                  minLengthForOptions={minPlaceQueryLength}
+                  value={value}
+                  setValue={onChange}
+                  noArrow
+                  error={errors[name]?.message as string}
+                />
+              )}
             />
-            <Select
-              label='Грузополучатель/терминал выгрузки'
-              withInputSearch
-              onSearchInput={value => {
-                if (value.length < minCompanyQueryLength) {
-                  setCompanyOptions([]);
-                  return;
-                }
-                setIsCompanyOptionsLoading(true);
-                setSearchCompany(value);
-              }}
-              hideOptions={isCompanyOptionsLoading}
-              options={companyOptions}
-              minLengthForOptions={minCompanyQueryLength}
-              value={terminal_name}
-              setValue={(value) => setValue('terminal_name', value)}
-              noArrow
-            />
-            <Select
-              label='Экспортер'
-              withInputSearch
-              onSearchInput={value => {
-                if (value.length < minCompanyQueryLength) {
-                  setCompanyOptions([]);
-                  return;
-                }
-                setIsCompanyOptionsLoading(true);
-                setSearchCompany(value);
-              }}
-              hideOptions={isCompanyOptionsLoading}
-              options={companyOptions}
-              minLengthForOptions={minCompanyQueryLength}
-              value={exporter_name}
-              setValue={(value) => setValue('exporter_name', value)}
-              noArrow
-            />
-          </div>
-          <div className={styles.inputBlock}>
-            <Select
-              label='Укажите пункт выгрузки'
-              withInputSearch
-              onSearchInput={value => {
-                if (value.length < minPlaceQueryLength) {
-                  setPlaceOptions([]);
-                  return;
-                }
-                setIsPlaceOptionsLoading(true);
-                setSearchPlace(value);
-              }}
-              hideOptions={isPlaceOptionsLoading}
-              options={placeOptions}
-              minLengthForOptions={minPlaceQueryLength}
-              value={unload_place_name}
-              setValue={(value) => setValue('unload_place_name', value)}
-              noArrow
-            />
-            <Select
-              label='Таймслот'
-              options={timeslotOptions}
-              value={timeslot}
-              setValue={(value) => setValue('timeslot', value)}
+            <Controller
+              name="unload_place_name"
+              control={control}
+              rules={{ required: "Поле обязательно к заполнению" }}
+              render={({ field: { value, name, onChange }, formState: { errors } }) => (
+                <Select
+                  label='Укажите пункт выгрузки'
+                  withInputSearch
+                  onSearchInput={(value) => {
+                    if (value.length < minPlaceQueryLength) {
+                      setPlaceOptions([]);
+                      return;
+                    }
+                    setIsPlaceOptionsLoading(true);
+                    setSearchPlace(value);
+                  }}
+                  hideOptions={isPlaceOptionsLoading}
+                  options={placeOptions}
+                  minLengthForOptions={minPlaceQueryLength}
+                  value={value}
+                  setValue={onChange}
+                  noArrow
+                  error={errors[name]?.message as string}
+                />
+              )}
             />
           </div>
         </div>
+        <div className={styles.inputsRow}>
+          <Controller
+            name="terminal_name"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
+              <Select
+                label='Грузополучатель/терминал выгрузки'
+                withInputSearch
+                onSearchInput={(value) => {
+                  if (value.length < minCompanyQueryLength) {
+                    setCompanyOptions([]);
+                    return;
+                  }
+                  setIsCompanyOptionsLoading(true);
+                  setSearchCompany(value);
+                }}
+                hideOptions={isCompanyOptionsLoading}
+                options={companyOptions}
+                minLengthForOptions={minCompanyQueryLength}
+                value={value}
+                setValue={onChange}
+                noArrow
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="exporter_name"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
+              <Select
+                label='Экспортер'
+                withInputSearch
+                onSearchInput={(value) => {
+                  if (value.length < minCompanyQueryLength) {
+                    setCompanyOptions([]);
+                    return;
+                  }
+                  setIsCompanyOptionsLoading(true);
+                  setSearchCompany(value);
+                }}
+                hideOptions={isCompanyOptionsLoading}
+                options={companyOptions}
+                minLengthForOptions={minCompanyQueryLength}
+                value={value}
+                setValue={onChange}
+                noArrow
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+        </div>
+        <Controller
+          name="timeslot"
+          control={control}
+          rules={{ required: "Поле обязательно к заполнению" }}
+          render={({ field: { value, name, onChange }, formState: { errors } }) => (
+            <Select
+              label='Таймслот'
+              options={timeslotOptions}
+              value={value}
+              setValue={onChange}
+              error={errors[name]?.message as string}
+            />
+          )}
+        />
       </div>
       <div className={styles.buttonsContainer}>
         <Button

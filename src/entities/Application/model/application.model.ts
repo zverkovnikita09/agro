@@ -1,7 +1,7 @@
 export interface ApplicationModel {
   id: string;
   crop: string;
-  volume: string;
+  volume: number;
   distance: number;
   tariff: number;
   deadlines: string;

@@ -6,7 +6,7 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import { Checkbox } from '@shared/ui/Checkbox'
 import { MultiCheckbox } from '@shared/ui/MultiCheckbox'
 import { ControlCheckbox } from '@shared/ui/MultiCheckbox/ControlCheckbox'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { NestedCheckbox } from '@shared/ui/MultiCheckbox/NestedCheckbox'
 import { useContext } from 'react'
 import { NewApplicationContext } from './NewApplication'
@@ -20,27 +20,17 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
   const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
   const crop = watch('crop') // груз
-  const volume = watch('volume') //объем
-  const tariff = watch('tariff') //тариф без ндс
+
+  const tariff = watch('tariff');
   const nds_percent = watch('nds_percent');
 
-  const distance = watch('distance'); //расстояние
-  const daily_load_rate = watch('daily_load_rate'); //суточ норма погрузки
-
   const load_types = watch("load_types"); //массив id (чекбоксы)
-
-  const load_method = watch("load_method"); //способ погрузки
-
-  const scale_lenght = watch("scale_lenght"); //длина весов
-
-  const height_limit = watch("height_limit");
 
   const tolerance_to_the_norm = watch("tolerance_to_the_norm") //допуск к норме
 
   const is_overload = watch("is_overload") //возможность перегруза
 
-/*   const any = watch("any");
-  const scepky = watch("scepky"); */
+  const loadMethodOptions = ["Маниту", "Зерномет", "Из-под трубы", "Комбайн", "Кун", "Амкодор", "Вертикальный", "Элеватор"]
 
   return (
     <>
@@ -54,13 +44,93 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
         <div className={styles.inputsRow}>
           <div className={styles.inputBlock}>
             <Input placeholder='Выберите груз' />
-            <Input placeholder='Тариф за перевозку ₽/Т Без НДС' />
-            <Input placeholder='Укажите расстояние перевозки' />
+            <div>
+              <Controller
+                name="tariff"
+                control={control}
+                rules={{ required: "Поле обязательно к заполнению", min: { value: 1, message: "Тариф должен быть натуральным числом" } }}
+                render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+                  <Input
+                    label='Тариф за перевозку ₽/Т Без НДС'
+                    type='number'
+                    value={value}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    error={errors[name]?.message as string}
+                  />
+                )}
+              />
+              {Number(nds_percent) > 0 && Number(tariff) > 0 &&
+                <Text
+                  size={TextSize.S}
+                  className={styles.additionalText}
+                  weight={TextWeight.MEDIUM}>
+                  Тариф с учетом НДС {Number(tariff) + Math.ceil(Number(tariff) * Number(nds_percent) / 100)} ₽
+                </Text>
+              }
+            </div>
+            <Controller
+              name="distance"
+              control={control}
+              rules={{ required: false, min: { value: 1, message: "Расстояние перевозки должно быть натуральным числом" } }}
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+                <Input
+                  label='Расстояние перевозки / км'
+                  type='number'
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={errors[name]?.message as string}
+                />
+              )}
+            />
           </div>
           <div className={styles.inputBlock}>
-            <Input placeholder='Общий объем груза / Т' />
-            <Input placeholder='Укажите ставку НДС %' />
-            <Input placeholder='Суточная норма поргрузки / Т' />
+            <Controller
+              name="volume"
+              control={control}
+              rules={{ required: "Поле обязательно к заполнению", min: { value: 1, message: "Объем должен быть натуральным числом" } }}
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+                <Input
+                  label='Общий объем груза / Т'
+                  type='number'
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={errors[name]?.message as string}
+                />
+              )}
+            />
+            <Controller
+              name="nds_percent"
+              control={control}
+              rules={{ required: false, min: { value: 1, message: "НДС должен быть натуральным числом" } }}
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+                <Input
+                  label='Укажите ставку НДС %'
+                  type='number'
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={errors[name]?.message as string}
+                />
+              )}
+            />
+            <Controller
+              name="daily_load_rate"
+              control={control}
+              rules={{ required: false, min: { value: 1, message: "Суточная норма погрузки должна быть натуральным числом" } }}
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+                <Input
+                  label='Суточная норма поргрузки / Т'
+                  type='number'
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={errors[name]?.message as string}
+                />
+              )}
+            />
           </div>
         </div>
       </div>
@@ -76,10 +146,51 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
           <Checkbox checked={any} setChecked={setValue} name='any'>Полуприцеп</Checkbox>
           <Checkbox checked={scepky} setChecked={setValue} name='scepky'>Тонар</Checkbox> */}
         </div>
-        <div className={styles.inputsRow}>
-          <Select placeholder='Способ погрузки' options={[]} value={''} setValue={() => { }} />
-          <Input placeholder='Длина весов' />
-          <Input placeholder='Ограничение по высоте' />
+        <div className={styles.inputsThreeRow}>
+          <Controller
+            name="load_method"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
+              <Select
+                label='Способ погрузки'
+                options={loadMethodOptions}
+                value={value}
+                setValue={onChange}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="scale_lenght"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению", min: { value: 1, message: "Длина весов должна быть натуральным числом" } }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Длина весов / м'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="height_limit"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению", min: { value: 1, message: "Ограничение по высоте должно быть натуральным числом" } }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Ограничение по высоте / м'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
         </div>
       </div>
       <div className={styles.inputBlock}>
@@ -91,7 +202,12 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
         </Text>
         <div className={styles.inputsRow}>
           <Input placeholder='Укажите допуск к норме %' />
-          <Select placeholder='Способ погрузки' options={[]} value={''} setValue={() => { }} />
+          <Select
+            label='Возможность перегруза'
+            options={["Да", "Нет"]}
+            value={typeof is_overload === "undefined" ? "" : is_overload ? "Да" : "Нет"}
+            setValue={(value) => setValue('is_overload', value === "Да")}
+          />
         </div>
       </div>
       <div className={styles.buttonsContainer}>

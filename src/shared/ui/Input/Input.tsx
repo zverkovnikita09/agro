@@ -77,7 +77,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       
     }, [value, inputRef.current?.value]) */
 
-  const defaultInput = <input
+  const defaultInput = (additionalProps?: InputHTMLAttributes<HTMLInputElement>) => <input
     id={id}
     type={type}
     value={value}
@@ -86,6 +86,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     placeholder={!label ? placeholder : undefined}
     onFocus={handleFocus}
     onBlur={handleBlur}
+    {...additionalProps}
     {...otherProps}
   />
 
@@ -105,8 +106,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           onBlur={handleBlur}
           {...otherProps}
         /> :
-        defaultInput
-      default: return defaultInput;
+        defaultInput()
+      case "number": return defaultInput({ onWheel: (e) => (e.target as HTMLInputElement).blur() })
+      default: return defaultInput();
     }
   }
 

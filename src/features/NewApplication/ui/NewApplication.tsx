@@ -30,7 +30,7 @@ export const NewApplicationContext = createContext<NewApplicationContextPros>({}
 
 export const NewApplication = (props: NewApplicationProps) => {
   const { className } = props;
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(2);
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -41,7 +41,11 @@ export const NewApplication = (props: NewApplicationProps) => {
     else navigate("/")
   }
 
-  const { handleSubmit, watch, control, register, setValue } = useForm<ApplicationModel>();
+  const { handleSubmit, watch, control, register, setValue } = useForm<ApplicationModel>({ mode: "onBlur", defaultValues: {
+    /* nds_percent: 0,
+    volume: 0,
+    tariff: 0 */
+  } });
 
   const changeStep = (number: number) => () => setFormStep(number)
 
