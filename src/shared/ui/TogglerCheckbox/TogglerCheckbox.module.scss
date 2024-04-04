@@ -1,0 +1,52 @@
+.togglerCheckbox {
+  $this: &;
+
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+
+  &__input {
+
+    &:checked~#{$this}__check {
+      background-color: var(--primary-yellow);
+
+      &::before {
+        transform: translate(14px);
+      }
+    }
+
+    &:focus-visible {
+      outline: none;
+
+      &~#{$this}__check {
+        outline: 2px solid var(--text-color);
+      }
+    }
+  }
+
+  &__check {
+    position: relative;
+    width: 40px;
+    height: 24px;
+    border-radius: 500px;
+    background-color: var(--disabled-color);
+    transition: 0.2s ease-out;
+
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      transition: 0.2s ease-out;
+      background-color: var(--white-color);
+
+    }
+  }
+}

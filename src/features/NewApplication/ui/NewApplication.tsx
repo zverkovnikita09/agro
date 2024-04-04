@@ -14,6 +14,8 @@ import { CloseButton } from '@shared/ui/CloseButton';
 import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
 import { Control, UseFormRegister, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
 import { ApplicationModel } from '@entities/Application/model/application.model';
+import {Stepper} from "@shared/ui/Stepper";
+import {Step} from "@shared/ui/Stepper/Step";
 
 interface NewApplicationProps {
   className?: string;
@@ -49,6 +51,8 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   const changeStep = (number: number) => () => setFormStep(number)
 
+  // TODO
+  const steps = ['Первый шаг', 'Второй шаг', 'Третий шаг']
 
   const FormContent = () => {
     switch (formStep) {
@@ -91,6 +95,13 @@ export const NewApplication = (props: NewApplicationProps) => {
       <CardContainer className={styles.container}>
         <CloseButton onClick={closeForm} className={styles.closeBtn} />
         <Title size={TitleSize.S}>Новая заявка</Title>
+        {formStep <= 3 &&
+          <Stepper className={styles.stepper} value={formStep}>
+            {steps.map((_, id) => (
+              <Step value={id + 1} />
+            ))}
+          </Stepper>
+        }
         <NewApplicationContext.Provider value={{ watch, control, register, setValue }}>
           <form className={styles.form} onSubmit={handleSubmit(onSubmit())}>
             {FormContent()}

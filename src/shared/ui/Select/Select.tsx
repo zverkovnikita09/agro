@@ -14,6 +14,11 @@ interface OptionType {
   value: string
 }
 
+export enum SelectTheme {
+  PRIMARY = '',
+  FILTERS = 'filters_theme'
+}
+
 interface CommonSelectProps {
   options: (string | OptionType)[]
   placeholder?: string
@@ -27,6 +32,7 @@ interface CommonSelectProps {
   onSearchInput?: (value: string) => void;
   minLengthForOptions?: number;
   hideOptions?: boolean;
+  theme?: SelectTheme;
 }
 
 interface MultipleSelectProps {
@@ -52,6 +58,7 @@ export const Select = (props: SelectProps) => {
     options,
     error,
     label,
+    theme = SelectTheme.PRIMARY,
     className,
     fullWidth,
     noArrow,
@@ -154,6 +161,7 @@ export const Select = (props: SelectProps) => {
         <div
           className={cn(style.toggler,
             togglerClassName,
+            style[theme],
             { [style.withInput]: withInputSearch },
             { [style.withLabel]: label },
             { [style.hideValue]: withInputSearch && isDropdownOpen },

@@ -5,6 +5,11 @@ import { ErrorBlock } from '../ErrorBlock';
 import InputMask from 'react-input-mask';
 import SearchIcon from '@images/search.svg'
 
+export enum InputTheme {
+  PRIMARY = '',
+  FILTERS = 'filters_theme'
+}
+
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
   error?: string
@@ -17,6 +22,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   searchIconPosition?: "left" | "right";
   inputAutoFocus?: boolean;
   fixLabel?: boolean;
+  theme?: InputTheme;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -26,6 +32,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     error,
     touched,
     label,
+    theme = InputTheme.PRIMARY,
     type,
     mask,
     maskChar = "_",
@@ -47,6 +54,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
 
   const additionalInputClasses = [
     className,
+    style[theme],
     { [style.withSearchIcon]: withSearchIcon },
     style[`icon_${searchIconPosition}`],
     { [style.withLabel]: label }
