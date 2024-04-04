@@ -13,6 +13,7 @@ import {RadioButton} from "@shared/ui/RadioButton";
 import {Input, InputTheme} from "@shared/ui/Input";
 import {ControlCheckbox, MultiCheckbox, NestedCheckbox} from "@shared/ui/MultiCheckbox";
 import {useEffect} from "react";
+import {TogglerCheckbox} from "@shared/ui/TogglerCheckbox";
 
 interface FiltersProps {
   className?: string;
@@ -188,6 +189,7 @@ export const Filters = (props: FiltersProps) => {
           </Accordion>
         </Accordion>
       </div>
+      <TogglerCheckbox className={styles.saveFilters}>Сохранить фильтры</TogglerCheckbox>
       <div className={styles.footer}>
         <Button
           className={styles.button}
