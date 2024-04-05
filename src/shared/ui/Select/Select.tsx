@@ -11,11 +11,11 @@ import { ClickAwayListener, Popper } from "@mui/material";
 
 interface OptionType {
   name: string
-  value: string
+  value: unknown
 }
 
 interface CommonSelectProps {
-  options: (string | OptionType)[]
+  options: (unknown | OptionType)[]
   placeholder?: string
   error?: string
   label?: string
@@ -29,16 +29,16 @@ interface CommonSelectProps {
   hideOptions?: boolean;
 }
 
-interface MultipleSelectProps {
+interface MultipleSelectProps<T = unknown> {
   multiple: true
-  value: string[]
-  setValue: (value: string[]) => void
+  value: T[]
+  setValue: (value: T[]) => void
 }
 
-interface SingleSelectProps {
+interface SingleSelectProps<T = unknown> {
   multiple?: false
-  value: string
-  setValue: (value: string) => void
+  value: T
+  setValue: (value: T) => void
 }
 
 type SelectProps = CommonSelectProps & (MultipleSelectProps | SingleSelectProps)
@@ -77,10 +77,6 @@ export const Select = (props: SelectProps) => {
 
   const isDropdownOpen = Boolean(dropdownAnchorEl);
 
-  const isOptionStringArray = (options: (string | OptionType)[]): options is string[] => {
-    return !!(options?.length && typeof options[0] === 'string')
-  }
-
   const addValue = useCallback((selectValue: string) => () => {
     if (multiple) {
       setValue([...(value ?? []), selectValue]);
@@ -97,16 +93,20 @@ export const Select = (props: SelectProps) => {
     }
   }, [value])
 
-  const valueToShow = (value: string) => {
-    if (isOptionStringArray(options)) {
-      return value
+  const isOptionTypeArray = (options: (unknown | OptionType)[]): options is OptionType[] => {
+    return !!(options?.length && (options[0] as OptionType)?.name)
+  }
+
+  const valueToShow = (value: unknown) => {
+    if (isOptionTypeArray(options)) {
+      return (options.find(item => (item as OptionType).value === value) as OptionType)?.name || ''
     }
 
     if (!options.length) {
       return value
     }
 
-    return (options.find(item => (item as OptionType).value === value) as OptionType)?.name || ''
+    return value
   }
 
   useEffect(() => {
@@ -127,7 +127,7 @@ export const Select = (props: SelectProps) => {
   }
 
   useEffect(() => {
-    setInputValue(value ? typeof value === "string" ? value : value?.join("") : "")
+    setInputValue(multiple ? value?.join("") : String(value))
   }, [isDropdownOpen])
 
   return (
@@ -167,7 +167,7 @@ export const Select = (props: SelectProps) => {
         >
           {label &&
             <label className={cn(style.label,
-              { [style.fixed]: (typeof value === 'string' ? value : value?.length) },
+              { [style.fixed]: (multiple ? !!value?.length : !!String(value)) },
               { [style.focused]: isDropdownOpen },
               { [style.withInput]: withInputSearch }
             )}

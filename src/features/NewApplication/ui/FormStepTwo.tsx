@@ -202,11 +202,17 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
         </Text>
         <div className={styles.inputsRow}>
           <Input placeholder='Укажите допуск к норме %' />
-          <Select
-            label='Возможность перегруза'
-            options={["Да", "Нет"]}
-            value={typeof is_overload === "undefined" ? "" : is_overload ? "Да" : "Нет"}
-            setValue={(value) => setValue('is_overload', value === "Да")}
+          <Controller
+            name="is_overload"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Select
+                label='Возможность перегруза'
+                options={["Да", "Нет"]}
+                value={typeof value === "undefined" ? "" : value ? "Да" : "Нет"}
+                setValue={(value) => onChange(value === "Да")}
+              />
+            )}
           />
         </div>
       </div>
