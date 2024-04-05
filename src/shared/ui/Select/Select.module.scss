@@ -5,6 +5,7 @@
   width: 100%;
 
   --select-height: 53px;
+  --select-filters-height: 44px;
 }
 
 .toggler {
@@ -45,6 +46,11 @@
   &.noArrow {
     padding-right: 20px;
   }
+
+  &.filters_theme{
+    padding: 13px 54px 13px 20px;
+    min-height: var(--select-filters-height);
+  }
 }
 
 .togglerText {
@@ -57,6 +63,9 @@
   z-index: 0;
   left: -1px;
   top: -1px;
+  .filters_theme &{
+    font-size: 13px;
+  }
 }
 
 .input {
@@ -165,3 +174,4 @@
 .text {
   text-align: center;
 }
+

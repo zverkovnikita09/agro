@@ -52,8 +52,8 @@ export const Sidebar = (props: SidebarProps) => {
   return (
     <div className={cn(styles.sidebar, { [styles.expandedSidebar]: isExpanded }, className)}>
       <div className={styles.logo}>
-        <LogoIcon width={18} height={32} />
-        <LogoText width={63} height={31} />
+        <LogoIcon width={30} height={30} />
+        <LogoText width={48} height={23} />
       </div>
       {/*<Logo width={85} height={32} className={styles.logo}/>*/}
       <div className={styles.sidebar__menu}>
