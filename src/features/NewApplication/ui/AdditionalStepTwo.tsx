@@ -24,14 +24,14 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
   const clarification_of_the_weekend = watch("clarification_of_the_weekend") //Сб Вс или СБ и ВС
   const is_full_charter = watch("is_full_charter")
 
-  /* const [weekendState, setWeekendState] = useState<string[]>([]) */
+  // const [weekendState, setWeekendState] = useState<string[]>([])
+  const [saturdayState, setSaturdayState] = useState('');
+  const [sundayState, setSundayState] = useState('');
 
-  /* useEffect(() => {
-    setValue("clarification_of_the_weekend", weekendState.join(" и "))
-    
-  }, [weekendState])
+  useEffect(() => {
+    setValue("clarification_of_the_weekend", [saturdayState, sundayState].filter(Boolean).join(" и "))
 
-  console.log(clarification_of_the_weekend); */
+  }, [saturdayState, sundayState])
 
   return (
     <>
@@ -90,40 +90,24 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           />
         </div>
         <div className={styles.inputsRowWithGap}>
-          {/* <MultiCheckbox hideNested>
+          <MultiCheckbox hideNested>
             <ControlCheckbox>Все</ControlCheckbox>
             <NestedCheckbox
-              checked={weekendState.includes("суббота")}
+              checked={!!saturdayState}
               className={styles.nestedCheckbox}
-              setChecked={() => {
-                if (!weekendState.length) {
-                  setWeekendState(prev => ["суббота", ...prev])
-                  return;
-                }
-                if (weekendState.length === 2) {
-                  setWeekendState([])
-                  return;
-                }
-                if (weekendState.includes("суббота")) {
-                  setWeekendState(["воскресенье"])
-                }
-              }}
-              name=''
+              setChecked={() => setSaturdayState(prev => prev ? '' : 'суббота')}
+              name='saturday'
             >
               СБ
             </NestedCheckbox>
             <NestedCheckbox
-              checked={!!weekendState.includes("воскресенье")}
-              setChecked={() => {
-                if (!weekendState.length) {
-                  setWeekendState(prev => [...prev, "воскресенье"])
-                }
-              }}
-              name=''
+              checked={!!sundayState}
+              setChecked={() => setSundayState(prev => prev ? '' : 'воскресенье')}
+              name='sunday'
             >
               ВС
             </NestedCheckbox>
-          </MultiCheckbox> */}
+          </MultiCheckbox>
         </div>
       </div>
       <div className={styles.inputBlock}>

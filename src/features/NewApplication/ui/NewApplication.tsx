@@ -52,9 +52,6 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   const changeStep = (number: number) => () => setFormStep(number)
 
-  // TODO
-  const steps = ['Первый шаг', 'Второй шаг', 'Третий шаг']
-
   const FormContent = () => {
     switch (formStep) {
       case 1: return <FormStepOne onCancel={closeForm} />
@@ -98,9 +95,9 @@ export const NewApplication = (props: NewApplicationProps) => {
         <Title size={TitleSize.S}>Новая заявка</Title>
         {formStep <= 3 &&
           <Stepper className={styles.stepper} value={formStep}>
-            {steps.map((_, id) => (
-              <Step value={id + 1} />
-            ))}
+            <Step value={1} />
+            <Step value={2} />
+            <Step value={3} />
           </Stepper>
         }
         <NewApplicationContext.Provider value={{ watch, control, register, setValue }}>

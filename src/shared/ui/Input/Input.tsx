@@ -82,6 +82,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     onBlur?.(e)
   }
 
+  useEffect(() => {
+    if (value) setIsLabelFixed(true)
+  }, [value]);
+
   /*   useEffect(() => {
       if (typeof value !== "undefined") setIsLabelFixed(!!value)
       console.log(typeof value !== "undefined", !!ref);

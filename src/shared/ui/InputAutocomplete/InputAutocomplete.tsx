@@ -8,6 +8,7 @@ interface InputAutocompleteProps extends Omit<InputProps, "onChange"> {
   autocompleteItems: string[];
   value: string;
   setValue: (value: string) => void;
+  onBlur?: () => void;
 }
 
 export const InputAutocomplete = (props: InputAutocompleteProps) => {
@@ -16,6 +17,8 @@ export const InputAutocomplete = (props: InputAutocompleteProps) => {
     autocompleteItems,
     value = '',
     setValue,
+    name,
+    onBlur,
     ...otherProps
   } = props;
 
@@ -37,6 +40,7 @@ export const InputAutocomplete = (props: InputAutocompleteProps) => {
           onChange={(e) => setValue(e.target.value)}
           autoComplete='off'
           onClick={handleInputClick}
+          onBlur={onBlur}
           {...otherProps}
         />
         <Popper
@@ -59,6 +63,7 @@ export const InputAutocomplete = (props: InputAutocompleteProps) => {
               className={styles.item}
               onClick={() => {
                 setValue(item[0].toUpperCase() + item.slice(1))
+                onBlur?.();
                 handleCloseDropdown()
               }}
             >

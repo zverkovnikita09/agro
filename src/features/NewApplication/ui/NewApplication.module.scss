@@ -87,3 +87,20 @@
 .stepper{
   margin-top: 24px;
 }
+
+.successPopup{
+  max-width: 271px;
+  border-radius: 12px;
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+  padding: 24px 16px;
+  background-color: var(--white-color);
+}
+.successContent{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+}
