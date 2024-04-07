@@ -1,0 +1,20 @@
+.confirmPopup {
+  display: grid;
+  gap: 18px;
+  width: 360px;
+  position: relative;
+  padding: 24px;
+  border-radius: 24px;
+  background-color: #fff;
+  justify-items: center;
+}
+
+.text {
+  font-weight: 600;
+  text-align: center;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
