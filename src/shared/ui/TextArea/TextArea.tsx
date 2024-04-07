@@ -2,7 +2,6 @@
 import { ChangeEvent, TextareaHTMLAttributes, forwardRef, useId } from "react";
 import style from "./TextArea.module.scss";
 import cn from "classnames";
-import { FieldError } from "react-hook-form";
 import { ErrorBlock } from "../ErrorBlock";
 
 interface TextAreaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "id"> {
@@ -11,7 +10,7 @@ interface TextAreaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>
   defaultHeight?: number
   label?: string
   theme?: string
-  error?: FieldError
+  error?: string
   touched?: boolean
 }
 
@@ -60,7 +59,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           style={{ height: defaultHeight, maxHeight: maxSize }}
           {...otherProps}
         />
-        {error?.message && <ErrorBlock>{error?.message}</ErrorBlock>}
+        {error && <ErrorBlock>{error}</ErrorBlock>}
       </div>
     )
   }

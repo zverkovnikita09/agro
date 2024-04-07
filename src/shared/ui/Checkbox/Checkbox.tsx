@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import styles from './Checkbox.module.scss'
 import { BsCheck } from "react-icons/bs";
-import { PropsWithChildren, useId, useState } from 'react';
+import { PropsWithChildren, useId } from 'react';
 
 export interface CheckboxProps {
   className?: string;

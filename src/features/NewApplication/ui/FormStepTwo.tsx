@@ -10,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { NestedCheckbox } from '@shared/ui/MultiCheckbox/NestedCheckbox'
 import { useContext } from 'react'
 import { NewApplicationContext } from './NewApplication'
+import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 
 interface FormStepTwoProps {
   prevStep: () => void
@@ -19,8 +20,6 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
   const { prevStep } = props;
   const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
-  const crop = watch('crop') // груз
-
   const tariff = watch('tariff');
   const nds_percent = watch('nds_percent');
 
@@ -28,7 +27,18 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
 
   const tolerance_to_the_norm = watch("tolerance_to_the_norm") //допуск к норме
 
-  const is_overload = watch("is_overload") //возможность перегруза
+  const toleranceToTheNormOptions = [
+    { name: "1%", value: 1 },
+    { name: "2%", value: 2 },
+    { name: "3%", value: 3 },
+    { name: "4%", value: 4 },
+    { name: "5%", value: 5 },
+    { name: "6%", value: 6 },
+    { name: "7%", value: 7 },
+    { name: "8%", value: 8 },
+    { name: "9%", value: 9 },
+    { name: "10%", value: 10 },
+  ]
 
   const loadMethodOptions = ["Маниту", "Зерномет", "Из-под трубы", "Комбайн", "Кун", "Амкодор", "Вертикальный", "Элеватор"]
 
@@ -43,7 +53,21 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
         </Text>
         <div className={styles.inputsRow}>
           <div className={styles.inputBlock}>
-            <Input placeholder='Выберите груз' />
+            <Controller
+              name="crop"
+              control={control}
+              rules={{ required: "Поле обязательно к заполнению" }}
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+                <InputAutocomplete
+                  label='Выберите груз'
+                  value={value}
+                  setValue={onChange}
+                  onBlur={onBlur}
+                  autocompleteItems={["Пшеница", "Горох"]}
+                  error={errors[name]?.message as string}
+                />
+              )}
+            />
             <div>
               <Controller
                 name="tariff"
@@ -201,16 +225,27 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
           Допуск к норме
         </Text>
         <div className={styles.inputsRow}>
-          <Input placeholder='Укажите допуск к норме %' />
+          <Controller
+            name="tolerance_to_the_norm"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Select
+                label='Укажите допуск к норме %'
+                options={toleranceToTheNormOptions}
+                value={value}
+                setValue={onChange}
+              />
+            )}
+          />
           <Controller
             name="is_overload"
             control={control}
             render={({ field: { value, onChange } }) => (
               <Select
                 label='Возможность перегруза'
-                options={["Да", "Нет"]}
-                value={typeof value === "undefined" ? "" : value ? "Да" : "Нет"}
-                setValue={(value) => onChange(value === "Да")}
+                options={[{ name: "Да", value: true }, { name: "Нет", value: false }]}
+                value={value}
+                setValue={onChange}
               />
             )}
           />

@@ -1,3 +1,25 @@
 .inputAutocomplete {
   position: relative;
 }
+
+.dropdown {
+  padding: 10px;
+  overflow: auto;
+  z-index: 9999;
+  border: 1px solid var(--text-color);
+  border-radius: 6px;
+  background-color: var(--white-color);
+  max-height: 270px;
+}
+
+.item {
+  min-width: 100%;
+  padding: 10px 15px;
+  transition: 0.1s;
+  cursor: pointer;
+  border-radius: 6px;
+
+  &:hover {
+    background-color: var(--special-yellow);
+  }
+}

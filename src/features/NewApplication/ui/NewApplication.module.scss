@@ -46,6 +46,11 @@
   gap: 16px;
 }
 
+.inputsRowWithGap {
+  display: flex;
+  gap: 16px;
+}
+
 .inputBlock {
   display: flex;
   flex-direction: column;

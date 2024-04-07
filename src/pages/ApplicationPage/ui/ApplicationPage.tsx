@@ -50,7 +50,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     exporter_inn,
     exporter_name,
     height_limit,
-    is_load_in_weekend,
     is_overload,
     is_semi_truck,
     is_tonar,

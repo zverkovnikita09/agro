@@ -10,7 +10,7 @@ export enum InputTheme {
   FILTERS = 'filters_theme'
 }
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
   error?: string
   touched?: boolean | undefined
@@ -44,6 +44,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     fixLabel,
     onFocus,
     onBlur,
+    onChange,
+    disabled,
     ...otherProps
   } = props
 
@@ -57,7 +59,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     style[theme],
     { [style.withSearchIcon]: withSearchIcon },
     style[`icon_${searchIconPosition}`],
-    { [style.withLabel]: label }
+    { [style.withLabel]: label },
+    { [style.disabled]: disabled }
   ]
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -94,6 +97,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     placeholder={!label ? placeholder : undefined}
     onFocus={handleFocus}
     onBlur={handleBlur}
+    onChange={!disabled ? onChange : undefined}
+    disabled={disabled}
     {...additionalProps}
     {...otherProps}
   />
@@ -112,10 +117,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           placeholder={!label ? placeholder : undefined}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onChange={!disabled ? onChange : undefined}
+          disabled={disabled}
           {...otherProps}
         /> :
         defaultInput()
-      case "number": return defaultInput({ onWheel: (e) => (e.target as HTMLInputElement).blur() })
+      case "number": return defaultInput({ onWheel: (e) => (e.target as HTMLInputElement).blur(), autoComplete: "off" })
       default: return defaultInput();
     }
   }
@@ -125,7 +132,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       <div className={style.inputContainer}>
         {withSearchIcon && <SearchIcon className={cn(style.searchIcon, style[`icon_${searchIconPosition}`])} width={18} height={18} />}
         {label &&
-          <label htmlFor={id} className={cn(style.label, { [style.fixed]: fixLabel || isLabelFixed })}>
+          <label
+            htmlFor={id}
+            className={cn(
+              style.label,
+              { [style.fixed]: fixLabel || isLabelFixed },
+              { [style.disabled]: disabled }
+            )}
+          >
             {label}
           </label>
         }

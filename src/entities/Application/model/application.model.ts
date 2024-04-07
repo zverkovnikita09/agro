@@ -24,12 +24,11 @@ export interface ApplicationModel {
   contact_phone: string;
   cargo_shortrage_rate?: number;
   cargo_shortage_rate: number;
-  unit_of_measurement_for_cargo_shortage_rate?: string;
+  unit_of_measurement_for_cargo_shortage_rate?: "кг" | "%";
   cargo_price?: number;
   load_place: string;
   approach?: string;
   work_time?: string;
-  is_load_in_weekend?: boolean;
   clarification_of_the_weekend?: string;
   loader_power?: number;
   load_method: string;
@@ -46,5 +45,5 @@ export interface ApplicationModel {
   description?: string;
   load_types: string[];
   order_number: number;
-  charter?: string;
+  is_full_charter?: boolean;
 }

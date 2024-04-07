@@ -19,29 +19,18 @@ export const FormStepThree = (props: FormStepThreeProps) => {
   const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
   const outage_begin = watch('outage_begin') // начало простоя
-  const outage_price = watch('outage_price') //цена простоя
-  const contact_name = watch('contact_name') //контакт
-  const contact_phone = watch('contact_phone') //телефон
 
-  const description = watch('description') //примечание
+  const outageBeginOptions = [
+    { name: "Нет", value: null },
+    { name: "с 1-х", value: 1 },
+    { name: "со 2-х", value: 2 },
+    { name: "с 3-х", value: 3 },
+    { name: "с 4-х", value: 4 },
+  ]
 
   return (
     <>
       <div className={styles.inputBlock}>
-        {/* <Controller
-          name="outage_begin"
-          control={control}
-          rules={{ required: "Поле обязательно к заполнению" }}
-          render={({ field: { value, name, onChange }, formState: { errors } }) => (
-            <Select
-              label='Способ погрузки'
-              options={loadMethodOptions}
-              value={value}
-              setValue={onChange}
-              error={errors[name]?.message as string}
-            />
-          )}
-        /> */}
         <Text
           weight={TextWeight.BOLD}
           size={TextSize.XL}
@@ -49,8 +38,35 @@ export const FormStepThree = (props: FormStepThreeProps) => {
           Простой
         </Text>
         <div className={styles.inputsRow}>
-          <Select placeholder='Начало периода простоя' options={[]} value={''} setValue={() => { }} />
-          <Input placeholder='Стоимость простоя ₽/в сутки' />
+          <Controller
+            name="outage_begin"
+            control={control}
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
+              <Select
+                label='Начало периода простоя'
+                options={outageBeginOptions}
+                value={value}
+                setValue={onChange}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="outage_price"
+            control={control}
+            rules={{ required: false, min: { value: 1, message: "Стоимость простоя ₽/в сутки должна быть натуральным числом" } }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Стоимость простоя ₽/в сутки'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+                disabled={!outage_begin}
+              />
+            )}
+          />
         </div>
       </div>
       <div className={styles.inputBlock}>
@@ -61,10 +77,22 @@ export const FormStepThree = (props: FormStepThreeProps) => {
           Информация
         </Text>
         <div className={styles.inputsRow}>
-          <Input placeholder='Контактное лицо' />
-          <Input placeholder='Номер телефона' />
-          {/* <Controller
-            name="phone_number"
+          <Controller
+            name="contact_name"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Контактное лицо'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="contact_phone"
             control={control}
             rules={{
               required: 'Необходимо заполнить номер телефона.', pattern: {
@@ -72,17 +100,18 @@ export const FormStepThree = (props: FormStepThreeProps) => {
                 message: 'Необходимо заполнить номер телефона.'
               }
             }}
-            render={({ formState: { errors }, field: { value, onChange } }) => (
+            render={({ formState: { errors }, field: { value, name, onChange, onBlur } }) => (
               <Input
-                placeholder='Ваш номер телефона'
+                label='Номер телефона'
                 mask="+7 (999) 999-99-99"
                 type='tel'
                 value={value}
                 onChange={onChange}
-                error={errors?.phone_number?.message as string}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
               />
             )}
-          /> */}
+          />
         </div>
       </div>
       <div className={styles.inputBlock}>
@@ -92,7 +121,18 @@ export const FormStepThree = (props: FormStepThreeProps) => {
         >
           Примечание
         </Text>
-        <TextArea placeholder='Укажите доп. информацию' />
+        <Controller
+          name="description"
+          control={control}
+          render={({ field: { value, name, onChange, onBlur } }) => (
+            <TextArea
+              placeholder='Укажите доп. информацию'
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+            />
+          )}
+        />
       </div>
       <div className={styles.buttonsContainer}>
         <Button className={styles.additionalButton} onClick={toAdditional}>

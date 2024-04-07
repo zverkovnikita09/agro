@@ -5,6 +5,9 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import ArrowLeft from '@images/arrow-full-left.svg'
 import { useContext } from 'react'
 import { NewApplicationContext } from './NewApplication'
+import { Controller } from 'react-hook-form'
+import { RadioButton } from '@shared/ui/RadioButton'
+import { Select } from '@shared/ui/Select'
 
 interface AdditionalStepOneProps {
   toMainPart: () => void
@@ -17,7 +20,8 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
 
   const cargo_price = watch('cargo_price') // стоимость груза
   const load_place = watch('load_place') // где происходит погрузка
-  const approach = watch('approach') // подъезд
+
+  const unit_of_measurement_for_cargo_shortage_rate = watch('unit_of_measurement_for_cargo_shortage_rate')
 
 
   return (
@@ -29,10 +33,41 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
         >
           Норма недостачи груза
         </Text>
-        <div className={styles.inputsRow}>
-          <Input placeholder='Укажите %' />
-          <Input placeholder='Укажите кг' />
+        <div className={styles.inputsRowWithGap}>
+          <Controller
+            name="unit_of_measurement_for_cargo_shortage_rate"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <RadioButton checked={value === "%"} value="%" onChange={onChange}>
+                В %
+              </RadioButton>
+            )}
+          />
+          <Controller
+            name="unit_of_measurement_for_cargo_shortage_rate"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <RadioButton checked={value === "кг"} value="кг" onChange={onChange}>
+                В кг
+              </RadioButton>
+            )}
+          />
         </div>
+        <Controller
+          name="cargo_shortage_rate"
+          control={control}
+          rules={{ required: false, min: { value: 1, message: "Норма недостачи должна быть натуральным числом" } }}
+          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            <Input
+              label={`Укажите норму недостачи / ${unit_of_measurement_for_cargo_shortage_rate}`}
+              type='number'
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              error={errors[name]?.message as string}
+            />
+          )}
+        />
       </div>
       <div className={styles.inputBlock}>
         <Text
@@ -41,7 +76,21 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
         >
           Стоимость груза
         </Text>
-        <Input placeholder='Укажите стоимость груза ₽/Т' />
+        <Controller
+          name="cargo_price"
+          control={control}
+          rules={{ required: false, min: { value: 1, message: "Стоимость груза должна быть натуральным числом" } }}
+          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            <Input
+              label='Укажите стоимость груза ₽/Т'
+              type='number'
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              error={errors[name]?.message as string}
+            />
+          )}
+        />
       </div>
       <div className={styles.inputBlock}>
         <Text
@@ -50,7 +99,38 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
         >
           Где происходит погрузка
         </Text>
-        <Input placeholder='Где будет осуществляться погрузка' />
+        {/* <Controller
+            name="is_overload"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Select
+                label='Где будет осуществляться погрузка'
+                options={[{ name: "Да", value: true }, { name: "Нет", value: false }]}
+                value={value}
+                setValue={onChange}
+              />
+            )}
+          /> */}
+        <div className={styles.inputsRowWithGap}>
+          <Controller
+            name="approach"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <RadioButton checked={value === "Грунт"} value="Грунт" onChange={onChange}>
+                Грунт
+              </RadioButton>
+            )}
+          />
+          <Controller
+            name="approach"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <RadioButton checked={value === "Асфальт"} value="Асфальт" onChange={onChange}>
+                Асфальт
+              </RadioButton>
+            )}
+          />
+        </div>
       </div>
       <div className={styles.buttonsContainer}>
         <Button className={styles.additionalButton} onClick={toMainPart}>

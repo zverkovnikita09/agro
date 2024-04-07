@@ -47,6 +47,7 @@ export const NewApplication = (props: NewApplicationProps) => {
     /* nds_percent: 0,
     volume: 0,
     tariff: 0 */
+    unit_of_measurement_for_cargo_shortage_rate: "%"
   } });
 
   const changeStep = (number: number) => () => setFormStep(number)

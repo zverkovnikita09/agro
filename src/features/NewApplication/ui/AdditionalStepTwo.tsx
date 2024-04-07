@@ -5,9 +5,9 @@ import { Input } from '@shared/ui/Input'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import ArrowLeft from '@images/arrow-full-left.svg'
 import { MultiCheckbox, NestedCheckbox, ControlCheckbox } from '@shared/ui/MultiCheckbox'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { RadioButton } from '@shared/ui/RadioButton'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { NewApplicationContext } from './NewApplication'
 
 interface AdditionalStepOneProps {
@@ -21,14 +21,17 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
   const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
   /* const cargo_price = watch('unl') */ // тип выгрузки
-  const load_place = watch('work_time') // время
-  const approach = watch('approach') // подъезд
-  const is_load_in_weekend = watch("is_load_in_weekend"); //грузят ли в выходные
   const clarification_of_the_weekend = watch("clarification_of_the_weekend") //Сб Вс или СБ и ВС
-  const charter = watch("charter")
+  const is_full_charter = watch("is_full_charter")
 
-  /*   const loadingOnSaturday = watch("loadingOnSaturday");
-  const loadingOnSunday = watch("loadingOnSunday"); */
+  /* const [weekendState, setWeekendState] = useState<string[]>([]) */
+
+  /* useEffect(() => {
+    setValue("clarification_of_the_weekend", weekendState.join(" и "))
+    
+  }, [weekendState])
+
+  console.log(clarification_of_the_weekend); */
 
   return (
     <>
@@ -46,36 +49,77 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           weight={TextWeight.BOLD}
           size={TextSize.XL}
         >
-          Стоимость груза
-        </Text>
-        <Input placeholder='Укажите стоимость груза ₽/Т' />
-      </div>
-      <div className={styles.inputBlock}>
-        <Text
-          weight={TextWeight.BOLD}
-          size={TextSize.XL}
-        >
           Время работы
         </Text>
         <div className={styles.inputsRow}>
-          <Input placeholder='Длина весов' />
-          <Input placeholder='Ограничение по высоте' />
+          <Controller
+            name="work_time"
+            control={control}
+            rules={{
+              required: false, pattern: {
+                value: /^[^_]*$/,
+                message: 'Время работы должно быть заполнено в формате ЧЧ:ММ - ЧЧ:ММ'
+              }
+            }}
+            render={({ formState: { errors }, field: { value, name, onChange, onBlur } }) => (
+              <Input
+                label='Время работы'
+                mask="99:99 - 99:99"
+                type='tel'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="loader_power"
+            control={control}
+            rules={{ required: false, min: { value: 1, message: "Мощность погрузки должна быть натуральным числом" } }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Мощность погрузки машин/день'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
         </div>
-        <div className={styles.inputsRow}>
+        <div className={styles.inputsRowWithGap}>
           {/* <MultiCheckbox hideNested>
             <ControlCheckbox>Все</ControlCheckbox>
             <NestedCheckbox
-              checked={loadingOnSaturday}
+              checked={weekendState.includes("суббота")}
               className={styles.nestedCheckbox}
-              setChecked={setValue}
-              name='loadingOnSaturday'
+              setChecked={() => {
+                if (!weekendState.length) {
+                  setWeekendState(prev => ["суббота", ...prev])
+                  return;
+                }
+                if (weekendState.length === 2) {
+                  setWeekendState([])
+                  return;
+                }
+                if (weekendState.includes("суббота")) {
+                  setWeekendState(["воскресенье"])
+                }
+              }}
+              name=''
             >
               СБ
             </NestedCheckbox>
             <NestedCheckbox
-              checked={loadingOnSunday}
-              setChecked={setValue}
-              name='loadingOnSunday'
+              checked={!!weekendState.includes("воскресенье")}
+              setChecked={() => {
+                if (!weekendState.length) {
+                  setWeekendState(prev => [...prev, "воскресенье"])
+                }
+              }}
+              name=''
             >
               ВС
             </NestedCheckbox>
@@ -87,9 +131,28 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           weight={TextWeight.BOLD}
           size={TextSize.XL}
         >
-          Где происходит погрузка
+          Хартия
         </Text>
-        <Input placeholder='Где будет осуществляться погрузка' />
+        <div className={styles.inputsRowWithGap}>
+          <Controller
+            name="is_full_charter"
+            control={control}
+            render={({ field: { value, name } }) => (
+              <RadioButton checked={value === true} onChange={() => setValue(name, true)}>
+                Полная
+              </RadioButton>
+            )}
+          />
+          <Controller
+            name="is_full_charter"
+            control={control}
+            render={({ field: { value, name } }) => (
+              <RadioButton checked={value === false} onChange={() => setValue(name, false)}>
+                Не полная
+              </RadioButton>
+            )}
+          />
+        </div>
       </div>
       <div className={styles.buttonsContainer}>
         <Button className={styles.additionalButton} onClick={toMainPart}>

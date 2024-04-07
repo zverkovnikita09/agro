@@ -1,6 +1,5 @@
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
 import ArrowDown from "@images/chevron-down.svg";
-import { Button } from "@shared/ui/Button";
 /* import { IoClose } from "react-icons/io5"; */
 import cn from 'classnames'
 import { ErrorBlock } from "../ErrorBlock";
@@ -76,54 +75,56 @@ export const Select = (props: SelectProps) => {
 
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleTogglerClick = (event: React.MouseEvent<HTMLElement>) => {
     setDropdownAnchorEl(dropdownAnchorEl ? null : event.currentTarget);
   };
 
-  const handleClose = () => setDropdownAnchorEl(null);
+  const handleCloseDropdown = () => setDropdownAnchorEl(null);
 
   const isDropdownOpen = Boolean(dropdownAnchorEl);
 
-  const addValue = useCallback((selectValue: string) => () => {
+  const addValue = useCallback((selectValue: unknown) => () => {
     if (multiple) {
       setValue([...(value ?? []), selectValue]);
-      handleClose()
+      handleCloseDropdown()
       return;
     }
 
     setValue(selectValue);
   }, [value])
 
-  const deleteValue = useCallback((selectValue: string) => () => {
-    if (multiple) {
-      setValue(value?.filter(item => item !== selectValue) ?? [])
-    }
-  }, [value])
+  /*  const deleteValue = useCallback((selectValue: string) => () => {
+     if (multiple) {
+       setValue(value?.filter(item => item !== selectValue) ?? [])
+     }
+   }, [value]) */
 
   const isOptionTypeArray = (options: (unknown | OptionType)[]): options is OptionType[] => {
     return !!(options?.length && (options[0] as OptionType)?.name)
   }
 
   const valueToShow = (value: unknown) => {
+    if(typeof value === "undefined") return ""
+
     if (isOptionTypeArray(options)) {
       return (options.find(item => (item as OptionType).value === value) as OptionType)?.name || ''
     }
 
-    if (!options.length) {
+    /* if (!options?.length) {
       return value
-    }
+    } */
 
-    return value
+    return String(value)
   }
 
   useEffect(() => {
     if (multiple) {
-      const stringOptions = isOptionStringArray(options) ? options : options.map(option => (option as OptionType).value);
+      const stringOptions = isOptionTypeArray(options) ? options.map(option => option.value) : options;
       const newOptions = stringOptions.filter(option => !(value?.includes(option) ?? true));
       setAvailableOptions(
-        isOptionStringArray(options)
-          ? newOptions
-          : newOptions.map(option => options.find(item => (item as OptionType).value === option)!)
+        isOptionTypeArray(options)
+          ? newOptions.map(option => options.find(item => item.value === option))
+          : newOptions
       )
     }
   }, [value])
@@ -134,11 +135,11 @@ export const Select = (props: SelectProps) => {
   }
 
   useEffect(() => {
-    setInputValue(multiple ? value?.join("") : String(value))
+    setInputValue(typeof value !== 'undefined' ? multiple ? value?.join("") : String(value) : "")
   }, [isDropdownOpen])
 
   return (
-    <ClickAwayListener onClickAway={handleClose}>
+    <ClickAwayListener onClickAway={handleCloseDropdown}>
       <div className={cn(style.select, className,
         { [style.fullWidth]: fullWidth },
         { [style.noArrow]: noArrow }
@@ -152,8 +153,9 @@ export const Select = (props: SelectProps) => {
             onChange={handleInputChange}
             autoComplete={"off"}
             label={label}
-            fixLabel={typeof value === "string" ? !!value : !!value?.length}
+            fixLabel={Array.isArray(value) ? !!value?.length : (typeof value !== 'undefined' && !!String(value))}
             onFocus={() => {
+              //to fix for optiontype
               if (typeof value === 'string' && value) onSearchInput?.(value);
             }}
           />
@@ -171,11 +173,11 @@ export const Select = (props: SelectProps) => {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           ref={elementRef}
-          onClick={handleClick}
+          onClick={handleTogglerClick}
         >
           {label &&
             <label className={cn(style.label,
-              { [style.fixed]: (multiple ? !!value?.length : !!String(value)) },
+              { [style.fixed]: (Array.isArray(value) ? !!value?.length : (typeof value !== 'undefined' && !!String(value))) },
               { [style.focused]: isDropdownOpen },
               { [style.withInput]: withInputSearch }
             )}
@@ -186,14 +188,11 @@ export const Select = (props: SelectProps) => {
           {!noArrow && <ArrowDown
             className={cn(style.arrowDown, { [style.rotated]: isDropdownOpen })}
           />}
-          {!multiple && <Text className={cn(style.togglerText)} size={TextSize.L}>{(valueToShow(value ?? '') || placeholder)}</Text>}
+          {!multiple && <Text className={cn(style.togglerText)} size={TextSize.L}>{(valueToShow(value) || placeholder)}</Text>}
           {multiple && (value?.length ?
-            (value.map((item) => (
-              <div key={item} className={style.valueItem} onClick={e => e.stopPropagation()}>
-                {valueToShow(item)}
-                <Button onClick={deleteValue(item)}>{/* <IoClose /> */}</Button>
-              </div>
-            )))
+            <Text className={cn(style.togglerText)} size={TextSize.L}>
+              {(value.map((item) => valueToShow(item))).join(", ")}
+            </Text>
             : placeholder)}
           <Popper
             open={isDropdownOpen && !hideOptions && (withInputSearch ? inputValue.length >= minLengthForOptions : true)}
@@ -210,25 +209,25 @@ export const Select = (props: SelectProps) => {
             ]}
           >
             {(multiple ? availableOptions : options)?.length
-              ? (multiple ? availableOptions : options).map((option) => {
-                if (typeof option === "string") {
+              ? (multiple ? availableOptions : options).map((option, index) => {
+                if (isOptionTypeArray(options)) {
                   return (
                     <div
-                      key={option}
-                      className={cn(style.item, { [style.selected]: option === value })}
-                      onClick={addValue(option)}
+                      key={(option as OptionType).name}
+                      className={cn(style.item, { [style.selected]: (option as OptionType).value === value })}
+                      onClick={addValue((option as OptionType).value)}
                     >
-                      {option}
+                      {(option as OptionType).name}
                     </div>
                   )
                 }
                 return (
                   <div
-                    key={option.name}
-                    className={cn(style.item, { [style.selected]: option.value === value })}
-                    onClick={addValue(option.value)}
+                    key={index}
+                    className={cn(style.item, { [style.selected]: option === value })}
+                    onClick={addValue(option)}
                   >
-                    {option.name}
+                    {String(option)}
                   </div>
                 )
               })
