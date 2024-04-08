@@ -1,8 +1,8 @@
 import { sendData, sendDataParams } from "@shared/lib/api";
 /* import {NotificationType, useNotification} from "@providers/NotificationsProvider"; */
 import { useState } from "react";
-import {useSelector} from "react-redux";
-import {UserSelectors} from "@entities/User";
+import { useSelector } from "react-redux";
+import { UserSelectors } from "@entities/User";
 import { Nullable } from "@shared/lib/globalTypes";
 /* import {useSession} from "next-auth/react"; */
 
@@ -26,14 +26,14 @@ export const useSendData = <DataType extends {}>
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<Nullable<string>>(null);
-  const [responseData, setResponseData] = useState<DataType>();
+  const [responseData, setResponseData] = useState<any>();
   const token = useSelector(UserSelectors.selectToken);
   /* const {addNotification} = useNotification(); */
 
 
   const handleSendData = async (data: DataType) => {
     try {
-      const headersWithAuth = (withAuthToken && token) ? {...headers, Authorization: `Bearer ${token}`} : headers;
+      const headersWithAuth = (withAuthToken && token) ? { ...headers, Authorization: `Bearer ${token}` } : headers;
       setIsSending(true);
       const response = await sendData({ data, headers: headersWithAuth, ...otherParams })
 

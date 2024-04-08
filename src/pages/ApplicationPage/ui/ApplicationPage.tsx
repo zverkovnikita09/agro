@@ -63,7 +63,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     nds_percent,
     outage_begin,
     outage_price,
-    scale_lenght,
+    scale_length,
     tariff,
     terminal_address,
     terminal_inn,
@@ -215,7 +215,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Длина весов</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{scale_lenght} м</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{scale_length} м</Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Ограничения по

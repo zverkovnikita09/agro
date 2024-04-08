@@ -9,28 +9,24 @@ import { Controller, useForm } from 'react-hook-form'
 import { RadioButton } from '@shared/ui/RadioButton'
 import { useContext, useEffect, useState } from 'react'
 import { NewApplicationContext } from './NewApplication'
+import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 
 interface AdditionalStepOneProps {
   prevStep: () => void
   toMainPart: () => void
+  isLoading?: boolean
 }
 
 export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
-  const { toMainPart, prevStep } = props;
+  const { toMainPart, prevStep, isLoading } = props;
 
   const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
-  /* const cargo_price = watch('unl') */ // тип выгрузки
-  const clarification_of_the_weekend = watch("clarification_of_the_weekend") //Сб Вс или СБ и ВС
-  const is_full_charter = watch("is_full_charter")
-
-  // const [weekendState, setWeekendState] = useState<string[]>([])
   const [saturdayState, setSaturdayState] = useState('');
   const [sundayState, setSundayState] = useState('');
 
   useEffect(() => {
     setValue("clarification_of_the_weekend", [saturdayState, sundayState].filter(Boolean).join(" и "))
-
   }, [saturdayState, sundayState])
 
   return (
@@ -42,7 +38,20 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
         >
           Тип выгрузки
         </Text>
-        <Select placeholder='Выберите тип выгрузки' options={[]} value={''} setValue={() => { }} />
+        <Controller
+              name="unload_method"
+              control={control}
+              render={({ field: { value, name, onChange, onBlur } }) => (
+                <InputAutocomplete
+                  name={name}
+                  label='Выберите тип выгрузки'
+                  value={value}
+                  setValue={onChange}
+                  onBlur={onBlur}
+                  autocompleteItems={["Боковая", "Задняя", "Самосвальная задняя", "Самосвальная боковая"]}
+                />
+              )}
+            />
       </div>
       <div className={styles.inputBlock}>
         <Text
@@ -122,7 +131,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
             name="is_full_charter"
             control={control}
             render={({ field: { value, name } }) => (
-              <RadioButton checked={value === true} onChange={() => setValue(name, true)}>
+              <RadioButton checked={value === 1} onChange={() => setValue(name, 1)}>
                 Полная
               </RadioButton>
             )}
@@ -131,7 +140,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
             name="is_full_charter"
             control={control}
             render={({ field: { value, name } }) => (
-              <RadioButton checked={value === false} onChange={() => setValue(name, false)}>
+              <RadioButton checked={value === 0} onChange={() => setValue(name, 0)}>
                 Не полная
               </RadioButton>
             )}
@@ -155,6 +164,8 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
           size={ButtonSize.S}
           className={styles.button}
+          isLoading={isLoading}
+          type='submit'
         >
           Создать заявку
         </Button>

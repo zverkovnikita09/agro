@@ -6,7 +6,7 @@ import { ClickAwayListener, Popper } from '@mui/material';
 
 interface InputAutocompleteProps extends Omit<InputProps, "onChange"> {
   autocompleteItems: string[];
-  value: string;
+  value?: string;
   setValue: (value: string) => void;
   onBlur?: () => void;
 }

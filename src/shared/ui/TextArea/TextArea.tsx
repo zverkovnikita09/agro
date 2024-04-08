@@ -56,6 +56,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           id={id}
           className={cn(style.textField, className, style[theme], { [style.error]: error })}
           onChange={onValueChange}
+          value={value}
           style={{ height: defaultHeight, maxHeight: maxSize }}
           {...otherProps}
         />

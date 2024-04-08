@@ -13,7 +13,7 @@ export interface ApplicationModel {
   exporter_inn: string;
   is_semi_truck: boolean;
   is_tonar: boolean;
-  scale_lenght: number;
+  scale_length: number;
   height_limit: number;
   is_overload: boolean;
   timeslot: string;
@@ -45,5 +45,6 @@ export interface ApplicationModel {
   description?: string;
   load_types: string[];
   order_number: number;
-  is_full_charter?: boolean;
+  is_full_charter?: number;
+  unload_method?: string;
 }

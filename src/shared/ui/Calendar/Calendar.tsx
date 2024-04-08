@@ -7,13 +7,12 @@ import dayjs from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale'
 import 'dayjs/locale/ru';
 import CalendarIcon from '@images/calendar.svg'
-import { deDE } from '@mui/x-date-pickers/locales';
 
 interface CalendarProps {
   className?: string;
   placeholder?: string;
   value?: string;
-  onChange: (value: dayjs.Dayjs | null) => void
+  onChange: (value: string | undefined) => void
 }
 
 const popperSx = {
@@ -146,8 +145,8 @@ export const Calendar = (props: CalendarProps) => {
         /* defaultValue={dayjs(new Date())} */
         className={cn(styles.calendar, className)}
         dayOfWeekFormatter={(weekday) => `${weekday.format('dd')}`}
-        /* value={dayjs(value)} */
-        /*  onChange={(value) => onChange(value?.format("DD.MM.YYYY"))} */
+        value={value ? dayjs(value, "YYYY-MM-DD") : null}
+        onChange={(value) => onChange(value?.format("YYYY-MM-DD"))}
         sx={{
           "& .MuiOutlinedInput-root": {
             border: 'none',

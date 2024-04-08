@@ -12,10 +12,11 @@ import { Controller } from 'react-hook-form'
 interface FormStepThreeProps {
   prevStep: () => void
   toAdditional: () => void
+  isLoading?: boolean
 }
 
 export const FormStepThree = (props: FormStepThreeProps) => {
-  const { prevStep, toAdditional } = props;
+  const { prevStep, toAdditional, isLoading } = props;
   const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
   const outage_begin = watch('outage_begin') // начало простоя
@@ -124,7 +125,7 @@ export const FormStepThree = (props: FormStepThreeProps) => {
         <Controller
           name="description"
           control={control}
-          render={({ field: { value, name, onChange, onBlur } }) => (
+          render={({ field: { value, onChange, onBlur } }) => (
             <TextArea
               placeholder='Укажите доп. информацию'
               value={value}
@@ -152,6 +153,7 @@ export const FormStepThree = (props: FormStepThreeProps) => {
           size={ButtonSize.S}
           className={styles.button}
           type='submit'
+          isLoading={isLoading}
         >
           Создать заявку
         </Button>

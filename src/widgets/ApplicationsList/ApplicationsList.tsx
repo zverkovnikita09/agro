@@ -23,13 +23,13 @@ export const ApplicationsList = (props: ApplicationsListProps) => {
 
   return (
     <div className={cn(styles.applicationsList, className)}>
-      {applications?.map(({ id, ...props }, index) => (
+      {applications?.map(({ id, order_number, ...props }, index) => (
         <Application
           id={id}
           key={id}
           status={StatusType.ACTIVE}
           {...props}
-          order_number={index + 1}
+          order_number={order_number}
         />
         )
       )}
