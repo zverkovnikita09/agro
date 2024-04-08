@@ -278,7 +278,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Тип выгрузки</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_place_name}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_method}</Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Время работы</Text>
@@ -286,7 +286,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Хартия</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{is_full_charter ? "Полная" : "Не полная"}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{typeof is_full_charter !== "undefined" ? is_full_charter ? "Полная" : "Не полная" : "Не указано"}</Text>
             </div>
           </div>
         </CardContainer>
