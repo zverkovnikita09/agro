@@ -92,7 +92,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
           Заявка №{order_number}
         </Title>
         <Text as='p' size={TextSize.L} color={TextColor.GREY}>
-          от: {start_order_at}
+          от: {created_at}
         </Text>
         <Button
           className={styles.headingButton}
