@@ -100,7 +100,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
         </div>
         <div className={styles.inputsRowWithGap}>
           <MultiCheckbox hideNested>
-            <ControlCheckbox>Все</ControlCheckbox>
+            <ControlCheckbox>Грузят в выходные</ControlCheckbox>
             <NestedCheckbox
               checked={!!saturdayState}
               className={styles.nestedCheckbox}

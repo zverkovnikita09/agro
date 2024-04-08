@@ -77,6 +77,8 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     unload_place_name,
     volume,
     work_time,
+    is_full_charter,
+    unload_method
   } = applicationInfo ?? {}
 
   const tariffWithNds = tariff && nds_percent ? Math.ceil(tariff * nds_percent / 100 + tariff) : '-';
@@ -171,7 +173,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             icon={ApplicationIcons.BOX_3D}
             iconColor={ApplicationIconColor.ACCENT}
           >
-            {cargo_weight} тонн
+            {volume} тонн
           </ApplicationProperty>
           <ApplicationProperty
             className={styles.cargoInfo__item}
@@ -260,13 +262,13 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
         <CardContainer className={styles.cardContainer} titleName='Дополнительные параметры'>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза в процентах</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate} %</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate} {unit_of_measurement_for_cargo_shortage_rate}</Text>
             </div>
-            <div className={styles.infoItem}>
+            {/* <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза в килограммах</Text>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate} кг</Text>
-            </div>
+            </div> */}
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Стоимость груза</Text>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_price} ₽</Text>
@@ -289,7 +291,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Хартия</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>Полная</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{is_full_charter ? "Полная" : "Не полная"}</Text>
             </div>
           </div>
         </CardContainer>
