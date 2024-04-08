@@ -258,7 +258,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortrage_rate} {unit_of_measurement_for_cargo_shortage_rate}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate} {unit_of_measurement_for_cargo_shortage_rate}</Text>
             </div>
             {/* <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза в килограммах</Text>
