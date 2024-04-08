@@ -95,13 +95,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const defaultInput = (additionalProps?: InputHTMLAttributes<HTMLInputElement>) => <input
     id={id}
     type={type}
-    value={value}
+    value={!disabled ? value : undefined}
     className={cn(style.textField, ...additionalInputClasses)}
     ref={inputRef}
     placeholder={!label ? placeholder : undefined}
     onFocus={handleFocus}
     onBlur={handleBlur}
-    onChange={!disabled ? onChange : undefined}
+    onChange={onChange}
     disabled={disabled}
     {...additionalProps}
     {...otherProps}
@@ -117,11 +117,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           className={cn(style.textField, ...additionalInputClasses)}
           inputRef={inputRef}
           maskChar={maskChar}
-          value={value}
+          value={!disabled ? value : undefined}
           placeholder={!label ? placeholder : undefined}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          onChange={!disabled ? onChange : undefined}
+          onChange={onChange}
           disabled={disabled}
           {...otherProps}
         /> :

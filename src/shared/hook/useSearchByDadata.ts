@@ -14,7 +14,7 @@ interface useSearchByDadataProps<T> {
 export const useSearchByDadata = <T extends {}>({ query, target, queryParams, debounceTime = 300, minQueryLength = 1, onSuccess }: useSearchByDadataProps<T>) => {
   const { handleSendData, isError, isSuccess, responseData, isSending } = useSendData(
     {
-      url: `http://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/${target}`,
+      url: `https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/${target}`,
       baseUrl: "",
       headers: {
         Authorization: `Token ${process.env.DADATA_TOKEN}}`,

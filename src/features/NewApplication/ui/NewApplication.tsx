@@ -14,8 +14,11 @@ import { CloseButton } from '@shared/ui/CloseButton';
 import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
 import { Control, UseFormRegister, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
 import { ApplicationModel } from '@entities/Application/model/application.model';
-import {Stepper} from "@shared/ui/Stepper";
-import {Step} from "@shared/ui/Stepper/Step";
+import { Stepper } from "@shared/ui/Stepper";
+import { Step } from "@shared/ui/Stepper/Step";
+import { useSendData } from '@shared/hook/useSendData';
+import CheckedIcon from "@images/check-broken.svg";
+import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text';
 
 interface NewApplicationProps {
   className?: string;
@@ -32,7 +35,7 @@ export const NewApplicationContext = createContext<NewApplicationContextPros>({}
 
 export const NewApplication = (props: NewApplicationProps) => {
   const { className } = props;
-  const [formStep, setFormStep] = useState(2);
+  const [formStep, setFormStep] = useState(1);
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -43,28 +46,34 @@ export const NewApplication = (props: NewApplicationProps) => {
     else navigate("/")
   }
 
-  const { handleSubmit, watch, control, register, setValue } = useForm<ApplicationModel>({ mode: "onBlur", defaultValues: {
-    /* nds_percent: 0,
-    volume: 0,
-    tariff: 0 */
-    unit_of_measurement_for_cargo_shortage_rate: "%"
-  } });
+  const { handleSubmit, watch, control, register, setValue } = useForm<ApplicationModel>({
+    mode: "onBlur", defaultValues: {
+      /* nds_percent: 0,
+      volume: 0,
+      tariff: 0 */
+      unit_of_measurement_for_cargo_shortage_rate: "%"
+    }
+  });
 
   const changeStep = (number: number) => () => setFormStep(number)
+
+  const { handleSendData, isSuccess, isSending, responseData } = useSendData(
+    { url: "/api/v1/orders/create", withAuthToken: true }
+  )
 
   const FormContent = () => {
     switch (formStep) {
       case 1: return <FormStepOne onCancel={closeForm} />
       case 2: return <FormStepTwo prevStep={changeStep(1)} />
-      case 3: return <FormStepThree prevStep={changeStep(2)} toAdditional={changeStep(4)} />
+      case 3: return <FormStepThree prevStep={changeStep(2)} toAdditional={changeStep(4)} isLoading={isSending} />
       case 4: return <AdditionalStepOne toMainPart={changeStep(3)} />
-      case 5: return <AdditionalStepTwo toMainPart={changeStep(3)} prevStep={changeStep(4)} />
+      case 5: return <AdditionalStepTwo toMainPart={changeStep(3)} prevStep={changeStep(4)} isLoading={isSending} />
       default: return null
     }
   }
 
-  const onFormSend = () => {
-
+  const onFormSend = (data: ApplicationModel) => {
+    handleSendData(data)
   }
 
   const onSubmit = () => {
@@ -87,6 +96,34 @@ export const NewApplication = (props: NewApplicationProps) => {
   };
 
   useDocumentEvent('keydown', closeOnEsc);
+
+  console.log(responseData);
+  
+
+  if (isSuccess) return (
+    <div className={cn(styles.newApplication, className)}>
+      <div className={styles.successPopup}>
+        <CheckedIcon width={46} height={40} />
+        <div className={styles.successContent}>
+          <Text
+            as="p"
+            size={TextSize.XL}
+            weight={TextWeight.SEMI_BOLD}
+          >
+            Заявка №{responseData?.data?.[0]?.order_number ?? ""} создана
+          </Text>
+          <Text
+            as="p"
+            size={TextSize.M}
+            weight={TextWeight.MEDIUM}
+            color={TextColor.GREY}
+          >
+            Вы успешно создали заявку, она скоро появится в общем списке
+          </Text>
+        </div>
+      </div>
+    </div>
+  )
 
   return (
     <div className={cn(styles.newApplication, className)}>

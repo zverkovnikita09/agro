@@ -1,48 +1,47 @@
-import {Text, TextSize, TextWeight} from '@shared/ui/Text'
+import { Text, TextSize, TextWeight } from '@shared/ui/Text'
 import styles from './NewApplication.module.scss'
-import {Input} from '@shared/ui/Input'
-import {Select} from '@shared/ui/Select'
-import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button'
-import {Checkbox} from '@shared/ui/Checkbox'
-import {MultiCheckbox} from '@shared/ui/MultiCheckbox'
-import {ControlCheckbox} from '@shared/ui/MultiCheckbox/ControlCheckbox'
-import {Controller, useForm} from 'react-hook-form'
-import {NestedCheckbox} from '@shared/ui/MultiCheckbox/NestedCheckbox'
-import {useContext} from 'react'
-import {NewApplicationContext} from './NewApplication'
-import {InputAutocomplete} from '@shared/ui/InputAutocomplete'
-import {useGetData} from "@shared/hook/useGetData";
+import { Input } from '@shared/ui/Input'
+import { Select } from '@shared/ui/Select'
+import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
+import { Checkbox } from '@shared/ui/Checkbox'
+import { MultiCheckbox } from '@shared/ui/MultiCheckbox'
+import { ControlCheckbox } from '@shared/ui/MultiCheckbox/ControlCheckbox'
+import { Controller, useForm } from 'react-hook-form'
+import { NestedCheckbox } from '@shared/ui/MultiCheckbox/NestedCheckbox'
+import { useContext, useState } from 'react'
+import { NewApplicationContext } from './NewApplication'
+import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
+import { useGetData } from "@shared/hook/useGetData";
+import { ErrorBlock } from '@shared/ui/ErrorBlock'
 
 interface FormStepTwoProps {
   prevStep: () => void
 }
 
 export const FormStepTwo = (props: FormStepTwoProps) => {
-  const {prevStep} = props;
-  const {control, watch, setValue, register} = useContext(NewApplicationContext);
+  const { prevStep } = props;
+  const { control, watch } = useContext(NewApplicationContext);
 
-  const {data: loadMethodOptions} = useGetData<string[]>({url: '/api/v1/load_methods', dataFlag: true})
+  const { data: loadMethodOptions } = useGetData<string[]>({ url: '/api/v1/load_methods', dataFlag: true })
 
-  const {data: loadTypes} = useGetData<{ id: string, title: string }>({url: '/api/v1/load_types', dataFlag: true})
+  const { data: loadTypes } = useGetData<{ id: string, title: string }[]>({ url: '/api/v1/load_types', dataFlag: true })
 
   const tariff = watch('tariff');
   const nds_percent = watch('nds_percent');
 
   const load_types = watch("load_types"); //массив id (чекбоксы)
 
-  const tolerance_to_the_norm = watch("tolerance_to_the_norm") //допуск к норме
-
   const toleranceToTheNormOptions = [
-    {name: "1%", value: 1},
-    {name: "2%", value: 2},
-    {name: "3%", value: 3},
-    {name: "4%", value: 4},
-    {name: "5%", value: 5},
-    {name: "6%", value: 6},
-    {name: "7%", value: 7},
-    {name: "8%", value: 8},
-    {name: "9%", value: 9},
-    {name: "10%", value: 10},
+    { name: "1%", value: 1 },
+    { name: "2%", value: 2 },
+    { name: "3%", value: 3 },
+    { name: "4%", value: 4 },
+    { name: "5%", value: 5 },
+    { name: "6%", value: 6 },
+    { name: "7%", value: 7 },
+    { name: "8%", value: 8 },
+    { name: "9%", value: 9 },
+    { name: "10%", value: 10 },
   ]
 
   return (
@@ -59,8 +58,8 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             <Controller
               name="crop"
               control={control}
-              rules={{required: "Поле обязательно к заполнению"}}
-              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              rules={{ required: "Поле обязательно к заполнению" }}
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
                 <InputAutocomplete
                   name={name}
                   label='Выберите груз'
@@ -78,9 +77,9 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
                 control={control}
                 rules={{
                   required: "Поле обязательно к заполнению",
-                  min: {value: 1, message: "Тариф должен быть натуральным числом"}
+                  min: { value: 1, message: "Тариф должен быть натуральным числом" }
                 }}
-                render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+                render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
                   <Input
                     label='Тариф за перевозку ₽/Т Без НДС'
                     type='number'
@@ -103,8 +102,8 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             <Controller
               name="distance"
               control={control}
-              rules={{required: false, min: {value: 1, message: "Расстояние перевозки должно быть натуральным числом"}}}
-              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              rules={{ required: false, min: { value: 1, message: "Расстояние перевозки должно быть натуральным числом" } }}
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
                 <Input
                   label='Расстояние перевозки / км'
                   type='number'
@@ -122,9 +121,9 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
               control={control}
               rules={{
                 required: "Поле обязательно к заполнению",
-                min: {value: 1, message: "Объем должен быть натуральным числом"}
+                min: { value: 1, message: "Объем должен быть натуральным числом" }
               }}
-              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
                 <Input
                   label='Общий объем груза / Т'
                   type='number'
@@ -138,8 +137,8 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             <Controller
               name="nds_percent"
               control={control}
-              rules={{required: false, min: {value: 1, message: "НДС должен быть натуральным числом"}}}
-              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              rules={{ required: false, min: { value: 1, message: "НДС должен быть натуральным числом" } }}
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
                 <Input
                   label='Укажите ставку НДС %'
                   type='number'
@@ -155,9 +154,9 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
               control={control}
               rules={{
                 required: false,
-                min: {value: 1, message: "Суточная норма погрузки должна быть натуральным числом"}
+                min: { value: 1, message: "Суточная норма погрузки должна быть натуральным числом" }
               }}
-              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
                 <Input
                   label='Суточная норма поргрузки / Т'
                   type='number'
@@ -178,31 +177,39 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
         >
           Детали погрузки
         </Text>
-        <div className={styles.inputsRow}>
-          {/*<MultiCheckbox hideNested>*/}
-          {/*  <ControlCheckbox>Любой</ControlCheckbox>*/}
-
-          {/*  {load_types.map(() => (*/}
-          {/*    <NestedCheckbox*/}
-          {/*      checked={}*/}
-          {/*      className={styles.nestedCheckbox}*/}
-          {/*      setChecked={}*/}
-          {/*      name='saturday'*/}
-          {/*    >*/}
-          {/*      СБ*/}
-          {/*    </NestedCheckbox>*/}
-          {/*  ))}*/}
-          {/*</MultiCheckbox>*/}
-          {/* <Checkbox checked={scepky} setChecked={setValue} name='scepky'>Сцепки</Checkbox>
-          <Checkbox checked={any} setChecked={setValue} name='any'>Полуприцеп</Checkbox>
-          <Checkbox checked={scepky} setChecked={setValue} name='scepky'>Тонар</Checkbox> */}
-        </div>
+        {/* <div className={styles.inputsRowWithGap}>
+          <Controller
+            name="load_types"
+            control={control}
+            rules={{
+              required: "Необходимо выбрать один из вариантов",
+            }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <div>
+                <MultiCheckbox hideNested>
+                  <ControlCheckbox>Любой</ControlCheckbox>
+                  {loadTypes?.map(({ id, title }) => (
+                    <NestedCheckbox
+                      checked={!!saturdayState}
+                      className={styles.nestedCheckbox}
+                      setChecked={() => setSaturdayState(prev => prev ? '' : 'суббота')}
+                      name={title}
+                    >
+                      {title}
+                    </NestedCheckbox>
+                  ))}
+                </MultiCheckbox>
+                {errors[name]?.message && <ErrorBlock>{errors[name]!.message!}</ErrorBlock>}
+              </div>
+            )}
+          />
+        </div> */}
         <div className={styles.inputsThreeRow}>
           <Controller
             name="load_method"
             control={control}
-            rules={{required: "Поле обязательно к заполнению"}}
-            render={({field: {value, name, onChange}, formState: {errors}}) => (
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
               <Select
                 label='Способ погрузки'
                 options={loadMethodOptions ?? []}
@@ -213,13 +220,13 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             )}
           />
           <Controller
-            name="scale_lenght"
+            name="scale_length"
             control={control}
             rules={{
               required: "Поле обязательно к заполнению",
-              min: {value: 1, message: "Длина весов должна быть натуральным числом"}
+              min: { value: 1, message: "Длина весов должна быть натуральным числом" }
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Длина весов / м'
                 type='number'
@@ -235,9 +242,9 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             control={control}
             rules={{
               required: "Поле обязательно к заполнению",
-              min: {value: 1, message: "Ограничение по высоте должно быть натуральным числом"}
+              min: { value: 1, message: "Ограничение по высоте должно быть натуральным числом" }
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Ограничение по высоте / м'
                 type='number'
@@ -261,7 +268,7 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
           <Controller
             name="tolerance_to_the_norm"
             control={control}
-            render={({field: {value, onChange}}) => (
+            render={({ field: { value, onChange } }) => (
               <Select
                 label='Укажите допуск к норме %'
                 options={toleranceToTheNormOptions}
@@ -273,10 +280,10 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
           <Controller
             name="is_overload"
             control={control}
-            render={({field: {value, onChange}}) => (
+            render={({ field: { value, onChange } }) => (
               <Select
                 label='Возможность перегруза'
-                options={[{name: "Да", value: true}, {name: "Нет", value: false}]}
+                options={[{ name: "Да", value: 1 }, { name: "Нет", value: 0 }]}
                 value={value}
                 setValue={onChange}
               />

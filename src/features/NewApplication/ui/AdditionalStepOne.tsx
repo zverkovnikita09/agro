@@ -8,6 +8,7 @@ import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
 import { RadioButton } from '@shared/ui/RadioButton'
 import { Select } from '@shared/ui/Select'
+import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 
 interface AdditionalStepOneProps {
   toMainPart: () => void
@@ -18,7 +19,6 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
 
   const { control, watch, setValue, register } = useContext(NewApplicationContext);
 
-  const cargo_price = watch('cargo_price') // стоимость груза
   const load_place = watch('load_place') // где происходит погрузка
 
   const unit_of_measurement_for_cargo_shortage_rate = watch('unit_of_measurement_for_cargo_shortage_rate')
@@ -69,35 +69,58 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
           )}
         />
       </div>
-      <div className={styles.inputBlock}>
-        <Text
-          weight={TextWeight.BOLD}
-          size={TextSize.XL}
-        >
-          Стоимость груза
-        </Text>
-        <Controller
-          name="cargo_price"
-          control={control}
-          rules={{ required: false, min: { value: 1, message: "Стоимость груза должна быть натуральным числом" } }}
-          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-            <Input
-              label='Укажите стоимость груза ₽/Т'
-              type='number'
-              value={value}
-              onChange={onChange}
-              onBlur={onBlur}
-              error={errors[name]?.message as string}
-            />
-          )}
-        />
+      <div className={styles.inputsRow}>
+        <div className={styles.inputBlock}>
+          <Text
+            weight={TextWeight.BOLD}
+            size={TextSize.XL}
+          >
+            Стоимость груза
+          </Text>
+          <Controller
+            name="cargo_price"
+            control={control}
+            rules={{ required: false, min: { value: 1, message: "Стоимость груза должна быть натуральным числом" } }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Укажите стоимость груза ₽/Т'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+        </div>
+        <div className={styles.inputBlock}>
+          <Text
+            weight={TextWeight.BOLD}
+            size={TextSize.XL}
+          >
+            Где происходит погрузка
+          </Text>
+          <Controller
+            name="load_place"
+            control={control}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <InputAutocomplete
+                label='Где будет осуществляться погрузка'
+                value={value}
+                setValue={onChange}
+                onBlur={onBlur}
+                autocompleteItems={["Склад", "Ток", "Поле", "Элеватор"]}
+              />
+            )}
+          />
+        </div>
       </div>
       <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}
           size={TextSize.XL}
         >
-          Где происходит погрузка
+          Подъезд
         </Text>
         {/* <Controller
             name="is_overload"
