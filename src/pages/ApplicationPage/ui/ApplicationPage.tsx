@@ -39,7 +39,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     description,
     approach,
     cargo_price,
-    cargo_shortrage_rate,
+    cargo_shortage_rate,
     clarification_of_the_weekend,
     contact_name,
     contact_phone,

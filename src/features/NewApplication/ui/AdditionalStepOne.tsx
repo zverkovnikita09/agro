@@ -54,7 +54,7 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
           />
         </div>
         <Controller
-          name="cargo_shortrage_rate"
+          name="cargo_shortage_rate"
           control={control}
           rules={{ required: false, min: { value: 1, message: "Норма недостачи должна быть натуральным числом" } }}
           render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (

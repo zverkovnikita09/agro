@@ -20,7 +20,7 @@ export interface ApplicationModel {
   daily_load_rate?: number;
   contact_name: string;
   contact_phone: string;
-  cargo_shortrage_rate?: number;
+  cargo_shortage_rate?: number;
   unit_of_measurement_for_cargo_shortage_rate?: "кг" | "%";
   cargo_price?: number;
   load_place: string;
