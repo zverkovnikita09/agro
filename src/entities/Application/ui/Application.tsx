@@ -23,16 +23,15 @@ export const Application = (props: ApplicationProps) => {
     className,
     id,
     status,
-    start_order_at,
     crop,
     deadlines,
     tariff,
     distance,
-    cargo_weight,
     load_place_name,
     unload_place_name,
     order_number,
     created_at,
+    volume
   } = props;
 
   return (
@@ -91,7 +90,7 @@ export const Application = (props: ApplicationProps) => {
             <ApplicationProperty
               icon={ApplicationIcons.BOX_3D}
             >
-              {cargo_weight} тонн
+              {volume} тонн
             </ApplicationProperty>
           </div>
         </div>
