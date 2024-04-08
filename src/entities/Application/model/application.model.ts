@@ -11,8 +11,6 @@ export interface ApplicationModel {
   terminal_inn: string;
   exporter_name: string;
   exporter_inn: string;
-  is_semi_truck: boolean;
-  is_tonar: boolean;
   scale_length: number;
   height_limit: number;
   is_overload: boolean;
@@ -23,7 +21,6 @@ export interface ApplicationModel {
   contact_name: string;
   contact_phone: string;
   cargo_shortrage_rate?: number;
-  cargo_shortage_rate: number;
   unit_of_measurement_for_cargo_shortage_rate?: "кг" | "%";
   cargo_price?: number;
   load_place: string;
@@ -47,4 +44,5 @@ export interface ApplicationModel {
   order_number: number;
   is_full_charter?: number;
   unload_method?: string;
+  created_at?: string;
 }

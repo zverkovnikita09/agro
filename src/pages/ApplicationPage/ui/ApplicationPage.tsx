@@ -1,10 +1,10 @@
 import cn from 'classnames';
 import styles from './ApplicationPage.module.scss'
-import {Title, TitleSize} from "@shared/ui/Title";
-import {Text, TextColor, TextSize, TextWeight} from "@shared/ui/Text";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-import {CardContainer} from "@shared/ui/CardContainer";
-import {TrailBlock} from "@shared/ui/TrailBlock";
+import { Title, TitleSize } from "@shared/ui/Title";
+import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { CardContainer } from "@shared/ui/CardContainer";
+import { TrailBlock } from "@shared/ui/TrailBlock";
 import ArrowLeft from "@images/arrow-left.svg"
 import {
   ApplicationIconColor,
@@ -12,13 +12,13 @@ import {
   ApplicationProperty,
   TextPosition
 } from "@shared/ui/ApplicationProperty";
-import {BackButton} from "@shared/ui/BackButton";
-import {RouterPaths} from "@src/app/router";
-import {useParams} from "react-router-dom";
-import {RadialInfo} from "@shared/ui/RadialInfo";
-import {LoadingBlock} from "@shared/ui/LoadingBlock";
-import {useGetData} from "@shared/hook/useGetData";
-import {ApplicationModel} from "@entities/Application/model/application.model";
+import { BackButton } from "@shared/ui/BackButton";
+import { RouterPaths } from "@src/app/router";
+import { useParams } from "react-router-dom";
+import { RadialInfo } from "@shared/ui/RadialInfo";
+import { LoadingBlock } from "@shared/ui/LoadingBlock";
+import { useGetData } from "@shared/hook/useGetData";
+import { ApplicationModel } from "@entities/Application/model/application.model";
 
 interface ApplicationPageProps {
   className?: string;
@@ -29,7 +29,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   const { id } = useParams();
 
-  const {data: applicationInfo, isError, isLoading} = useGetData<ApplicationModel>({url: `/api/v1/orders/${id}`, dataFlag: true})
+  const { data: applicationInfo, isError, isLoading } = useGetData<ApplicationModel>({ url: `/api/v1/orders/${id}`, dataFlag: true })
 
   const {
     order_number,
@@ -40,7 +40,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     approach,
     cargo_price,
     cargo_shortrage_rate,
-    cargo_weight,
     clarification_of_the_weekend,
     contact_name,
     contact_phone,
@@ -51,8 +50,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     exporter_name,
     height_limit,
     is_overload,
-    is_semi_truck,
-    is_tonar,
     load_latitude,
     load_longitude,
     load_method,
@@ -70,15 +67,13 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     terminal_name,
     timeslot,
     tolerance_to_the_norm,
-    cargo_shortage_rate,
     unit_of_measurement_for_cargo_shortage_rate,
-    unload_latitude,
-    unload_longitude,
     unload_place_name,
     volume,
     work_time,
     is_full_charter,
-    unload_method
+    unload_method,
+    created_at
   } = applicationInfo ?? {}
 
   const tariffWithNds = tariff && nds_percent ? Math.ceil(tariff * nds_percent / 100 + tariff) : '-';
@@ -205,7 +200,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
           <div className={cn(styles.infoGrid, styles.detailsGrid)}>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Тип транспорта</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{is_tonar ? 'Тонар' : is_semi_truck ? 'Полуприцеп' : 'Сцепки'}</Text>
+              {/* <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{is_tonar ? 'Тонар' : is_semi_truck ? 'Полуприцеп' : 'Сцепки'}</Text> */}
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Способ погрузки</Text>
@@ -263,7 +258,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate} {unit_of_measurement_for_cargo_shortage_rate}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortrage_rate} {unit_of_measurement_for_cargo_shortage_rate}</Text>
             </div>
             {/* <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза в килограммах</Text>

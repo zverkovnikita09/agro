@@ -31,7 +31,8 @@ export const Application = (props: ApplicationProps) => {
     cargo_weight,
     load_place_name,
     unload_place_name,
-    order_number
+    order_number,
+    created_at,
   } = props;
 
   return (
@@ -42,7 +43,7 @@ export const Application = (props: ApplicationProps) => {
             Заявка №{order_number}
           </Title>
           <Text as='p' size={TextSize.S} color={TextColor.GREY}>
-            от: {start_order_at}
+            от: {created_at}
           </Text>
 
           <div>
