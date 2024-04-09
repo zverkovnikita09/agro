@@ -19,7 +19,6 @@ export const Router = () => (
     <Route path={RouterPaths.MAIN} element={<MainLayout />}>
       <Route path={RouterPaths.CHECKLIST} element={<CheckList />} />
       <Route path={RouterPaths.NEW_APPLICATION} element={<NewApplication />} />
-      <Route path={RouterPaths.CHECKLIST} element={<CheckList />}/>
       <Route path={`${RouterPaths.APPLICATION}/:id`} element={<ApplicationPage />}/>
     </Route>
     <Route path={RouterPaths.LOGIN} element={<RegistrationPage />} />

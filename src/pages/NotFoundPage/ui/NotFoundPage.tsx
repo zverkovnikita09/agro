@@ -1,5 +1,6 @@
 import styles from './NotFoundPage.module.scss'
-import truck from '@images/truck-404.png'
+import truckSmall from '@images/truck-404x1.png'
+import truckBig from '@images/truck-404x2.png'
 import { Title } from '@shared/ui/Title';
 import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text';
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
@@ -7,7 +8,10 @@ import { Link } from 'react-router-dom';
 
 export const NotFoundPage = () => (
   <div className={styles.notFoundPage}>
-    <img src={truck} alt="Грузовой автомобиль" />
+    <picture>
+      <source media="(min-width: 1024px)" srcSet={truckBig}/>
+      <img src={truckSmall} alt="Грузовой автомобиль" />
+    </picture>
     <Title className={styles.title}>Упс!</Title>
     <Text
       size={TextSize.XL}

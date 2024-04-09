@@ -16,6 +16,7 @@ import {Accordion} from "@shared/ui/Accordion";
 import {InputRange} from "@shared/ui/InputRange";
 import {useForm} from "react-hook-form";
 import {Filters} from "@widgets/Filters";
+import {YandexMap} from "@widgets/YandexMap";
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
@@ -61,9 +62,7 @@ export const MainLayout = () => {
     <MainLayoutContext.Provider value={{ openOverlay, closeOverlay }}>
       <div className={cn(styles.overlay, { [styles.active]: isOverlayOpen })} />
       <div className={styles.mainLayout}>
-        <iframe className={styles.map}
-          src="https://yandex.ru/map-widget/v1/?um=constructor%3A092c91191bf318e7ef6c8d42a695041151c46080253a6e3101f230ae4bbe8988&amp;source=constructor"
-          width="100%" height="100%" frameBorder="0" />
+        <YandexMap className={styles.map} />
 
         <div className={styles.header}>
           <Header toggleFiltersOpen={toggleFiltersOpen} isFiltersOpen={isFiltersActive} />

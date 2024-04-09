@@ -77,10 +77,9 @@ export const Application = (props: ApplicationProps) => {
               {crop}
             </ApplicationProperty>
             <ApplicationProperty
-              icon={ApplicationIcons.CARD_COIN}
-              additionalText='Без НДС'
+              icon={ApplicationIcons.BOX_3D}
             >
-              {tariff} ₽
+              {volume} тонн
             </ApplicationProperty>
             <ApplicationProperty
               icon={ApplicationIcons.ROUTING}
@@ -88,9 +87,10 @@ export const Application = (props: ApplicationProps) => {
               {distance} км
             </ApplicationProperty>
             <ApplicationProperty
-              icon={ApplicationIcons.BOX_3D}
+              icon={ApplicationIcons.CARD_COIN}
+              additionalText='Без НДС'
             >
-              {volume} тонн
+              {tariff} ₽
             </ApplicationProperty>
           </div>
         </div>
