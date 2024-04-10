@@ -234,7 +234,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             }
           </div>
         </CardContainer>
-        {outage_begin && (
+        {!!outage_begin && (
           <CardContainer className={styles.cardContainer} titleName='Простой'>
             <div className={styles.infoGrid}>
               <div className={styles.infoItem}>

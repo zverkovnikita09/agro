@@ -21,6 +21,7 @@ import CheckedIcon from "@images/check-broken.svg";
 import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text';
 import { useDispatch } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
+import { RouterPaths } from '@src/app/router';
 
 interface NewApplicationProps {
   className?: string;
@@ -46,7 +47,7 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   const closeForm = () => {
     if (state?.allowPrevUrl) navigate(-1)
-    else navigate("/")
+    else navigate(RouterPaths.MAIN)
   }
 
   const { handleSubmit, watch, control, setValue } = useForm<ApplicationModel>({
@@ -64,7 +65,7 @@ export const NewApplication = (props: NewApplicationProps) => {
       withAuthToken: true,
       onSuccess: (res) => {
         dispatch(addNotification({ message: `Заявка №${res?.data?.[0]?.order_number} создана`, type: NotificationType.Success }));
-        closeForm();
+        navigate(RouterPaths.CHECKLIST)
       }
     }
   )
