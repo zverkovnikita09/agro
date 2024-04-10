@@ -12,13 +12,15 @@ import { MainLayoutContext } from '@shared/ui/MainLayout';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CloseButton } from '@shared/ui/CloseButton';
 import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
-import { Control, UseFormRegister, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
+import { Control, UseFormGetValues, UseFormRegister, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
 import { ApplicationModel } from '@entities/Application/model/application.model';
 import { Stepper } from "@shared/ui/Stepper";
 import { Step } from "@shared/ui/Stepper/Step";
 import { useSendData } from '@shared/hook/useSendData';
 import CheckedIcon from "@images/check-broken.svg";
 import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text';
+import { useDispatch } from 'react-redux';
+import { NotificationType, addNotification } from '@entities/Notifications';
 
 interface NewApplicationProps {
   className?: string;
@@ -26,7 +28,6 @@ interface NewApplicationProps {
 
 interface NewApplicationContextPros {
   watch: UseFormWatch<ApplicationModel>
-  register: UseFormRegister<ApplicationModel>
   control: Control<ApplicationModel, any>
   setValue: UseFormSetValue<ApplicationModel>
 }
@@ -41,24 +42,31 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   const { openOverlay, closeOverlay } = useContext(MainLayoutContext);
 
+  const dispatch = useDispatch();
+
   const closeForm = () => {
     if (state?.allowPrevUrl) navigate(-1)
     else navigate("/")
   }
 
-  const { handleSubmit, watch, control, register, setValue } = useForm<ApplicationModel>({
+  const { handleSubmit, watch, control, setValue } = useForm<ApplicationModel>({
     mode: "onBlur", defaultValues: {
-      /* nds_percent: 0,
-      volume: 0,
-      tariff: 0 */
-      unit_of_measurement_for_cargo_shortage_rate: "%"
+      unit_of_measurement_for_cargo_shortage_rate: "%",
+      distance: Math.floor(Math.random() * (10000 - 500) + 500)
     }
   });
 
   const changeStep = (number: number) => () => setFormStep(number)
 
-  const { handleSendData, isSuccess, isSending, responseData } = useSendData(
-    { url: "/api/v1/orders/create", withAuthToken: true }
+  const { handleSendData, isSending } = useSendData(
+    {
+      url: "/api/v1/orders/create",
+      withAuthToken: true,
+      onSuccess: (res) => {
+        dispatch(addNotification({ message: `Заявка №${res?.data?.[0]?.order_number} создана`, type: NotificationType.Success }));
+        closeForm();
+      }
+    }
   )
 
   const FormContent = () => {
@@ -97,10 +105,7 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   useDocumentEvent('keydown', closeOnEsc);
 
-  console.log(responseData);
-  
-
-  if (isSuccess) return (
+  /* if (isSuccess) return (
     <div className={cn(styles.newApplication, className)}>
       <div className={styles.successPopup}>
         <CheckedIcon width={46} height={40} />
@@ -123,7 +128,7 @@ export const NewApplication = (props: NewApplicationProps) => {
         </div>
       </div>
     </div>
-  )
+  ) */
 
   return (
     <div className={cn(styles.newApplication, className)}>
@@ -137,7 +142,7 @@ export const NewApplication = (props: NewApplicationProps) => {
             <Step value={3} />
           </Stepper>
         }
-        <NewApplicationContext.Provider value={{ watch, control, register, setValue }}>
+        <NewApplicationContext.Provider value={{ watch, control, setValue }}>
           <form className={styles.form} onSubmit={handleSubmit(onSubmit())}>
             {FormContent()}
           </form>

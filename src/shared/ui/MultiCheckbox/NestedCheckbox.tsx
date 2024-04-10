@@ -9,7 +9,8 @@ export const NestedCheckbox = (props: PropsWithChildren<CheckboxProps>) => {
   useEffect(() => {
     setNestedValues((prev) => {
       const idx = prev.findIndex(({ name }) => name === props.name)
-      return [...prev.slice(0, idx), { ...prev[idx], checked: props.checked }, ...prev.slice(idx + 1)]
+      if (idx > -1) return [...prev.slice(0, idx), { ...prev[idx], checked: props.checked }, ...prev.slice(idx + 1)]
+      return prev;
     })
   }, [props.checked]);
 

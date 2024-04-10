@@ -1,11 +1,7 @@
-import { userReduser } from "@entities/User";
 import { configureStore } from "@reduxjs/toolkit";
+import { rootReducer } from "./model/rootReducer";
 
-export const store = configureStore({
-    reducer: {
-        user: userReduser
-    }
-})
+export const store = configureStore({ reducer: rootReducer })
 
 export * from './model/store.model'
 

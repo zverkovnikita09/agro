@@ -1,0 +1,52 @@
+.notificationsItem {
+  width: 415px;
+  padding: 12px 34px 12px 16px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.iconWrapper {
+  display: grid;
+  place-content: center;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.success {
+  color: var(--special-green);
+
+  .iconWrapper {
+    background-color: var(--special-green-light);
+  }
+}
+
+.error {
+  color: var(--error-color);
+
+  .iconWrapper {
+    background-color: var(--special-red-light);
+  }
+}
+
+.warning {
+  .iconWrapper {
+    background-color: var(--special-yellow);
+  }
+}
+
+.text {
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  font-size: 14px;
+}

@@ -108,12 +108,14 @@
     font-size: 12px;
     top: 5px;
     transform: translateY(0);
+    color: var(--label-fixed-color);
   }
 
   &.focused {
     font-size: 12px;
     top: 5px;
     transform: translateY(0);
+    color: var(--label-fixed-color);
 
     &.withInput {
       display: none;

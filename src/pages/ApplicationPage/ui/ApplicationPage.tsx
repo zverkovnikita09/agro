@@ -53,7 +53,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     load_latitude,
     load_longitude,
     load_method,
-    load_place,
     load_place_name,
     load_types,
     loader_power,
@@ -62,6 +61,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     outage_price,
     scale_length,
     tariff,
+    load_place,
     terminal_address,
     terminal_inn,
     terminal_name,
@@ -76,7 +76,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     created_at
   } = applicationInfo ?? {}
 
-  const tariffWithNds = tariff && nds_percent ? Math.ceil(tariff * nds_percent / 100 + tariff) : '-';
+  const tariffWithNds = tariff && nds_percent && Math.ceil(tariff * nds_percent / 100 + tariff);
 
   if (isLoading) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
 
@@ -123,33 +123,38 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div>
           </div>
           <div className={styles.loadInfo}>
-            <div className={styles.loadInfo__item}>
+            {daily_load_rate && <div className={styles.loadInfo__item}>
               <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Норма:</Text>
-              <Text size={TextSize.M} weight={TextWeight.MEDIUM}>{tolerance_to_the_norm} т <span className={styles.loadLimit}>/ день</span></Text>
-            </div>
-            <div className={styles.loadInfo__item}>
-              <Text as={"p"} size={TextSize.L} weight={TextWeight.MEDIUM}>Не более:</Text>
-              <Text as={"p"} size={TextSize.M} weight={TextWeight.MEDIUM}>{daily_load_rate} авто <span className={styles.loadLimit}>/ день</span></Text>
-            </div>
+              <Text size={TextSize.M} weight={TextWeight.MEDIUM}>{daily_load_rate} т <span className={styles.loadLimit}>/ день</span></Text>
+            </div>}
+            {loader_power && <div className={styles.loadInfo__item}>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>Не более:</Text>
+              <Text as="p" size={TextSize.M} weight={TextWeight.MEDIUM}>{loader_power} авто <span className={styles.loadLimit}>/ день</span></Text>
+            </div>}
           </div>
         </div>
         <CardContainer className={styles.cardContainer} titleName='Маршрут'>
           <div className={cn(styles.infoGrid, styles.trail)}>
-            {load_place && terminal_address &&
+            {load_place_name && unload_place_name &&
               <TrailBlock
-                destinationFrom={load_place}
-                destinationTo={terminal_address}
+                destinationFrom={load_place_name}
+                destinationTo={unload_place_name}
               />
             }
             <div className={styles.trailInfo}>
-              <div className={styles.trailInfo__item}>
-                <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Таймслот:</Text>
-                <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{timeslot}</Text>
-              </div>
-              <div className={styles.trailInfo__item}>
-                <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Экспортер:</Text>
-                <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{exporter_name}</Text>
-              </div>
+              {
+                timeslot &&
+                <div className={styles.trailInfo__item}>
+                  <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Таймслот:</Text>
+                  <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{timeslot}</Text>
+                </div>
+              }
+              {exporter_name &&
+                <div className={styles.trailInfo__item}>
+                  <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Экспортер:</Text>
+                  <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{exporter_name}</Text>
+                </div>
+              }
             </div>
           </div>
         </CardContainer>
@@ -188,7 +193,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             icon={ApplicationIcons.CARD_COIN}
             iconColor={ApplicationIconColor.ACCENT}
             textPosition={TextPosition.COLUMN}
-            additionalText={`${tariffWithNds} ₽ С НДС`}
+            additionalText={tariffWithNds ? `${tariffWithNds} ₽ С НДС` : undefined}
             additionalTextSize={TextSize.M}
             additionalTextColor={TextColor.GREY}
             additionalTextWeight={TextWeight.MEDIUM}
@@ -200,7 +205,9 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
           <div className={cn(styles.infoGrid, styles.detailsGrid)}>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Тип транспорта</Text>
-              {/* <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{is_tonar ? 'Тонар' : is_semi_truck ? 'Полуприцеп' : 'Сцепки'}</Text> */}
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>
+                {load_types?.map(type => (type as unknown as { title: string }).title).join(", ")}
+              </Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Способ погрузки</Text>
@@ -219,25 +226,31 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
                 высоте</Text>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{height_limit} м</Text>
             </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Допуск к норме</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{tolerance_to_the_norm} %</Text>
-            </div>
+            {tolerance_to_the_norm &&
+              <div className={styles.infoItem}>
+                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Допуск к норме</Text>
+                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{tolerance_to_the_norm} %</Text>
+              </div>
+            }
           </div>
         </CardContainer>
-        <CardContainer className={styles.cardContainer} titleName='Простой'>
-          <div className={styles.infoGrid}>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Начало периода простоя</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>C {outage_begin}-х суток</Text>
+        {outage_begin && (
+          <CardContainer className={styles.cardContainer} titleName='Простой'>
+            <div className={styles.infoGrid}>
+              <div className={styles.infoItem}>
+                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Начало периода простоя</Text>
+                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>C {outage_begin}-х суток</Text>
+              </div>
+              {outage_price &&
+                <div className={styles.infoItem}>
+                  <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Стоимость простоя</Text>
+                  <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{outage_price} ₽ <span className={styles.loadLimit}>/ Сутки</span>
+                  </Text>
+                </div>
+              }
             </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Стоимость простоя</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{outage_price} ₽ <span className={styles.loadLimit}>/ Сутки</span>
-              </Text>
-            </div>
-          </div>
-        </CardContainer>
+          </CardContainer>
+        )}
         <CardContainer className={styles.cardContainer} titleName='Информация'>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
@@ -249,16 +262,18 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{contact_phone}</Text>
             </div>
           </div>
-          <div className={styles.note}>
-            <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Примечание</Text>
-            <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{description}</Text>
-          </div>
+          {description &&
+            <div className={styles.note}>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Примечание</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{description}</Text>
+            </div>
+          }
         </CardContainer>
         <CardContainer className={styles.cardContainer} titleName='Дополнительные параметры'>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate} {unit_of_measurement_for_cargo_shortage_rate}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate ? `${cargo_shortage_rate} ${unit_of_measurement_for_cargo_shortage_rate}` : "Не указано"}</Text>
             </div>
             {/* <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза в килограммах</Text>
@@ -266,27 +281,27 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div> */}
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Стоимость груза</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_price} ₽</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_price ? `${cargo_price} ₽` : "Не указано"} </Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Место погрузки</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{load_place}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{load_place || "Не указано"}</Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Подъезд</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{approach}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{approach || "Не указано"}</Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Тип выгрузки</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_method}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_method || "Не указано"}</Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Время работы</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{work_time}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{work_time || "Не указано"}</Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Хартия</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{typeof is_full_charter !== "undefined" ? is_full_charter ? "Полная" : "Не полная" : "Не указано"}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{is_full_charter !== null ? is_full_charter ? "Полная" : "Не полная" : "Не указано"}</Text>
             </div>
           </div>
         </CardContainer>

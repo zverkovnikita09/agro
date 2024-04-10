@@ -1,25 +1,25 @@
 import cn from 'classnames';
 import styles from './CodeValidationForm.module.scss'
-import {Title} from '@shared/ui/Title';
-import {useLocalStorage} from '@shared/hook/useLocalStorage';
-import {useForm} from 'react-hook-form';
-import {PinConfirmInput} from '@shared/ui/PinConfirmInput';
-import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button';
-import {useSendData} from '@shared/hook/useSendData';
-import {LSKeys} from "@shared/lib/globalVariables";
-import {CodeValidationFormState} from '../model/codeValidationForm.model';
-import {setToken, setUser} from '@entities/User';
-import {useNavigate} from "react-router-dom";
-import {useAppDispatch} from '@src/app/store/model/hook';
-import {useEffect, useState} from "react";
-import {Text} from "@shared/ui/Text";
+import { Title } from '@shared/ui/Title';
+import { useLocalStorage } from '@shared/hook/useLocalStorage';
+import { useForm } from 'react-hook-form';
+import { PinConfirmInput } from '@shared/ui/PinConfirmInput';
+import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
+import { useSendData } from '@shared/hook/useSendData';
+import { LSKeys } from "@shared/lib/globalVariables";
+import { CodeValidationFormState } from '../model/codeValidationForm.model';
+import { setToken, setUser } from '@entities/User';
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from '@src/app/store/model/hook';
+import { useEffect, useState } from "react";
+import { Text } from "@shared/ui/Text";
 
 interface CodeValidationFormProps {
   className?: string;
 }
 
 export const CodeValidationForm = (props: CodeValidationFormProps) => {
-  const {className} = props;
+  const { className } = props;
   const [phoneNumber, setNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
   const [, setAuthToken] = useLocalStorage(LSKeys.TOKEN, null)
   const dispatch = useAppDispatch();
@@ -51,15 +51,15 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
     setValue,
     handleSubmit,
     setError,
-    formState: {errors},
+    formState: { errors },
     clearErrors
   } = useForm<CodeValidationFormState>();
 
   const code: string = watch('code')
 
-  const {isSending, handleSendData} = useSendData({
+  const { isSending, handleSendData } = useSendData({
     url: "/api/v1/login/verification",
-    onSuccess: ({data: {token, user}}) => {
+    onSuccess: ({ data: { token, user } }) => {
       dispatch(setToken(token));
       setAuthToken(token);
       dispatch(setUser(user));
@@ -74,19 +74,19 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
     }
   });
 
-  const {handleSendData: handleResendCode, isSending: isResending} = useSendData({
-    url: "/api/v1/login", onSuccess: ({data: {user: {code}}}) => {
+  const { handleSendData: handleResendCode, isSending: isResending } = useSendData({
+    url: "/api/v1/login", onSuccess: ({ data: { user: { code } } }) => {
       alert(code)
     }
   })
 
-  const onSubmit = ({code}: CodeValidationFormState) => {
+  const onSubmit = ({ code }: CodeValidationFormState) => {
     clearErrors();
-    handleSendData({code, phone_number: phoneNumber});
+    handleSendData({ code, phone_number: phoneNumber });
   }
 
   const onResendCode = () => {
-    handleResendCode({code, phone_number: phoneNumber});
+    handleResendCode({ code, phone_number: phoneNumber });
     setTimerTime(Date.now() + 30000)
   }
 
@@ -102,7 +102,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
   return (
     <form className={cn(styles.codeValidationForm, className)} onSubmit={handleSubmit(onSubmit)}>
       <Title>Вход</Title>
-      <p className={styles.text}>Мы отправили вам СМС с кодом подтверждения <br/> на этот номер {phoneNumber}</p>
+      <p className={styles.text}>Мы отправили вам СМС с кодом подтверждения <br /> на этот номер {phoneNumber}</p>
       <PinConfirmInput
         cellCount={5}
         error={errors.code?.message}

@@ -20,8 +20,11 @@ export enum TextWeight {
 }
 
 export enum TextColor {
+  PRIMARY = "",
   MAIN_COLOR = 'main_color',
-  GREY = 'grey'
+  GREY = 'grey',
+  /*   SPECIAL_GREEN = 'spesial_green',
+    ERROR = 'error', */
 }
 
 interface TextProps {
@@ -34,7 +37,7 @@ interface TextProps {
 }
 
 export const Text = (props: TextProps) => {
-  const { className, children, size = TextSize.M, weight = TextWeight.REGULAR, color = TextColor.MAIN_COLOR, as = "span" } = props;
+  const { className, children, size = TextSize.M, weight = TextWeight.REGULAR, color = TextColor.PRIMARY, as = "span" } = props;
   const additionalClasses = [
     className,
     styles[size],

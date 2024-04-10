@@ -17,7 +17,7 @@ interface AdditionalStepOneProps {
 export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
   const { toMainPart } = props;
 
-  const { control, watch, setValue, register } = useContext(NewApplicationContext);
+  const { control, watch, setValue } = useContext(NewApplicationContext);
 
   const load_place = watch('load_place') // где происходит погрузка
 

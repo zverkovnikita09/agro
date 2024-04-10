@@ -7,12 +7,14 @@ import dayjs from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale'
 import 'dayjs/locale/ru';
 import CalendarIcon from '@images/calendar.svg'
+import { ErrorBlock } from '../ErrorBlock';
 
 interface CalendarProps {
   className?: string;
   placeholder?: string;
   value?: string;
   onChange: (value: string | undefined) => void
+  error?: string
 }
 
 const popperSx = {
@@ -117,7 +119,7 @@ const popperSx = {
 }
 
 export const Calendar = (props: CalendarProps) => {
-  const { className, placeholder = 'ДД.ММ.ГГГГ', value, onChange } = props;
+  const { className, placeholder = 'ДД.ММ.ГГГГ', value, onChange, error } = props;
 
   dayjs.extend(updateLocale);
   dayjs.updateLocale('ru', {
@@ -128,81 +130,84 @@ export const Calendar = (props: CalendarProps) => {
   })
 
   return (
-    <LocalizationProvider
-      dateAdapter={AdapterDayjs} localeText={
-        {
-          cancelButtonLabel: 'Отменить',
-          okButtonLabel: 'Подтвердить',
-          fieldYearPlaceholder: () => 'ГГГГ',
-          fieldMonthPlaceholder: () => 'ММ',
-          fieldDayPlaceholder: () => 'ДД'
+    <div>
+      <LocalizationProvider
+        dateAdapter={AdapterDayjs} localeText={
+          {
+            cancelButtonLabel: 'Отменить',
+            okButtonLabel: 'Подтвердить',
+            fieldYearPlaceholder: () => 'ГГГГ',
+            fieldMonthPlaceholder: () => 'ММ',
+            fieldDayPlaceholder: () => 'ДД'
+          }
         }
-      }
-      adapterLocale='ru'
-    >
-      <DatePicker
-        format="DD.MM.YYYY"
-        /* defaultValue={dayjs(new Date())} */
-        className={cn(styles.calendar, className)}
-        dayOfWeekFormatter={(weekday) => `${weekday.format('dd')}`}
-        value={value ? dayjs(value, "YYYY-MM-DD") : null}
-        onChange={(value) => onChange(value?.format("YYYY-MM-DD"))}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            border: 'none',
-            outline: '1px solid var(--text-color)'
-          },
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: 'none'
-          },
-          "& .MuiInputBase-input": {
-            padding: '15px 20px',
-            "&::placeholder": {
-              fontFamily: 'Gilroy, sans-serif',
-              color: 'var(--text-color) !important',
-              opacity: '1 !important',
-            }
-          },
-          "& .MuiIconButton-root": {
-            "&:hover": {
-              backgroundColor: 'transparent',
+        adapterLocale='ru'
+      >
+        <DatePicker
+          format="DD.MM.YYYY"
+          /* defaultValue={dayjs(new Date())} */
+          className={cn(styles.calendar, className)}
+          dayOfWeekFormatter={(weekday) => `${weekday.format('dd')}`}
+          value={value ? dayjs(value, "YYYY-MM-DD") : null}
+          onChange={(value) => onChange(value?.format("YYYY-MM-DD"))}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              border: 'none',
+              outline: `1px solid ${error ? "var(--error-color)" : "var(--text-color)"}`
             },
-            "& span": {
-              display: 'none',
-            }
-          },
-        }}
-        slots={{
-          openPickerIcon: CalendarIcon,
-        }}
-        slotProps={{
-          textField: { InputProps: { placeholder } },
-          desktopPaper: { style: { marginTop: '8px', borderRadius: '12px' }, className: styles.popper },
-          mobilePaper: { style: { margin: '0' } },
-          popper: {
-            sx: popperSx,
-          },
-          layout: {
-            sx: popperSx
-          },
-          toolbar: { hidden: true },
-          actionBar: {
-            sx: {
-              "& .MuiButton-root": {
-                "&:hover": {
-                  backgroundColor: 'var(--special-grey-color2)'
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: 'none'
+            },
+            "& .MuiInputBase-input": {
+              padding: '15px 20px',
+              "&::placeholder": {
+                fontFamily: 'Gilroy, sans-serif',
+                color: 'var(--text-color) !important',
+                opacity: '1 !important',
+              }
+            },
+            "& .MuiIconButton-root": {
+              "&:hover": {
+                backgroundColor: 'transparent',
+              },
+              "& span": {
+                display: 'none',
+              }
+            },
+          }}
+          slots={{
+            openPickerIcon: CalendarIcon,
+          }}
+          slotProps={{
+            textField: { InputProps: { placeholder } },
+            desktopPaper: { style: { marginTop: '8px', borderRadius: '12px' }, className: styles.popper },
+            mobilePaper: { style: { margin: '0' } },
+            popper: {
+              sx: popperSx,
+            },
+            layout: {
+              sx: popperSx
+            },
+            toolbar: { hidden: true },
+            actionBar: {
+              sx: {
+                "& .MuiButton-root": {
+                  "&:hover": {
+                    backgroundColor: 'var(--special-grey-color2)'
+                  },
+                  "& span": {
+                    display: 'none'
+                  },
                 },
-                "& span": {
-                  display: 'none'
+                "& .MuiButton-text": {
+                  color: 'var(--accent-color)'
                 },
               },
-              "& .MuiButton-text": {
-                color: 'var(--accent-color)'
-              },
             },
-          },
-        }}
-      />
-    </LocalizationProvider>
+          }}
+        />
+      </LocalizationProvider>
+      {error && <ErrorBlock>{error}</ErrorBlock>}
+    </div>
   )
 }

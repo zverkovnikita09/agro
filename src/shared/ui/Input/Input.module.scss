@@ -21,6 +21,7 @@
     font-size: 12px;
     top: 6px;
     transform: translateY(0);
+    color: var(--label-fixed-color);
   }
 }
 
@@ -45,6 +46,7 @@
     font-size: 12px;
     top: 6px;
     transform: translateY(0);
+    color: var(--label-fixed-color);
   }
 
   &.disabled {

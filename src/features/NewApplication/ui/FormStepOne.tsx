@@ -52,6 +52,8 @@ export const FormStepOne = (props: FormStepOneProps) => {
     },
   });
 
+  const start_order_at = watch("start_order_at")
+
   return (
     <>
       <div className={styles.inputBlock}>
@@ -71,18 +73,25 @@ export const FormStepOne = (props: FormStepOneProps) => {
                 placeholder='Дата начала перевозки'
                 value={props.field.value}
                 onChange={props.field.onChange}
+                error={props.fieldState.error?.message}
               />
             )}
           />
           <Controller
             name="end_order_at"
             control={control}
-            rules={{ required: "Поле обязательно к заполнению" }}
+            rules={{
+              required: "Поле обязательно к заполнению", validate: (value) => {
+                if (!start_order_at) return true;
+                return value && value >= start_order_at! || 'Дата окончания меньше даты начала';
+              }
+            }}
             render={(props) => (
               <Calendar
                 placeholder='Дата окончания перевозки'
                 value={props.field.value}
                 onChange={props.field.onChange}
+                error={props.fieldState.error?.message}
               />
             )}
           />
@@ -179,9 +188,23 @@ export const FormStepOne = (props: FormStepOneProps) => {
             )}
           />
           <Controller
+            name="timeslot"
+            control={control}
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
+              <Select
+                label='Таймслот'
+                options={timeslotOptions}
+                value={value}
+                setValue={onChange}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+        </div>
+        <div className={styles.inputsRow}>
+          <Controller
             name="exporter_name"
             control={control}
-            rules={{ required: "Поле обязательно к заполнению" }}
             render={({ field: { value, name, onChange }, formState: { errors } }) => (
               <Select
                 label='Экспортер'
@@ -205,20 +228,6 @@ export const FormStepOne = (props: FormStepOneProps) => {
             )}
           />
         </div>
-        <Controller
-          name="timeslot"
-          control={control}
-          rules={{ required: "Поле обязательно к заполнению" }}
-          render={({ field: { value, name, onChange }, formState: { errors } }) => (
-            <Select
-              label='Таймслот'
-              options={timeslotOptions}
-              value={value}
-              setValue={onChange}
-              error={errors[name]?.message as string}
-            />
-          )}
-        />
       </div>
       <div className={styles.buttonsContainer}>
         <Button

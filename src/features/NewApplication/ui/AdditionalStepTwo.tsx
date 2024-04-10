@@ -20,7 +20,7 @@ interface AdditionalStepOneProps {
 export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
   const { toMainPart, prevStep, isLoading } = props;
 
-  const { control, watch, setValue, register } = useContext(NewApplicationContext);
+  const { control, watch, setValue } = useContext(NewApplicationContext);
 
   const [saturdayState, setSaturdayState] = useState('');
   const [sundayState, setSundayState] = useState('');

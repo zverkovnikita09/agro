@@ -1,3 +1,4 @@
+import { formatArrayToFormData } from "./formDataUtils"
 import { generateUrlParams } from "./generateUrlParams"
 
 export interface GetDataParams {
@@ -61,11 +62,20 @@ export const sendData = async <DataType extends {}>
 
   if (type === 'FormData') {
     const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => formData.append(key, String(value)))
+    Object.entries(data).forEach(([key, value]) => {
+      if (typeof value === "undefined" || value === null) return
+      if (Array.isArray(value)) {
+        formatArrayToFormData(key, value).forEach(({ name: itemKey, value: itemValue, }) => {
+          formData.append(itemKey, String(itemValue))
+        })
+        return
+      }
+      formData.append(key, String(value))
+    })
     dataToSend = formData;
   }
 
-  if(type === 'JSON') {
+  if (type === 'JSON') {
     dataToSend = JSON.stringify(data)
   }
 
@@ -83,6 +93,6 @@ export const sendData = async <DataType extends {}>
   if (!response.ok) {
     throw new Error(dataJson?.message ?? defaultErrorMessage)
   }
-  
+
   return dataJson;
 }

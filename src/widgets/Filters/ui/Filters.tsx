@@ -1,19 +1,19 @@
 import cn from 'classnames';
 import styles from './Filters.module.scss'
-import {Text, TextColor, TextSize, TextWeight} from "@shared/ui/Text";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-import {Accordion} from "@shared/ui/Accordion";
-import {InputRange} from "@shared/ui/InputRange";
-import {CardContainer} from "@shared/ui/CardContainer";
-import {useForm} from "react-hook-form";
-import {Select, SelectTheme} from "@shared/ui/Select";
-import {useLocation} from "react-router-dom";
-import {Checkbox} from "@shared/ui/Checkbox";
-import {RadioButton} from "@shared/ui/RadioButton";
-import {Input, InputTheme} from "@shared/ui/Input";
-import {ControlCheckbox, MultiCheckbox, NestedCheckbox} from "@shared/ui/MultiCheckbox";
-import {useEffect} from "react";
-import {TogglerCheckbox} from "@shared/ui/TogglerCheckbox";
+import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { Accordion } from "@shared/ui/Accordion";
+import { InputRange } from "@shared/ui/InputRange";
+import { CardContainer } from "@shared/ui/CardContainer";
+import { useForm } from "react-hook-form";
+import { Select, SelectTheme } from "@shared/ui/Select";
+import { useLocation } from "react-router-dom";
+import { Checkbox } from "@shared/ui/Checkbox";
+import { RadioButton } from "@shared/ui/RadioButton";
+import { Input, InputTheme } from "@shared/ui/Input";
+import { ControlCheckbox, MultiCheckbox, NestedCheckbox } from "@shared/ui/MultiCheckbox";
+import { useEffect } from "react";
+import { TogglerCheckbox } from "@shared/ui/TogglerCheckbox";
 
 interface FiltersProps {
   className?: string;
@@ -22,7 +22,7 @@ interface FiltersProps {
 }
 
 export const Filters = (props: FiltersProps) => {
-  const {className, isOpen, closeFilters} = props;
+  const { className, isOpen, closeFilters } = props;
   const location = useLocation();
 
   const { setValue, watch } = useForm();
@@ -34,7 +34,7 @@ export const Filters = (props: FiltersProps) => {
   }, [location]);
 
   return (
-    <CardContainer className={cn(styles.filters, className, {[styles.activeFilter]: isOpen})}>
+    <CardContainer className={cn(styles.filters, className, { [styles.activeFilter]: isOpen })}>
       <div className={styles.heading}>
         <Text size={TextSize.XL} weight={TextWeight.SEMI_BOLD}>
           Фильтры
@@ -50,7 +50,7 @@ export const Filters = (props: FiltersProps) => {
           <InputRange
             setValue={setValue}
             value={[from, to]}
-            names={{from: 'from', to: 'to'}}
+            names={{ from: 'from', to: 'to' }}
             min={0}
             max={10000}
             step={500}
@@ -60,12 +60,12 @@ export const Filters = (props: FiltersProps) => {
           />
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Область погрузки'}>
-          <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => {}}/>
-          <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => {}}/>
+          <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => { }} />
+          <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => { }} />
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Область выгрузки'}>
-          <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => {}}/>
-          <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => {}}/>
+          <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => { }} />
+          <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => { }} />
         </Accordion>
         <Accordion className={styles.accordion} accordionTitle={'Отображать новые территории'}>
           <RadioButton>Да</RadioButton>
@@ -84,7 +84,7 @@ export const Filters = (props: FiltersProps) => {
             <Input theme={InputTheme.FILTERS} placeholder='До' />
           </div>
         </Accordion>
-        <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Отображать цену (НДС/б.НДС)'}>
+       {/*  <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Отображать цену (НДС/б.НДС)'}>
           <MultiCheckbox>
             <ControlCheckbox className={styles.controlCheckbox}>Все</ControlCheckbox>
             <NestedCheckbox
@@ -103,12 +103,12 @@ export const Filters = (props: FiltersProps) => {
               Без НДС
             </NestedCheckbox>
           </MultiCheckbox>
-        </Accordion>
+        </Accordion> */}
         <Accordion className={styles.accordion} accordionTitle={'Таймслот'}>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Целевой</Checkbox>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>В общем доступе</Checkbox>
         </Accordion>
-        <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Тип транспорта'}>
+        {/* <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Тип транспорта'}>
           <MultiCheckbox>
             <ControlCheckbox className={styles.controlCheckbox}>Любой</ControlCheckbox>
             <NestedCheckbox
@@ -134,7 +134,7 @@ export const Filters = (props: FiltersProps) => {
               Тонар
             </NestedCheckbox>
           </MultiCheckbox>
-        </Accordion>
+        </Accordion> */}
         <Accordion className={styles.accordion} accordionTitle={'Способ погрузки'}>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Маниту</Checkbox>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Зерномет</Checkbox>
@@ -162,7 +162,7 @@ export const Filters = (props: FiltersProps) => {
             <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Самосвальная задняя</Checkbox>
             <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Самосвальная боковая</Checkbox>
           </Accordion>
-          <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
+          {/* <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
             <Checkbox className={styles.controlCheckbox} checked={false} setChecked={setValue} name={'wheat'}>Нет</Checkbox>
             <MultiCheckbox>
               <ControlCheckbox className={styles.controlCheckbox}>Да</ControlCheckbox>
@@ -182,7 +182,7 @@ export const Filters = (props: FiltersProps) => {
                 ВС
               </NestedCheckbox>
             </MultiCheckbox>
-          </Accordion>
+          </Accordion> */}
           <Accordion className={styles.accordion} accordionTitle={'Хартия'}>
             <RadioButton>Полная</RadioButton>
             <RadioButton>Не полная</RadioButton>

@@ -17,16 +17,16 @@ interface FormStepThreeProps {
 
 export const FormStepThree = (props: FormStepThreeProps) => {
   const { prevStep, toAdditional, isLoading } = props;
-  const { control, watch, setValue, register } = useContext(NewApplicationContext);
+  const { control, watch } = useContext(NewApplicationContext);
 
   const outage_begin = watch('outage_begin') // начало простоя
 
   const outageBeginOptions = [
-    { name: "Нет", value: null },
-    { name: "с 1-х", value: 1 },
-    { name: "со 2-х", value: 2 },
-    { name: "с 3-х", value: 3 },
-    { name: "с 4-х", value: 4 },
+    { name: "Нет", value: 0 },
+    { name: "с 1-х суток", value: 1 },
+    { name: "с 2-х суток", value: 2 },
+    { name: "с 3-х суток", value: 3 },
+    { name: "с 4-х суток", value: 4 },
   ]
 
   return (

@@ -1,9 +1,10 @@
 import { sendData, sendDataParams } from "@shared/lib/api";
 /* import {NotificationType, useNotification} from "@providers/NotificationsProvider"; */
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { UserSelectors } from "@entities/User";
 import { Nullable } from "@shared/lib/globalTypes";
+import { NotificationType, addNotification } from "@entities/Notifications";
 /* import {useSession} from "next-auth/react"; */
 
 interface useSendDataProps<T> extends Omit<sendDataParams<T>, "data"> {
@@ -28,7 +29,7 @@ export const useSendData = <DataType extends {}>
   const [error, setError] = useState<Nullable<string>>(null);
   const [responseData, setResponseData] = useState<any>();
   const token = useSelector(UserSelectors.selectToken);
-  /* const {addNotification} = useNotification(); */
+  const dispatch = useDispatch();
 
 
   const handleSendData = async (data: DataType) => {
@@ -40,10 +41,10 @@ export const useSendData = <DataType extends {}>
       setIsSuccess(true);
       onSuccess?.(response);
       setResponseData(response);
-      /* successNotification && addNotification(successNotification, NotificationType.Success); */
+      successNotification && dispatch(addNotification({ message: successNotification, type: NotificationType.Success }));
     } catch (error) {
       if (error instanceof Error) {
-        /*   addNotification(error.message, NotificationType.Error); */
+        dispatch(addNotification({ message: error.message, type: NotificationType.Error }))
         setError(error.message)
         setIsError(true);
         onError?.(error);

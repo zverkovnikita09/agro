@@ -1,4 +1,4 @@
-import { Children, Dispatch, PropsWithChildren, createContext, isValidElement, useMemo, useState } from 'react';
+import { Children, Dispatch, PropsWithChildren, createContext, isValidElement, useEffect, useMemo, useState } from 'react';
 import { CheckboxProps } from '../Checkbox';
 
 interface MultiCheckboxContext {
@@ -30,11 +30,13 @@ export const MultiCheckbox = (props: PropsWithChildren<MultiCheckboxProps>) => {
     [children],
   );
 
-  const [nestedValues, setNestedValues] = useState<{ name: string, checked: boolean }[]>(
-    childrenProps
+  const [nestedValues, setNestedValues] = useState<{ name: string, checked: boolean }[]>([]);
+
+  useEffect(() => {
+    setNestedValues(childrenProps
       .filter(({ name }) => name)
-      .map(({ checked, name }) => ({ name, checked }))
-  );
+      .map(({ checked, name }) => ({ name, checked })))
+  }, [childrenProps])
 
   const status = useMemo<"not-checked" | "some-checked" | "all-checked">(() => {
     const value = nestedValues?.filter(({ checked }) => !!checked);

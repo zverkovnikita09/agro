@@ -15,7 +15,7 @@ export interface ApplicationModel {
   height_limit: number;
   is_overload: boolean;
   timeslot: string;
-  outage_begin?: number | null;
+  outage_begin?: number;
   outage_price?: number;
   daily_load_rate?: number;
   contact_name: string;

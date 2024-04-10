@@ -37,6 +37,7 @@ interface ButtonProps {
   className?: string
   disabled?: boolean
   fullWidth?: boolean;
+  tabIndex?: number;
 }
 
 interface AnchorProps extends Omit<ButtonProps, "as" | "buttonRef" | "onClick"> {

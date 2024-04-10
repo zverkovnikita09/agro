@@ -8,11 +8,12 @@ import { MultiCheckbox } from '@shared/ui/MultiCheckbox'
 import { ControlCheckbox } from '@shared/ui/MultiCheckbox/ControlCheckbox'
 import { Controller, useForm } from 'react-hook-form'
 import { NestedCheckbox } from '@shared/ui/MultiCheckbox/NestedCheckbox'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { NewApplicationContext } from './NewApplication'
 import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 import { useGetData } from "@shared/hook/useGetData";
 import { ErrorBlock } from '@shared/ui/ErrorBlock'
+import { LoadingBlock } from '@shared/ui/LoadingBlock'
 
 interface FormStepTwoProps {
   prevStep: () => void
@@ -20,11 +21,11 @@ interface FormStepTwoProps {
 
 export const FormStepTwo = (props: FormStepTwoProps) => {
   const { prevStep } = props;
-  const { control, watch } = useContext(NewApplicationContext);
+  const { control, watch, setValue } = useContext(NewApplicationContext);
 
-  const { data: loadMethodOptions } = useGetData<string[]>({ url: '/api/v1/load_methods', dataFlag: true })
+  const { data: loadMethodOptions, isLoading: loadMethodOptionsLoading } = useGetData<string[]>({ url: '/api/v1/load_methods', dataFlag: true })
 
-  const { data: loadTypes } = useGetData<{ id: string, title: string }[]>({ url: '/api/v1/load_types', dataFlag: true })
+  const { data: loadTypes, isLoading: isLoadTypesLoading } = useGetData<{ id: string, title: string }[]>({ url: '/api/v1/load_types', dataFlag: true })
 
   const tariff = watch('tariff');
   const nds_percent = watch('nds_percent');
@@ -44,6 +45,18 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
     { name: "10%", value: 10 },
   ]
 
+  const [loadTypesValues, setLoadTypesValues] = useState<string[]>(load_types)
+
+  useEffect(() => {
+    if (loadTypesValues) {
+      setValue("load_types", loadTypesValues)
+    }
+  }, [loadTypesValues])
+
+  if (isLoadTypesLoading && loadMethodOptionsLoading) return (
+    <LoadingBlock />
+  )
+
   return (
     <>
       <div className={styles.inputBlock}>
@@ -54,78 +67,54 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
           Груз и тарифы
         </Text>
         <div className={styles.inputsRow}>
-          <div className={styles.inputBlock}>
-            <Controller
-              name="crop"
-              control={control}
-              rules={{ required: "Поле обязательно к заполнению" }}
-              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-                <InputAutocomplete
-                  name={name}
-                  label='Выберите груз'
-                  value={value}
-                  setValue={onChange}
-                  onBlur={onBlur}
-                  autocompleteItems={["Пшеница", "Горох"]}
-                  error={errors[name]?.message as string}
-                />
-              )}
-            />
-            <div>
-              <Controller
-                name="tariff"
-                control={control}
-                rules={{
-                  required: "Поле обязательно к заполнению",
-                  min: { value: 1, message: "Тариф должен быть натуральным числом" }
-                }}
-                render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-                  <Input
-                    label='Тариф за перевозку ₽/Т Без НДС'
-                    type='number'
-                    value={value}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    error={errors[name]?.message as string}
-                  />
-                )}
+          <Controller
+            name="crop"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <InputAutocomplete
+                name={name}
+                label='Выберите груз'
+                value={value}
+                setValue={onChange}
+                onBlur={onBlur}
+                autocompleteItems={["Пшеница", "Горох"]}
+                error={errors[name]?.message as string}
               />
-              {Number(nds_percent) > 0 && Number(tariff) > 0 &&
-                <Text
-                  size={TextSize.S}
-                  className={styles.additionalText}
-                  weight={TextWeight.MEDIUM}>
-                  Тариф с учетом НДС {Number(tariff) + Math.ceil(Number(tariff) * Number(nds_percent) / 100)} ₽
-                </Text>
-              }
-            </div>
+            )}
+          />
+          <Controller
+            name="volume"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+              min: { value: 1, message: "Объем должен быть натуральным числом" }
+            }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Общий объем груза / Т'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+        </div>
+
+        <div className={styles.inputsRow}>
+          <div>
             <Controller
-              name="distance"
-              control={control}
-              rules={{ required: false, min: { value: 1, message: "Расстояние перевозки должно быть натуральным числом" } }}
-              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-                <Input
-                  label='Расстояние перевозки / км'
-                  type='number'
-                  value={value}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  error={errors[name]?.message as string}
-                />
-              )}
-            />
-          </div>
-          <div className={styles.inputBlock}>
-            <Controller
-              name="volume"
+              name="tariff"
               control={control}
               rules={{
                 required: "Поле обязательно к заполнению",
-                min: { value: 1, message: "Объем должен быть натуральным числом" }
+                min: { value: 1, message: "Тариф должен быть натуральным числом" }
               }}
               render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
                 <Input
-                  label='Общий объем груза / Т'
+                  label='Тариф за перевозку ₽/Т Без НДС'
                   type='number'
                   value={value}
                   onChange={onChange}
@@ -134,40 +123,65 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
                 />
               )}
             />
-            <Controller
-              name="nds_percent"
-              control={control}
-              rules={{ required: false, min: { value: 1, message: "НДС должен быть натуральным числом" } }}
-              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-                <Input
-                  label='Укажите ставку НДС %'
-                  type='number'
-                  value={value}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  error={errors[name]?.message as string}
-                />
-              )}
-            />
-            <Controller
-              name="daily_load_rate"
-              control={control}
-              rules={{
-                required: false,
-                min: { value: 1, message: "Суточная норма погрузки должна быть натуральным числом" }
-              }}
-              render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-                <Input
-                  label='Суточная норма поргрузки / Т'
-                  type='number'
-                  value={value}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  error={errors[name]?.message as string}
-                />
-              )}
-            />
+            {Number(nds_percent) > 0 && Number(tariff) > 0 &&
+              <Text
+                size={TextSize.S}
+                className={styles.additionalText}
+                weight={TextWeight.MEDIUM}>
+                Тариф с учетом НДС {Number(tariff) + Math.ceil(Number(tariff) * Number(nds_percent) / 100)} ₽
+              </Text>
+            }
           </div>
+          <Controller
+            name="nds_percent"
+            control={control}
+            rules={{ required: false, min: { value: 1, message: "НДС должен быть натуральным числом" } }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Укажите ставку НДС %'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+        </div>
+        <div className={styles.inputsRow}>
+          <Controller
+            name="distance"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению", min: { value: 1, message: "Расстояние перевозки должно быть натуральным числом" } }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Расстояние перевозки / км'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="daily_load_rate"
+            control={control}
+            rules={{
+              required: false,
+              min: { value: 1, message: "Суточная норма погрузки должна быть натуральным числом" }
+            }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Суточная норма поргрузки / Т'
+                type='number'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
         </div>
       </div>
       <div className={styles.inputBlock}>
@@ -177,33 +191,37 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
         >
           Детали погрузки
         </Text>
-        {/* <div className={styles.inputsRowWithGap}>
-          <Controller
-            name="load_types"
-            control={control}
-            rules={{
-              required: "Необходимо выбрать один из вариантов",
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <div>
-                <MultiCheckbox hideNested>
-                  <ControlCheckbox>Любой</ControlCheckbox>
-                  {loadTypes?.map(({ id, title }) => (
-                    <NestedCheckbox
-                      checked={!!saturdayState}
-                      className={styles.nestedCheckbox}
-                      setChecked={() => setSaturdayState(prev => prev ? '' : 'суббота')}
-                      name={title}
-                    >
-                      {title}
-                    </NestedCheckbox>
-                  ))}
-                </MultiCheckbox>
-                {errors[name]?.message && <ErrorBlock>{errors[name]!.message!}</ErrorBlock>}
-              </div>
-            )}
-          />
-        </div> */}
+        <Controller
+          name="load_types"
+          control={control}
+          rules={{
+            required: "Необходимо выбрать один из вариантов",
+          }}
+          render={({ field: { name }, formState: { errors } }) => (
+            <div className={styles.inputsRowWithGap}>
+              <MultiCheckbox>
+                <ControlCheckbox>Любой</ControlCheckbox>
+                {loadTypes?.map(({ id, title }) => (
+                  <NestedCheckbox
+                    key={id}
+                    checked={!!loadTypesValues?.includes(id)}
+                    setChecked={(_, checked) => {
+                      if (!checked) {
+                        setLoadTypesValues((prev) => prev?.filter(item => item !== id))
+                        return;
+                      }
+                      setLoadTypesValues(prev => [...(prev ?? []), id])
+                    }}
+                    name={title}
+                  >
+                    {title}
+                  </NestedCheckbox>
+                ))}
+              </MultiCheckbox>
+              {errors[name]?.message && <ErrorBlock className={styles.checkboxError}>{errors[name]!.message!}</ErrorBlock>}
+            </div>
+          )}
+        />
         <div className={styles.inputsThreeRow}>
           <Controller
             name="load_method"

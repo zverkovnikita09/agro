@@ -32,6 +32,7 @@
   overflow-y: auto;
   padding-right: 16px;
   padding-left: 16px;
+  min-height: 350px;
 }
 
 .inputsRow {
@@ -49,6 +50,8 @@
 .inputsRowWithGap {
   display: flex;
   gap: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .inputBlock {
@@ -103,4 +106,8 @@
   gap: 4px;
   align-items: center;
   text-align: center;
+}
+
+.checkboxError {
+  width: 100%;
 }

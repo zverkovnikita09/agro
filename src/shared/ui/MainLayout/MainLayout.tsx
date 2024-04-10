@@ -1,22 +1,23 @@
 import cn from 'classnames';
 import styles from './MainLayout.module.scss'
-import {Navigate, useNavigate, useOutlet} from "react-router-dom";
-import {Header} from "@widgets/Header";
-import {Sidebar} from "@widgets/Sidebar";
-import {useDispatch, useSelector} from "react-redux";
-import {setUser, UserSelectors} from "@entities/User";
-import {RouterPaths} from "@src/app/router";
-import {useGetData} from "@shared/hook/useGetData";
-import {LoadingBlock} from "@shared/ui/LoadingBlock";
-import {createContext, useState} from 'react';
-import {CardContainer} from "@shared/ui/CardContainer";
-import {Button} from "@shared/ui/Button";
-import {Text, TextColor, TextSize, TextWeight} from "@shared/ui/Text";
-import {Accordion} from "@shared/ui/Accordion";
-import {InputRange} from "@shared/ui/InputRange";
-import {useForm} from "react-hook-form";
-import {Filters} from "@widgets/Filters";
-import {YandexMap} from "@widgets/YandexMap";
+import { Navigate, useNavigate, useOutlet } from "react-router-dom";
+import { Header } from "@widgets/Header";
+import { Sidebar } from "@widgets/Sidebar";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, UserSelectors } from "@entities/User";
+import { RouterPaths } from "@src/app/router";
+import { useGetData } from "@shared/hook/useGetData";
+import { LoadingBlock } from "@shared/ui/LoadingBlock";
+import { createContext, useState } from 'react';
+import { CardContainer } from "@shared/ui/CardContainer";
+import { Button } from "@shared/ui/Button";
+import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
+import { Accordion } from "@shared/ui/Accordion";
+import { InputRange } from "@shared/ui/InputRange";
+import { useForm } from "react-hook-form";
+import { Filters } from "@widgets/Filters";
+import { YandexMap } from "@widgets/YandexMap";
+import { Notifications } from '@entities/Notifications';
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
@@ -52,15 +53,15 @@ export const MainLayout = () => {
     onError: () => navigate(RouterPaths.LOGIN),
   });
 
-
-
   if (!token) return <Navigate to={RouterPaths.LOGIN} replace={true} />
 
   if (isLoading) return <LoadingBlock />
 
   return (
     <MainLayoutContext.Provider value={{ openOverlay, closeOverlay }}>
+      <Notifications />
       <div className={cn(styles.overlay, { [styles.active]: isOverlayOpen })} />
+
       <div className={styles.mainLayout}>
         <YandexMap className={styles.map} />
 
@@ -74,7 +75,9 @@ export const MainLayout = () => {
         </div>
 
         {outlet &&
-          <div className={styles.content}>{outlet}</div>
+          <div className={styles.content}>
+            {outlet}
+          </div>
         }
       </div>
     </MainLayoutContext.Provider>

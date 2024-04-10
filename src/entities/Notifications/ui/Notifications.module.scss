@@ -1,0 +1,9 @@
+.notifications {
+	position: fixed;
+	width: max-content;
+	height: max-content;
+	z-index: 1;
+	top: calc(59px + 16px);
+	z-index: 9999;
+	right: 16px;
+}
