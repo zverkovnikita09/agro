@@ -32,6 +32,7 @@ export const Filters = (props: FiltersProps) => {
   const { className, isOpen, closeFilters } = props;
   const location = useLocation();
   const [needToSaveFilters, setNeedToSaveFilters] = useState(Boolean(JSON.parse(localStorage.getItem(LSKeys.FILTERS) as string)));
+  const allFilters = useSelector(FiltersSelectors.selectAllFilters);
 
   /* const { setValue, watch } = useForm();
   const from = watch('from');
@@ -42,18 +43,27 @@ export const Filters = (props: FiltersProps) => {
   }, [location]);
 
   const [, setLSFilters] = useLocalStorage(LSKeys.FILTERS, null)
-  const { control, watch, setValue, reset, handleSubmit } = useForm<FiltersType>()
+  const { control, watch, setValue, reset, handleSubmit } = useForm<FiltersType>({
+    defaultValues: allFilters,
+  })
   const distance_from = watch('distance_from');
   const distance_to = watch('distance_to');
   const dispatch = useDispatch()
 
-  const { data: loadTypes, isLoading: isLoadTypesLoading } = useGetData<{ id: string, title: string }[]>({ url: '/api/v1/load_types', dataFlag: true })
+  const { data: loadTypes, isLoading: isLoadTypesLoading } = useGetData<{ id: string, title: string }[]>(
+    {
+      url: '/api/v1/options',
+      dataFlag: true,
+      withAuthToken: true,
+    })
+
+  console.log(loadTypes)
 
   const timeslot = watch("timeslot")
 
   //Грузят в выходные
-  const [saturdayState, setSaturdayState] = useState('');
-  const [sundayState, setSundayState] = useState('');
+  const [saturdayState, setSaturdayState] = useState(allFilters.clarification_of_the_weekend?.includes('суббота') || '');
+  const [sundayState, setSundayState] = useState(allFilters.clarification_of_the_weekend?.includes('воскресенье') || '');
 
   useEffect(() => {
     setValue("clarification_of_the_weekend", [saturdayState, sundayState].filter(Boolean).join(" и "))
@@ -62,6 +72,7 @@ export const Filters = (props: FiltersProps) => {
   const onSubmit = (data: FiltersType) => {
     closeFilters()
     dispatch(setFilters(data))
+    setLSFilters(needToSaveFilters ? data : null)
   }
 
   return (
@@ -302,14 +313,14 @@ export const Filters = (props: FiltersProps) => {
               <NestedCheckbox
                 checked={!!saturdayState}
                 className={styles.nestedCheckbox}
-                setChecked={() => setSaturdayState(prev => prev ? '' : 'суббота')}
+                setChecked={(_, checked) => setSaturdayState(checked ? 'суббота' : '')}
                 name='saturday'
               >
                 СБ
               </NestedCheckbox>
               <NestedCheckbox
                 checked={!!sundayState}
-                setChecked={() => setSundayState(prev => prev ? '' : 'воскресенье')}
+                setChecked={(_, checked) => setSundayState(checked ? 'воскресенье' : '')}
                 name='sunday'
               >
                 ВС

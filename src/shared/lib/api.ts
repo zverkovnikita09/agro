@@ -6,7 +6,7 @@ export interface GetDataParams {
   dataFlag?: boolean // флаг для получения данных или респонса
   headers?: Record<string, string>
   baseUrl?: string
-  params?: Record<string, string | number | undefined>
+  params?: Record<string, string | number | undefined | string[]>
   defaultErrorMessage?: string
 }
 
@@ -25,7 +25,8 @@ export const getData = async <T extends {}>
     params = {},
     defaultErrorMessage = "Произошла ошибка при получении данных",
   }: GetDataParams): Promise<T> => {
-  const queryParams = JSON.stringify(params) === '{}' ? '' : '?' + generateUrlParams(params);
+  const paramsString = generateUrlParams(params)
+  const queryParams = paramsString ? '?' + paramsString : '';
   const response = await fetch(`${baseUrl}${url}${queryParams}`, {
     headers,
   })

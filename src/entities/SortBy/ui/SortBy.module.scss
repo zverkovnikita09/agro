@@ -1,0 +1,31 @@
+.sortBy {
+  display: none;
+  position: absolute;
+  /*TO FIX*/
+  top: 75px;
+  left: 140px;
+  width: 261px;
+  max-height: calc(100vh - 90px);
+  overflow: hidden;
+  z-index: 5;
+  padding: 24px 12px;
+
+  &.activeSorting {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+.button{
+  text-align: start;
+  padding: 12px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover{
+    background-color: var(--special-yellow);
+  }
+}

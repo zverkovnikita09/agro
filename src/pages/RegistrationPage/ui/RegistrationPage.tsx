@@ -51,7 +51,7 @@ export const RegistrationPage = (props: RegistrationPageProps) => {
 
   return (
     <div className={cn(styles.registrationPage, className)}>
-      <Logo width={110} height={40} className={styles.logo} />
+      <Logo width={110} height={60} className={styles.logo} />
       {CurrentStepAuthForm()}
     </div>
   )

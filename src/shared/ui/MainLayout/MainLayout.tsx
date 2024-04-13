@@ -12,6 +12,7 @@ import { createContext, useState } from 'react';
 import { Filters } from "@entities/Filters";
 import { YandexMap } from "@widgets/YandexMap";
 import { Notifications } from '@entities/Notifications';
+import {SortBy} from "@entities/SortBy";
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
@@ -23,13 +24,22 @@ export const MainLayoutContext = createContext<MainLayoutContextProps>({ openOve
 export const MainLayout = () => {
   const outlet = useOutlet();
   const navigate = useNavigate();
+  const [sortedData, setSortedData] = useState<any[]>([]);
 
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
   const [isFiltersActive, setIsFiltersActive] = useState(false);
 
+  const [isSortingActive, setIsSortingActive] = useState(false);
+
   const toggleFiltersOpen = () => {
+    if (isSortingActive) setIsSortingActive(false)
     setIsFiltersActive((prev) => !prev);
+  }
+
+  const toggleSortingOpen = () => {
+    if (isFiltersActive) setIsFiltersActive(false);
+    setIsSortingActive((prev) => !prev);
   }
 
   const openOverlay = () => setIsOverlayOpen(true)
@@ -60,8 +70,17 @@ export const MainLayout = () => {
         <YandexMap className={styles.map} />
 
         <div className={styles.header}>
-          <Header toggleFiltersOpen={toggleFiltersOpen} isFiltersOpen={isFiltersActive} />
+          <Header
+            toggleFiltersOpen={toggleFiltersOpen}
+            isFiltersOpen={isFiltersActive}
+            toggleSortingOpen={toggleSortingOpen}
+            isSortingOpen={isSortingActive}
+          />
           <Filters isOpen={isFiltersActive} closeFilters={() => setIsFiltersActive(false)} />
+          <SortBy
+            isOpen={isSortingActive}
+            closeSorting={() => setIsSortingActive(false)}
+          />
         </div>
 
         <div className={styles.sidebar}>

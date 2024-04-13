@@ -2,27 +2,39 @@ import {Input} from "@shared/ui/Input";
 import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
 import {useState} from 'react';
 import FilterIcon from "@images/filter.svg";
+import Chevron from "@images/chevron-left.svg";
 import styles from './Header.module.scss';
 import {Link} from 'react-router-dom';
 import {RouterPaths} from '@src/app/router';
 import cn from 'classnames';
 import {Text, TextSize, TextWeight} from "@shared/ui/Text";
+import {useSelector} from "react-redux";
+import {SortBySelectors} from "@entities/SortBy/model/SortBy.selector";
+import {sortByNames} from "@entities/SortBy";
 
 interface HeaderProps {
   className?: string;
   isFiltersOpen?: boolean;
-  toggleFiltersOpen: () => void;
+  toggleFiltersOpen?: () => void;
+  isSortingOpen?: boolean;
+  toggleSortingOpen?: () => void;
 }
 
 export const Header = (props: HeaderProps) => {
-  const { className, isFiltersOpen, toggleFiltersOpen } = props;
+  const { className, isFiltersOpen, toggleFiltersOpen, isSortingOpen, toggleSortingOpen } = props;
   const [value, setValue] = useState("");
+
+  const sortByValue = useSelector(SortBySelectors.selectSortByValue);
 
   return (
     <div className={cn(styles.header, className)}>
       <Button className={cn(styles.filter, {[styles.activeFilter]: isFiltersOpen})} onClick={toggleFiltersOpen}>
         <FilterIcon width={18} height={18} />
         <Text weight={TextWeight.MEDIUM} size={TextSize.M}>Фильтры</Text>
+      </Button>
+      <Button className={cn(styles.sorting, {[styles.activeSorting]: isSortingOpen})} onClick={toggleSortingOpen}>
+        <Text weight={TextWeight.MEDIUM} size={TextSize.M}>{sortByNames[sortByValue]}</Text>
+        <Chevron width={18} height={18} />
       </Button>
       {/* <div className={cn(styles.city, { [styles.placeholder]: !value })}>
         <LocationIcon className={styles.location} />
