@@ -55,8 +55,9 @@ export const useGetData = <DataType extends {}>
           setIsLoading(false);
         }
       })()
+
     }
-  }, [isEnabled]);
+  }, [isEnabled, JSON.stringify(params)]);
 
   return {isSuccess, isLoading, data, isError, error} as const
 }

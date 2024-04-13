@@ -25,7 +25,8 @@ export const getData = async <T extends {}>
     params = {},
     defaultErrorMessage = "Произошла ошибка при получении данных",
   }: GetDataParams): Promise<T> => {
-  const queryParams = JSON.stringify(params) === '{}' ? '' : '?' + generateUrlParams(params);
+  const paramsString = generateUrlParams(params)
+  const queryParams = paramsString ? '?' + paramsString : '';
   const response = await fetch(`${baseUrl}${url}${queryParams}`, {
     headers,
   })
