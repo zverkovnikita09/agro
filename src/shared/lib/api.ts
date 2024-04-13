@@ -63,7 +63,7 @@ export const sendData = async <DataType extends {}>
   if (type === 'FormData') {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
-      if (typeof value === "undefined" || value === null) return
+      if (typeof value === "undefined" || value === null || value === "") return
       if (Array.isArray(value)) {
         formatArrayToFormData(key, value).forEach(({ name: itemKey, value: itemValue, }) => {
           formData.append(itemKey, String(itemValue))

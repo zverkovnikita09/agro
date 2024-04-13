@@ -122,18 +122,6 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
         >
           Подъезд
         </Text>
-        {/* <Controller
-            name="is_overload"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Select
-                label='Где будет осуществляться погрузка'
-                options={[{ name: "Да", value: true }, { name: "Нет", value: false }]}
-                value={value}
-                setValue={onChange}
-              />
-            )}
-          /> */}
         <div className={styles.inputsRowWithGap}>
           <Controller
             name="approach"

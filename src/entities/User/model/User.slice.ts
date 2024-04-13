@@ -25,4 +25,4 @@ const userSlice = createSlice({
 
 export const { removeUserData, setToken, setUser } = userSlice.actions;
 
-export const userReduser = userSlice.reducer;
+export const userReducer = userSlice.reducer;

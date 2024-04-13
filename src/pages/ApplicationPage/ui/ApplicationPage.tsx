@@ -239,13 +239,14 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             <div className={styles.infoGrid}>
               <div className={styles.infoItem}>
                 <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Начало периода простоя</Text>
-                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>C {outage_begin}-х суток</Text>
+                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>
+                  {outage_begin === 2 ? "Со" : "C"} {outage_begin}-х суток
+                </Text>
               </div>
               {outage_price &&
                 <div className={styles.infoItem}>
                   <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Стоимость простоя</Text>
-                  <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{outage_price} ₽ <span className={styles.loadLimit}>/ Сутки</span>
-                  </Text>
+                  <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{outage_price} ₽ <span className={styles.loadLimit}>/ Сутки</span></Text>
                 </div>
               }
             </div>

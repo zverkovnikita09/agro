@@ -24,7 +24,7 @@ export const FormStepThree = (props: FormStepThreeProps) => {
   const outageBeginOptions = [
     { name: "Нет", value: 0 },
     { name: "с 1-х суток", value: 1 },
-    { name: "с 2-х суток", value: 2 },
+    { name: "со 2-х суток", value: 2 },
     { name: "с 3-х суток", value: 3 },
     { name: "с 4-х суток", value: 4 },
   ]
