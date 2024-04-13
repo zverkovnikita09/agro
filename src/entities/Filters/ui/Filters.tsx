@@ -17,9 +17,10 @@ import { TogglerCheckbox } from "@shared/ui/TogglerCheckbox";
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
 import { LSKeys } from '@shared/lib/globalVariables';
 import { Filters as FiltersType } from '../model/Filters.model';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FiltersSelectors } from '../model/Filters.selectors';
 import { useGetData } from '@shared/hook/useGetData';
+import { setFilters } from '../model/Filters.slice';
 
 interface FiltersProps {
   className?: string;
@@ -41,9 +42,10 @@ export const Filters = (props: FiltersProps) => {
   }, [location]);
 
   const [, setLSFilters] = useLocalStorage(LSKeys.FILTERS, null)
-  const { control, watch, setValue, reset } = useForm<FiltersType>()
+  const { control, watch, setValue, reset, handleSubmit } = useForm<FiltersType>()
   const distance_from = watch('distance_from');
   const distance_to = watch('distance_to');
+  const dispatch = useDispatch()
 
   const { data: loadTypes, isLoading: isLoadTypesLoading } = useGetData<{ id: string, title: string }[]>({ url: '/api/v1/load_types', dataFlag: true })
 
@@ -57,46 +59,52 @@ export const Filters = (props: FiltersProps) => {
     setValue("clarification_of_the_weekend", [saturdayState, sundayState].filter(Boolean).join(" и "))
   }, [saturdayState, sundayState])
 
+  const onSubmit = (data: FiltersType) => {
+    closeFilters()
+    dispatch(setFilters(data))
+  }
+
   return (
     <CardContainer className={cn(styles.filters, className, { [styles.activeFilter]: isOpen })}>
-      <div className={styles.heading}>
-        <Text size={TextSize.XL} weight={TextWeight.SEMI_BOLD}>
-          Фильтры
-        </Text>
-        <Button onClick={() => reset()}>
-          <Text size={TextSize.S} weight={TextWeight.MEDIUM} color={TextColor.GREY}>
-            Очистить все
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className={styles.heading}>
+          <Text size={TextSize.XL} weight={TextWeight.SEMI_BOLD}>
+            Фильтры
           </Text>
-        </Button>
-      </div>
-      <div className={styles.body}>
-        <Accordion className={styles.accordion} accordionTitle={'Расстояние'}>
-          <InputRange
-            //@ts-ignore
-            setValue={setValue}
-            value={[distance_from as number, distance_to as number]}
-            names={{ from: 'distance_from', to: 'distance_to' }}
-            min={0}
-            max={10000}
-            step={500}
-            units='км'
-            prevValueTextFrom='от'
-            prevValueTextTo='до'
-          />
-        </Accordion>
-        {/* <Accordion className={styles.accordion} accordionTitle={'Область погрузки'}>
+          <Button onClick={() => reset()}>
+            <Text size={TextSize.S} weight={TextWeight.MEDIUM} color={TextColor.GREY}>
+              Очистить все
+            </Text>
+          </Button>
+        </div>
+        <div className={styles.body}>
+          <Accordion className={styles.accordion} accordionTitle={'Расстояние'}>
+            <InputRange
+              //@ts-ignore
+              setValue={setValue}
+              value={[distance_from as number, distance_to as number]}
+              names={{ from: 'distance_from', to: 'distance_to' }}
+              min={0}
+              max={10000}
+              step={500}
+              units='км'
+              prevValueTextFrom='от'
+              prevValueTextTo='до'
+            />
+          </Accordion>
+          {/* <Accordion className={styles.accordion} accordionTitle={'Область погрузки'}>
           <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => { }} />
           <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => { }} />
         </Accordion> */}
-        {/* <Accordion className={styles.accordion} accordionTitle={'Область выгрузки'}>
+          {/* <Accordion className={styles.accordion} accordionTitle={'Область выгрузки'}>
           <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => { }} />
           <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => { }} />
         </Accordion> */}
-        {/* <Accordion className={styles.accordion} accordionTitle={'Отображать новые территории'}>
+          {/* <Accordion className={styles.accordion} accordionTitle={'Отображать новые территории'}>
           <RadioButton>Да</RadioButton>
           <RadioButton>Нет</RadioButton>
         </Accordion> */}
-        {/* <Accordion className={styles.accordion} accordionTitle={'Культура'}>
+          {/* <Accordion className={styles.accordion} accordionTitle={'Культура'}>
           <Controller
             name="load_types"
             control={control}
@@ -128,37 +136,37 @@ export const Filters = (props: FiltersProps) => {
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Пшеница</Checkbox>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Пшеница</Checkbox>
         </Accordion> */}
-        <Accordion className={styles.accordion} accordionTitle={'Стоимость перевозки'}>
-          <div className={styles.inputRow}>
-            <Controller
-              name="tariff_from"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  theme={InputTheme.FILTERS}
-                  placeholder='От'
-                  value={value}
-                  onChange={onChange}
-                  type='number'
-                />
-              )}
-            />
-            <Controller
-              name="tariff_to"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  theme={InputTheme.FILTERS}
-                  placeholder='До'
-                  value={value}
-                  onChange={onChange}
-                  type='number'
-                />
-              )}
-            />
-          </div>
-        </Accordion>
-        {/*  <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Отображать цену (НДС/б.НДС)'}>
+          <Accordion className={styles.accordion} accordionTitle={'Стоимость перевозки'}>
+            <div className={styles.inputRow}>
+              <Controller
+                name="tariff_from"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    theme={InputTheme.FILTERS}
+                    placeholder='От'
+                    value={value}
+                    onChange={onChange}
+                    type='number'
+                  />
+                )}
+              />
+              <Controller
+                name="tariff_to"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    theme={InputTheme.FILTERS}
+                    placeholder='До'
+                    value={value}
+                    onChange={onChange}
+                    type='number'
+                  />
+                )}
+              />
+            </div>
+          </Accordion>
+          {/*  <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Отображать цену (НДС/б.НДС)'}>
           <MultiCheckbox>
             <ControlCheckbox className={styles.controlCheckbox}>Все</ControlCheckbox>
             <NestedCheckbox
@@ -178,27 +186,27 @@ export const Filters = (props: FiltersProps) => {
             </NestedCheckbox>
           </MultiCheckbox>
         </Accordion> */}
-        <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Таймслот'}>
-          <MultiCheckbox>
-            <ControlCheckbox className={styles.controlCheckbox}>Любой</ControlCheckbox>
-            <NestedCheckbox
-              checked={!!timeslot?.[0]}
-              className={styles.nestedCheckbox}
-              setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? "Целевой" : "")}
-              name='timeslot.0'
-            >
-              Целевой
-            </NestedCheckbox>
-            <NestedCheckbox
-              checked={!!timeslot?.[1]}
-              setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? "В общем доступе" : "")}
-              name='timeslot.1'
-            >
-              В общем доступе
-            </NestedCheckbox>
-          </MultiCheckbox>
-        </Accordion>
-        {/* <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Тип транспорта'}>
+          <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Таймслот'}>
+            <MultiCheckbox>
+              <ControlCheckbox className={styles.controlCheckbox}>Любой</ControlCheckbox>
+              <NestedCheckbox
+                checked={!!timeslot?.[0]}
+                className={styles.nestedCheckbox}
+                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? "Целевой" : "")}
+                name='timeslot.0'
+              >
+                Целевой
+              </NestedCheckbox>
+              <NestedCheckbox
+                checked={!!timeslot?.[1]}
+                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? "В общем доступе" : "")}
+                name='timeslot.1'
+              >
+                В общем доступе
+              </NestedCheckbox>
+            </MultiCheckbox>
+          </Accordion>
+          {/* <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Тип транспорта'}>
           <MultiCheckbox>
             <ControlCheckbox className={styles.controlCheckbox}>Любой</ControlCheckbox>
             <NestedCheckbox
@@ -225,7 +233,7 @@ export const Filters = (props: FiltersProps) => {
             </NestedCheckbox>
           </MultiCheckbox>
         </Accordion> */}
-        {/*  <Accordion className={styles.accordion} accordionTitle={'Способ погрузки'}>
+          {/*  <Accordion className={styles.accordion} accordionTitle={'Способ погрузки'}>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Маниту</Checkbox>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Зерномет</Checkbox>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Из-под трубы</Checkbox>
@@ -235,115 +243,117 @@ export const Filters = (props: FiltersProps) => {
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Вертикальный</Checkbox>
           <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Элеватор</Checkbox>
         </Accordion> */}
-        <Accordion className={styles.accordion} accordionTitle={'Возможность перегруза'}>
-          <Controller
-            name="is_overload"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <RadioButton checked={Number(value) == 1} value={1} onChange={onChange}>Да</RadioButton>
-            )}
-          />
-          <Controller
-            name="is_overload"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <RadioButton checked={Number(value) === 0} value={0} onChange={onChange}>Нет</RadioButton>
-            )}
-          />
-        </Accordion>
-        <Accordion className={styles.accordion} accordionTitle={'Длина весов (не менее) м'}>
-          <Controller
-            name="scale_length"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Input
-                theme={InputTheme.FILTERS}
-                placeholder='Укажите длину'
-                value={value}
-                onChange={onChange}
-                type='number'
-              />
-            )}
-          />
-        </Accordion>
-        <Accordion className={styles.accordion} accordionTitle={'Ограничение по высоте (не менее) м'}>
-          <Controller
-            name="height_limit"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Input
-                theme={InputTheme.FILTERS}
-                placeholder='Укажите ограничение по высоте'
-                value={value}
-                onChange={onChange}
-                type='number'
-              />
-            )}
-          />
-        </Accordion>
-        {/* <Accordion className={styles.accordion} accordionTitle={'Дополнительные фильтры'}>
+          <Accordion className={styles.accordion} accordionTitle={'Возможность перегруза'}>
+            <Controller
+              name="is_overload"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <RadioButton checked={Number(value) == 1} value={1} onChange={onChange}>Да</RadioButton>
+              )}
+            />
+            <Controller
+              name="is_overload"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <RadioButton checked={Number(value) === 0} value={0} onChange={onChange}>Нет</RadioButton>
+              )}
+            />
+          </Accordion>
+          <Accordion className={styles.accordion} accordionTitle={'Длина весов (не менее) м'}>
+            <Controller
+              name="scale_length"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  theme={InputTheme.FILTERS}
+                  placeholder='Укажите длину'
+                  value={value}
+                  onChange={onChange}
+                  type='number'
+                />
+              )}
+            />
+          </Accordion>
+          <Accordion className={styles.accordion} accordionTitle={'Ограничение по высоте (не менее) м'}>
+            <Controller
+              name="height_limit"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  theme={InputTheme.FILTERS}
+                  placeholder='Укажите ограничение по высоте'
+                  value={value}
+                  onChange={onChange}
+                  type='number'
+                />
+              )}
+            />
+          </Accordion>
+          {/* <Accordion className={styles.accordion} accordionTitle={'Дополнительные фильтры'}>
           <Accordion className={styles.accordion} accordionTitle={'Тип выгрузки'}>
             <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Боковая</Checkbox>
             <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Задняя</Checkbox>
             <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Самосвальная задняя</Checkbox>
             <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Самосвальная боковая</Checkbox>
           </Accordion> */}
-        <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
-          <MultiCheckbox>
-            <ControlCheckbox className={styles.controlCheckbox}>Грузят в выходные</ControlCheckbox>
-            <NestedCheckbox
-              checked={!!saturdayState}
-              className={styles.nestedCheckbox}
-              setChecked={() => setSaturdayState(prev => prev ? '' : 'суббота')}
-              name='saturday'
-            >
-              СБ
-            </NestedCheckbox>
-            <NestedCheckbox
-              checked={!!sundayState}
-              setChecked={() => setSundayState(prev => prev ? '' : 'воскресенье')}
-              name='sunday'
-            >
-              ВС
-            </NestedCheckbox>
-          </MultiCheckbox>
-        </Accordion>
-        <Accordion className={styles.accordion} accordionTitle={'Хартия'}>
-          <Accordion className={styles.accordion} accordionTitle={'Возможность перегруза'}>
-            <Controller
-              name="is_full_charter"
-              control={control}
-              render={({ field: { value, onChange } }) => (
-                <RadioButton checked={Number(value) == 1} value={1} onChange={onChange}>Полная</RadioButton>
-              )}
-            />
-            <Controller
-              name="is_full_charter"
-              control={control}
-              render={({ field: { value, onChange } }) => (
-                <RadioButton checked={Number(value) === 0} value={0} onChange={onChange}>Не полная</RadioButton>
-              )}
-            />
+          <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
+            <MultiCheckbox>
+              <ControlCheckbox className={styles.controlCheckbox}>Грузят в выходные</ControlCheckbox>
+              <NestedCheckbox
+                checked={!!saturdayState}
+                className={styles.nestedCheckbox}
+                setChecked={() => setSaturdayState(prev => prev ? '' : 'суббота')}
+                name='saturday'
+              >
+                СБ
+              </NestedCheckbox>
+              <NestedCheckbox
+                checked={!!sundayState}
+                setChecked={() => setSundayState(prev => prev ? '' : 'воскресенье')}
+                name='sunday'
+              >
+                ВС
+              </NestedCheckbox>
+            </MultiCheckbox>
           </Accordion>
-        </Accordion>
-      </div>
-      <TogglerCheckbox
-        checked={needToSaveFilters}
-        setChecked={setNeedToSaveFilters}
-        className={styles.saveFilters}
-      >
-        Сохранить фильтры
-      </TogglerCheckbox>
-      <div className={styles.footer}>
-        <Button
-          className={styles.button}
-          theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
-          size={ButtonSize.SM}
-          fullWidth
+          <Accordion className={styles.accordion} accordionTitle={'Хартия'}>
+            <Accordion className={styles.accordion} accordionTitle={'Возможность перегруза'}>
+              <Controller
+                name="is_full_charter"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <RadioButton checked={Number(value) == 1} value={1} onChange={onChange}>Полная</RadioButton>
+                )}
+              />
+              <Controller
+                name="is_full_charter"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <RadioButton checked={Number(value) === 0} value={0} onChange={onChange}>Не полная</RadioButton>
+                )}
+              />
+            </Accordion>
+          </Accordion>
+        </div>
+        <TogglerCheckbox
+          checked={needToSaveFilters}
+          setChecked={setNeedToSaveFilters}
+          className={styles.saveFilters}
         >
-          Применить фильтры
-        </Button>
-      </div>
+          Сохранить фильтры
+        </TogglerCheckbox>
+        <div className={styles.footer}>
+          <Button
+            className={styles.button}
+            theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+            size={ButtonSize.SM}
+            type='submit'
+            fullWidth
+          >
+            Применить фильтры
+          </Button>
+        </div>
+      </form>
     </CardContainer>
   )
 }

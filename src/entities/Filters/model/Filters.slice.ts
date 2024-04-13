@@ -28,9 +28,8 @@ const filtersSlice = createSlice({
   name: "filters",
   initialState,
   reducers: {
-    //TO FIX TYPES
-    setFilters(state, { payload: { name, value } }: PayloadAction<{ name: keyof Filters, value: any }>) {
-      return { ...state, filters: { ...state.filters, [name]: value } }
+    setFilters(state, { payload }: PayloadAction<Filters>) {
+      return { ...state, filters: payload }
     },
     clearFilters(state) {
       return { ...state, filters: initialFiltersValue };
