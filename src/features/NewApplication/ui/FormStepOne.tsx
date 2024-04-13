@@ -9,6 +9,7 @@ import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
 import { useSearchByDadata } from '@shared/hook/useSearchByDadata'
 import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
+import dayjs from 'dayjs'
 
 interface FormStepOneProps {
   onCancel: () => void
@@ -67,7 +68,11 @@ export const FormStepOne = (props: FormStepOneProps) => {
           <Controller
             name="start_order_at"
             control={control}
-            rules={{ required: "Поле обязательно к заполнению" }}
+            rules={{
+              required: "Поле обязательно к заполнению", validate: (value) => {
+                return value && value >= dayjs().format("YYYY-MM-DD") || 'Дата начала меньше текущей даты';
+              }
+            }}
             render={(props) => (
               <Calendar
                 placeholder='Дата начала перевозки'
@@ -126,7 +131,10 @@ export const FormStepOne = (props: FormStepOneProps) => {
                   options={placeOptions}
                   minLengthForOptions={minPlaceQueryLength}
                   value={value}
-                  setValue={onChange}
+                  setValue={(value) => {
+                    setSearchPlace("")
+                    onChange(value)
+                  }}
                   noArrow
                   error={errors[name]?.message as string}
                 />
@@ -152,7 +160,10 @@ export const FormStepOne = (props: FormStepOneProps) => {
                   options={placeOptions}
                   minLengthForOptions={minPlaceQueryLength}
                   value={value}
-                  setValue={onChange}
+                  setValue={(value) => {
+                    setSearchPlace("")
+                    onChange(value)
+                  }}
                   noArrow
                   error={errors[name]?.message as string}
                 />
@@ -181,7 +192,10 @@ export const FormStepOne = (props: FormStepOneProps) => {
                 options={companyOptions}
                 minLengthForOptions={minCompanyQueryLength}
                 value={value}
-                setValue={onChange}
+                setValue={(value) => {
+                  setSearchCompany("")
+                  onChange(value)
+                }}
                 noArrow
                 error={errors[name]?.message as string}
               />
@@ -221,7 +235,10 @@ export const FormStepOne = (props: FormStepOneProps) => {
                 options={companyOptions}
                 minLengthForOptions={minCompanyQueryLength}
                 value={value}
-                setValue={onChange}
+                setValue={(value) => {
+                  setSearchCompany("")
+                  onChange(value)
+                }}
                 noArrow
                 error={errors[name]?.message as string}
               />

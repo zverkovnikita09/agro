@@ -20,7 +20,7 @@ interface AdditionalStepOneProps {
 export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
   const { toMainPart, prevStep, isLoading } = props;
 
-  const { control, watch, setValue } = useContext(NewApplicationContext);
+  const { control, setValue } = useContext(NewApplicationContext);
 
   const [saturdayState, setSaturdayState] = useState('');
   const [sundayState, setSundayState] = useState('');
@@ -39,19 +39,19 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
           Тип выгрузки
         </Text>
         <Controller
-              name="unload_method"
-              control={control}
-              render={({ field: { value, name, onChange, onBlur } }) => (
-                <InputAutocomplete
-                  name={name}
-                  label='Выберите тип выгрузки'
-                  value={value}
-                  setValue={onChange}
-                  onBlur={onBlur}
-                  autocompleteItems={["Боковая", "Задняя", "Самосвальная задняя", "Самосвальная боковая"]}
-                />
-              )}
+          name="unload_method"
+          control={control}
+          render={({ field: { value, name, onChange, onBlur } }) => (
+            <InputAutocomplete
+              name={name}
+              label='Выберите тип выгрузки'
+              value={value}
+              setValue={onChange}
+              onBlur={onBlur}
+              autocompleteItems={["Боковая", "Задняя", "Самосвальная задняя", "Самосвальная боковая"]}
             />
+          )}
+        />
       </div>
       <div className={styles.inputBlock}>
         <Text
@@ -68,16 +68,31 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
               required: false, pattern: {
                 value: /^[^_]*$/,
                 message: 'Время работы должно быть заполнено в формате ЧЧ:ММ - ЧЧ:ММ'
+              },
+              validate: (value) => {
+                const time = value?.split(" - ").reduce((acc, value): string[] => {
+                  const splittedValue = value.split(":")
+                  return splittedValue.length ? [...acc, splittedValue[0], splittedValue[1]] : acc;
+                }, [] as string[]) ?? [];
+
+                const [startHours, startMinutes, endHours, endMinutes] = time;
+
+                if (Number(startHours) > 23 || Number(endHours) > 23) return 'Неверный формат времени';
+                if (Number(startMinutes) > 59 || Number(endMinutes) > 59) return 'Неверный формат времени';
+                if (Number(startHours) > Number(endHours)) return 'Время начала больше времени окончания';
+                if (Number(startHours) === Number(endHours) && Number(startMinutes) > Number(endMinutes)) return 'Время начала больше времени окончания';
+                return true
               }
             }}
             render={({ formState: { errors }, field: { value, name, onChange, onBlur } }) => (
               <Input
                 label='Время работы'
-                mask="99:99 - 99:99"
+                mask="H9:M9 - H9:M9"
                 type='tel'
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}
+                formatChars={{ 'H': '[0-2]', 'M': '[0-5]', '9': '[0-9]' }}
                 error={errors[name]?.message as string}
               />
             )}

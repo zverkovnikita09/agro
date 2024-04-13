@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from '@src/app/store/model/hook';
 import { useEffect, useState } from "react";
 import { Text } from "@shared/ui/Text";
+import { RouterPaths } from '@src/app/router';
 
 interface CodeValidationFormProps {
   className?: string;
@@ -63,7 +64,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
       dispatch(setToken(token));
       setAuthToken(token);
       dispatch(setUser(user));
-      navigate('/');
+      navigate(RouterPaths.MAIN);
       setNumber(null);
     },
     onError: () => {
@@ -92,7 +93,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
 
   const onChangeNumber = () => {
     setNumber(null);
-    navigate('/');
+    navigate(RouterPaths.MAIN);
   }
 
   useEffect(() => {

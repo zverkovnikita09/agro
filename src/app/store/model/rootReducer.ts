@@ -1,9 +1,11 @@
 import { Reducer, combineReducers } from "@reduxjs/toolkit";
 import { RootState } from "./store.model";
-import { userReduser } from "@entities/User";
-import { notificationsReduser } from "@entities/Notifications";
+import { userReducer } from "@entities/User";
+import { notificationsReducer } from "@entities/Notifications";
+import { filtersReducer } from "@entities/Filters/model/Filters.slice";
 
 export const rootReducer: Reducer<RootState> = combineReducers({
-    user: userReduser,
-    notifications: notificationsReduser
-  });
+  user: userReducer,
+  notifications: notificationsReducer,
+  filters: filtersReducer
+});

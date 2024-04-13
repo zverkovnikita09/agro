@@ -23,6 +23,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   inputAutoFocus?: boolean;
   fixLabel?: boolean;
   theme?: InputTheme;
+  formatChars?: Record<string, string>
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -83,7 +84,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   }
 
   useEffect(() => {
-    if (value) setIsLabelFixed(true)
+    if (value) {
+      setIsLabelFixed(true)
+      return
+    }
+    setIsLabelFixed(false)
   }, [value]);
 
   /*   useEffect(() => {
@@ -123,6 +128,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           onBlur={handleBlur}
           onChange={onChange}
           disabled={disabled}
+
           {...otherProps}
         /> :
         defaultInput()

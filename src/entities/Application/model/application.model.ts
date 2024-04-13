@@ -13,7 +13,7 @@ export interface ApplicationModel {
   exporter_inn: string;
   scale_length: number;
   height_limit: number;
-  is_overload: boolean;
+  is_overload: number;
   timeslot: string;
   outage_begin?: number;
   outage_price?: number;

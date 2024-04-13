@@ -9,13 +9,7 @@ import { RouterPaths } from "@src/app/router";
 import { useGetData } from "@shared/hook/useGetData";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
 import { createContext, useState } from 'react';
-import { CardContainer } from "@shared/ui/CardContainer";
-import { Button } from "@shared/ui/Button";
-import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
-import { Accordion } from "@shared/ui/Accordion";
-import { InputRange } from "@shared/ui/InputRange";
-import { useForm } from "react-hook-form";
-import { Filters } from "@widgets/Filters";
+import { Filters } from "@entities/Filters";
 import { YandexMap } from "@widgets/YandexMap";
 import { Notifications } from '@entities/Notifications';
 

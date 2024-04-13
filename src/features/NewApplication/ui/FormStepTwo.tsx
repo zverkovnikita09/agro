@@ -14,6 +14,7 @@ import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 import { useGetData } from "@shared/hook/useGetData";
 import { ErrorBlock } from '@shared/ui/ErrorBlock'
 import { LoadingBlock } from '@shared/ui/LoadingBlock'
+import { CROP_OPTIONS } from '@shared/lib/globalVariables'
 
 interface FormStepTwoProps {
   prevStep: () => void
@@ -33,6 +34,7 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
   const load_types = watch("load_types"); //массив id (чекбоксы)
 
   const toleranceToTheNormOptions = [
+    { name: "Нет", value: null },
     { name: "1%", value: 1 },
     { name: "2%", value: 2 },
     { name: "3%", value: 3 },
@@ -43,55 +45,6 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
     { name: "8%", value: 8 },
     { name: "9%", value: 9 },
     { name: "10%", value: 10 },
-  ]
-
-  const cropOptions = [
-    "Барда",
-    "Горох",
-    "Горчица",
-    "Жмых",
-    "Жом",
-    "Жом гранулированный",
-    "Корм кукурузный глютеновый",
-    "Кукуруза",
-    "Кукурузный зародыш",
-    "Лен",
-    "Лузга подсолнечника",
-    "Масло подсолнечное",
-    "Металл",
-    "Нитроаммофоска",
-    "Нут",
-    "Овес",
-    "Орехи ШИ",
-    "Отруби гранулированные",
-    "Отруби пушистые",
-    "Песок",
-    "Подсолнечник",
-    "Просо",
-    "Пшеница",
-    "Пшеница 3 - кл",
-    "Пшеница 4 - кл",
-    "Пшеница 5 - кл",
-    "Рапс",
-    "Рис",
-    "Рожь",
-    "Рыжик",
-    "Сафлор",
-    "Свекла",
-    "Селитра",
-    "Семена",
-    "Сорго",
-    "Щебень",
-    "Уголь",
-    "Соя",
-    "Удобрения",
-    "Чечевица",
-    "Шрот",
-    "Яблоки",
-    "Ячмень",
-    "Аммофос",
-    "Тритикале",
-    "Люпин"
   ]
 
   const [loadTypesValues, setLoadTypesValues] = useState<string[]>(load_types)
@@ -127,7 +80,7 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
                 value={value}
                 setValue={onChange}
                 onBlur={onBlur}
-                autocompleteItems={cropOptions}
+                autocompleteItems={CROP_OPTIONS}
                 error={errors[name]?.message as string}
               />
             )}
@@ -222,7 +175,7 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             }}
             render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
-                label='Суточная норма поргрузки / Т'
+                label='Суточная норма погрузки / Т'
                 type='number'
                 value={value}
                 onChange={onChange}
