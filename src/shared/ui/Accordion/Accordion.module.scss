@@ -1,6 +1,4 @@
-.accordion {
-
-}
+.accordion {}
 
 .title {
   display: flex;
@@ -14,7 +12,8 @@
   display: grid;
   grid-template-rows: 0fr;
   overflow: hidden;
-  transition: grid-template-rows 0.2s, padding 0s 0.2s;
+  transition: grid-template-rows 0.1s, padding 0s 0.1s;
+
   &.open {
     grid-template-rows: 1fr;
     padding-bottom: 16px;
@@ -26,7 +25,8 @@
   }
 }
 
-.content{
+.content {
   display: grid;
   gap: 6px;
+  min-height: 0;
 }

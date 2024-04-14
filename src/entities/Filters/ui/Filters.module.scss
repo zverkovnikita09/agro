@@ -1,5 +1,4 @@
 .filters {
-  display: none;
   position: absolute;
   /*TO FIX*/
   top: 75px;
@@ -9,11 +8,27 @@
   overflow: hidden;
   z-index: 5;
   padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 44px;
+}
 
-  &.activeFilter {
-    display: flex;
-    flex-direction: column;
-  }
+.loading {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  top: 0;
+  left: 0;
+  background-color: var(--white-color);
+  z-index: 5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
 }
 
 .heading {
@@ -35,27 +50,30 @@
   height: 0;
 }
 
-.footer{
+.footer {
   display: flex;
   background: var(--white-color);
   border-radius: 12px;
   padding: 3.5px 4px;
   box-shadow: var(--shadow-bottom);
-  margin: 0 -16px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  left: 0;
 }
 
-.inputRow{
+.inputRow {
   display: flex;
   gap: 12px;
 }
 
-.checkboxContainer{
-  &>*:not(:first-child){
+.checkboxContainer {
+  &>*:not(:first-child) {
     padding-left: 30px;
   }
 }
 
-.controlCheckbox{
+.controlCheckbox {
   margin-left: -30px;
 }
 
@@ -67,6 +85,14 @@
   }
 }
 
-.saveFilters{
+.saveFilters {
   padding: 12px 0;
+}
+
+.additionalContentWrapper {
+  padding: 0 !important;
+}
+
+.additionalContent {
+  gap: 0;
 }

@@ -1,14 +1,12 @@
 import { Text, TextSize, TextWeight } from '@shared/ui/Text'
 import styles from './NewApplication.module.scss'
 import { Calendar } from '@shared/ui/Calendar'
-import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import { useContext, useState } from 'react'
 import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
 import { useSearchByDadata } from '@shared/hook/useSearchByDadata'
-import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 import dayjs from 'dayjs'
 
 interface FormStepOneProps {

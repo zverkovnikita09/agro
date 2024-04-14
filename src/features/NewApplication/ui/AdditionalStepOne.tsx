@@ -8,7 +8,6 @@ import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
 import { RadioButton } from '@shared/ui/RadioButton'
 import { Select } from '@shared/ui/Select'
-import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 
 interface AdditionalStepOneProps {
   toMainPart: () => void
@@ -17,12 +16,9 @@ interface AdditionalStepOneProps {
 export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
   const { toMainPart } = props;
 
-  const { control, watch, setValue } = useContext(NewApplicationContext);
-
-  const load_place = watch('load_place') // где происходит погрузка
+  const { control, watch } = useContext(NewApplicationContext);
 
   const unit_of_measurement_for_cargo_shortage_rate = watch('unit_of_measurement_for_cargo_shortage_rate')
-
 
   return (
     <>
@@ -103,14 +99,21 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
           <Controller
             name="load_place"
             control={control}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <InputAutocomplete
-                label='Где будет осуществляться погрузка'
-                value={value}
+            render={({ field: { value, onChange } }) => (
+              <Select
+                options={["Склад", "Ток", "Поле", "Элеватор"]}
                 setValue={onChange}
-                onBlur={onBlur}
-                autocompleteItems={["Склад", "Ток", "Поле", "Элеватор"]}
+                value={value}
+                label='Где будет осуществляться погрузка'
+                withInputSearch
               />
+              /*  <InputAutocomplete
+                 label='Где будет осуществляться погрузка'
+                 value={value}
+                 setValue={onChange}
+                 onBlur={onBlur}
+                 autocompleteItems={["Склад", "Ток", "Поле", "Элеватор"]}
+               /> */
             )}
           />
         </div>

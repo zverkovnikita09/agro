@@ -17,8 +17,6 @@ import { ApplicationModel } from '@entities/Application/model/application.model'
 import { Stepper } from "@shared/ui/Stepper";
 import { Step } from "@shared/ui/Stepper/Step";
 import { useSendData } from '@shared/hook/useSendData';
-import CheckedIcon from "@images/check-broken.svg";
-import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text';
 import { useDispatch } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
 import { RouterPaths } from '@src/app/router';
@@ -37,7 +35,7 @@ export const NewApplicationContext = createContext<NewApplicationContextPros>({}
 
 export const NewApplication = (props: NewApplicationProps) => {
   const { className } = props;
-  const [formStep, setFormStep] = useState(5);
+  const [formStep, setFormStep] = useState(1);
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -105,31 +103,6 @@ export const NewApplication = (props: NewApplicationProps) => {
   };
 
   useDocumentEvent('keydown', closeOnEsc);
-
-  /* if (isSuccess) return (
-    <div className={cn(styles.newApplication, className)}>
-      <div className={styles.successPopup}>
-        <CheckedIcon width={46} height={40} />
-        <div className={styles.successContent}>
-          <Text
-            as="p"
-            size={TextSize.XL}
-            weight={TextWeight.SEMI_BOLD}
-          >
-            Заявка №{responseData?.data?.[0]?.order_number ?? ""} создана
-          </Text>
-          <Text
-            as="p"
-            size={TextSize.M}
-            weight={TextWeight.MEDIUM}
-            color={TextColor.GREY}
-          >
-            Вы успешно создали заявку, она скоро появится в общем списке
-          </Text>
-        </div>
-      </div>
-    </div>
-  ) */
 
   return (
     <div className={cn(styles.newApplication, className)}>

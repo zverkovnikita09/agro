@@ -43,6 +43,6 @@ export interface ApplicationModel {
   load_types: string[];
   order_number: number;
   is_full_charter?: number;
-  unload_method?: string;
+  unload_methods?: string[];
   created_at?: string;
 }

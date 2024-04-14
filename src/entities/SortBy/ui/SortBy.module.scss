@@ -1,5 +1,4 @@
 .sortBy {
-  display: none;
   position: absolute;
   /*TO FIX*/
   top: 75px;
@@ -9,23 +8,24 @@
   overflow: hidden;
   z-index: 5;
   padding: 24px 12px;
-
-  &.activeSorting {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 
-.button{
+.button {
   text-align: start;
   padding: 12px 10px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
 
-  &:hover{
+  &:hover {
     background-color: var(--special-yellow);
   }
+}
+
+.active {
+  background-color: var(--special-yellow);
 }

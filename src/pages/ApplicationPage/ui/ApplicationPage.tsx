@@ -72,7 +72,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     volume,
     work_time,
     is_full_charter,
-    unload_method,
+    unload_methods,
     created_at
   } = applicationInfo ?? {}
 
@@ -294,7 +294,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Тип выгрузки</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_method || "Не указано"}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_methods || "Не указано"}</Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Время работы</Text>

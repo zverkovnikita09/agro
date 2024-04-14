@@ -3,7 +3,8 @@ export enum LSKeys {
   TOKEN = "token",
   SIDEBAR_STATE = 'sidebarState',
   TIMER_STATE = 'timerState',
-  FILTERS = 'filters'
+  FILTERS = 'filters',
+  NEW_REGIONS = 'new-regions'
 }
 
 export const CROP_OPTIONS = [

@@ -64,7 +64,7 @@ export const Select = (props: SelectProps) => {
     withInputSearch,
     togglerClassName,
     onSearchInput,
-    minLengthForOptions = 1,
+    minLengthForOptions = 0,
     hideOptions,
   } = props
 
@@ -104,7 +104,7 @@ export const Select = (props: SelectProps) => {
   }
 
   const valueToShow = (value: unknown) => {
-    if(typeof value === "undefined") return ""
+    if (typeof value === "undefined") return ""
 
     if (isOptionTypeArray(options)) {
       return (options.find(item => (item as OptionType).value === value) as OptionType)?.name || ''
@@ -129,13 +129,28 @@ export const Select = (props: SelectProps) => {
     }
   }, [value])
 
+  useEffect(() => {
+    if (!onSearchInput) {
+      const stringOptions = isOptionTypeArray(options) ? options.map(option => option.value) : options;
+      const newOptions = stringOptions.filter(option => String(option).toUpperCase().includes(inputValue.toUpperCase()));
+
+      setAvailableOptions(
+        isOptionTypeArray(options)
+          ? newOptions.map(option => options.find(item => item.value === option))
+          : newOptions
+      )
+    }
+  }, [inputValue])
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     onSearchInput?.(e.target.value);
   }
 
   useEffect(() => {
-    setInputValue(typeof value !== 'undefined' ? multiple ? value?.join("") : String(value) : "")
+    if (withInputSearch) {
+      setInputValue(typeof value !== 'undefined' ? multiple ? value?.join("") : String(value) : "")
+    }
   }, [isDropdownOpen])
 
   return (
@@ -208,8 +223,8 @@ export const Select = (props: SelectProps) => {
               },
             ]}
           >
-            {(multiple ? availableOptions : options)?.length
-              ? (multiple ? availableOptions : options).map((option, index) => {
+            {(onSearchInput ? options : availableOptions)?.length
+              ? (onSearchInput ? options : availableOptions).map((option, index) => {
                 if (isOptionTypeArray(options)) {
                   return (
                     <div

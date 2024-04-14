@@ -3,14 +3,12 @@ import styles from './NewApplication.module.scss'
 import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
-import { Checkbox } from '@shared/ui/Checkbox'
 import { MultiCheckbox } from '@shared/ui/MultiCheckbox'
 import { ControlCheckbox } from '@shared/ui/MultiCheckbox/ControlCheckbox'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { NestedCheckbox } from '@shared/ui/MultiCheckbox/NestedCheckbox'
 import { useContext, useEffect, useState } from 'react'
 import { NewApplicationContext } from './NewApplication'
-import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
 import { useGetData } from "@shared/hook/useGetData";
 import { ErrorBlock } from '@shared/ui/ErrorBlock'
 import { LoadingBlock } from '@shared/ui/LoadingBlock'
@@ -24,14 +22,21 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
   const { prevStep } = props;
   const { control, watch, setValue } = useContext(NewApplicationContext);
 
-  const { data: loadMethodOptions, isLoading: loadMethodOptionsLoading } = useGetData<string[]>({ url: '/api/v1/load_methods', dataFlag: true })
-
-  const { data: loadTypes, isLoading: isLoadTypesLoading } = useGetData<{ id: string, title: string }[]>({ url: '/api/v1/load_types', dataFlag: true })
+  const { data: options, isSuccess: isOptionsSuccess } = useGetData<{
+    crop: string[]
+    load_types: { id: string, title: string }[]
+    timeslot: string[]
+    unload_methods: { id: string, title: string }[]
+    load_methods: string[]
+  }>(
+    {
+      url: '/api/v1/options',
+      dataFlag: true,
+      withAuthToken: true,
+    })
 
   const tariff = watch('tariff');
   const nds_percent = watch('nds_percent');
-
-  const load_types = watch("load_types"); //массив id (чекбоксы)
 
   const toleranceToTheNormOptions = [
     { name: "Нет", value: null },
@@ -47,20 +52,21 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
     { name: "10%", value: 10 },
   ]
 
-  const [loadTypesValues, setLoadTypesValues] = useState<string[]>(load_types)
+  const [loadTypes, setLoadTypes] = useState<string[]>([])
 
   useEffect(() => {
-    if (loadTypesValues) {
-      setValue("load_types", loadTypesValues)
+    if (loadTypes) {
+      setValue("load_types", loadTypes)
     }
-  }, [loadTypesValues])
-
-  if (isLoadTypesLoading && loadMethodOptionsLoading) return (
-    <LoadingBlock />
-  )
+  }, [loadTypes])
 
   return (
     <>
+      {!isOptionsSuccess && (
+        <div className={styles.loading}>
+          <LoadingBlock />
+        </div>
+      )}
       <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}
@@ -74,14 +80,13 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             control={control}
             rules={{ required: "Поле обязательно к заполнению" }}
             render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <InputAutocomplete
-                name={name}
-                label='Выберите груз'
-                value={value}
+              <Select
+                options={CROP_OPTIONS}
                 setValue={onChange}
-                onBlur={onBlur}
-                autocompleteItems={CROP_OPTIONS}
+                value={value}
                 error={errors[name]?.message as string}
+                label='Выберите груз'
+                withInputSearch
               />
             )}
           />
@@ -203,16 +208,16 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             <div className={styles.inputsRowWithGap}>
               <MultiCheckbox>
                 <ControlCheckbox>Любой</ControlCheckbox>
-                {loadTypes?.map(({ id, title }) => (
+                {options?.load_types.map(({ id, title }) => (
                   <NestedCheckbox
                     key={id}
-                    checked={!!loadTypesValues?.includes(id)}
+                    checked={!!loadTypes?.includes(id)}
                     setChecked={(_, checked) => {
                       if (!checked) {
-                        setLoadTypesValues((prev) => prev?.filter(item => item !== id))
+                        setLoadTypes((prev) => prev?.filter(item => item !== id))
                         return;
                       }
-                      setLoadTypesValues(prev => [...(prev ?? []), id])
+                      setLoadTypes(prev => [...(prev ?? []), id])
                     }}
                     name={title}
                   >
@@ -232,7 +237,7 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             render={({ field: { value, name, onChange }, formState: { errors } }) => (
               <Select
                 label='Способ погрузки'
-                options={loadMethodOptions ?? []}
+                options={options?.load_methods ?? []}
                 value={value}
                 setValue={onChange}
                 error={errors[name]?.message as string}

@@ -1,5 +1,4 @@
 import cn from 'classnames';
-import styles from './Filters.module.scss'
 import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { Accordion } from "@shared/ui/Accordion";
@@ -21,6 +20,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FiltersSelectors } from '../model/Filters.selectors';
 import { useGetData } from '@shared/hook/useGetData';
 import { setFilters } from '../model/Filters.slice';
+import { LoadingBlock } from '@shared/ui/LoadingBlock';
+import styles from './Filters.module.scss'
 
 interface FiltersProps {
   className?: string;
@@ -34,10 +35,6 @@ export const Filters = (props: FiltersProps) => {
   const [needToSaveFilters, setNeedToSaveFilters] = useState(Boolean(JSON.parse(localStorage.getItem(LSKeys.FILTERS) as string)));
   const allFilters = useSelector(FiltersSelectors.selectAllFilters);
 
-  /* const { setValue, watch } = useForm();
-  const from = watch('from');
-  const to = watch('to'); */
-
   useEffect(() => {
     closeFilters();
   }, [location]);
@@ -50,16 +47,31 @@ export const Filters = (props: FiltersProps) => {
   const distance_to = watch('distance_to');
   const dispatch = useDispatch()
 
-  const { data: loadTypes, isLoading: isLoadTypesLoading } = useGetData<{ id: string, title: string }[]>(
+  const { data: options, isSuccess: isOptionsSuccess } = useGetData<{
+    crop: string[]
+    load_types: { id: string, title: string }[]
+    timeslot: string[]
+    unload_methods: { id: string, title: string }[]
+    load_methods: string[]
+  }>(
     {
       url: '/api/v1/options',
       dataFlag: true,
       withAuthToken: true,
     })
 
-  console.log(loadTypes)
+  const { data: regions, isSuccess: isRegionsSuccess } = useGetData<string[]>(
+    {
+      url: '/api/v1/orders/regions',
+      dataFlag: true,
+      withAuthToken: true,
+    })
 
-  const timeslot = watch("timeslot")
+  const timeslot = watch("timeslot");
+  const load_types = watch("load_types");
+  const load_method = watch("load_method");
+  const crop = watch("crop");
+  const unload_methods = watch("unload_methods")
 
   //Грузят в выходные
   const [saturdayState, setSaturdayState] = useState(allFilters.clarification_of_the_weekend?.includes('суббота') || '');
@@ -69,20 +81,34 @@ export const Filters = (props: FiltersProps) => {
     setValue("clarification_of_the_weekend", [saturdayState, sundayState].filter(Boolean).join(" и "))
   }, [saturdayState, sundayState])
 
+  /* const [newRegions, setNewRegions] = useLocalStorage(LSKeys.NEW_REGIONS, null); */
+
   const onSubmit = (data: FiltersType) => {
     closeFilters()
     dispatch(setFilters(data))
     setLSFilters(needToSaveFilters ? data : null)
+    /* setNewRegions() */
   }
 
+  const handleFiltersReset = () => {
+    reset()
+    setSundayState("")
+    setSaturdayState("")
+  }
+
+  if (!isOpen) return null
+
   return (
-    <CardContainer className={cn(styles.filters, className, { [styles.activeFilter]: isOpen })}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <CardContainer className={cn(styles.filters, className)}>
+      {
+        (!isRegionsSuccess || !isOptionsSuccess) && <div className={styles.loading}><LoadingBlock /></div>
+      }
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <div className={styles.heading}>
           <Text size={TextSize.XL} weight={TextWeight.SEMI_BOLD}>
             Фильтры
           </Text>
-          <Button onClick={() => reset()}>
+          <Button onClick={handleFiltersReset}>
             <Text size={TextSize.S} weight={TextWeight.MEDIUM} color={TextColor.GREY}>
               Очистить все
             </Text>
@@ -103,50 +129,44 @@ export const Filters = (props: FiltersProps) => {
               prevValueTextTo='до'
             />
           </Accordion>
-          {/* <Accordion className={styles.accordion} accordionTitle={'Область погрузки'}>
-          <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => { }} />
-          <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => { }} />
-        </Accordion> */}
+          <Accordion className={styles.accordion} accordionTitle={'Область погрузки'}>
+            <Controller
+              name="load_region"
+              control={control}
+              rules={{ required: "Поле обязательно к заполнению" }}
+              render={({ field: { value, onChange } }) => (
+                <Select
+                  theme={SelectTheme.FILTERS}
+                  placeholder='Выберите одну или несколько'
+                  options={regions ?? []}
+                  value={value ?? []}
+                  setValue={onChange}
+                  multiple
+                />
+              )}
+            />
+            {/* <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => { }} /> */}
+          </Accordion>
           {/* <Accordion className={styles.accordion} accordionTitle={'Область выгрузки'}>
           <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => { }} />
           <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => { }} />
         </Accordion> */}
           {/* <Accordion className={styles.accordion} accordionTitle={'Отображать новые территории'}>
-          <RadioButton>Да</RadioButton>
-          <RadioButton>Нет</RadioButton>
-        </Accordion> */}
-          {/* <Accordion className={styles.accordion} accordionTitle={'Культура'}>
-          <Controller
-            name="load_types"
-            control={control}
-            rules={{
-              required: "Необходимо выбрать один из вариантов",
-            }}
-            render={({ field: { name }, formState: { errors } }) => (
-              loadTypes?.map(({ id, title }) => (
-                <NestedCheckbox
-                  key={id}
-                  checked={!!loadTypesValues?.includes(id)}
-                  setChecked={(_, checked) => {
-                    if (!checked) {
-                      setLoadTypesValues((prev) => prev?.filter(item => item !== id))
-                      return;
-                    }
-                    setLoadTypesValues(prev => [...(prev ?? []), id])
-                  }}
-                  name={title}
-                >
-                  {title}
-                </NestedCheckbox>
-              ))
-            )}
-          />
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Пшеница</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Пшеница</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Пшеница</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Пшеница</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Пшеница</Checkbox>
-        </Accordion> */}
+            <RadioButton checked={Number(newRegions) == 1} value={1} onChange={() => setNewRegions(1)}>Да</RadioButton>
+            <RadioButton checked={Number(newRegions) === 0} value={0} onChange={() => setNewRegions(0)}>Нет</RadioButton>
+          </Accordion> */}
+          <Accordion className={styles.accordion} accordionTitle={'Культура'}>
+            {options?.crop.map((item, index) => (
+              <Checkbox
+                key={item}
+                checked={!!crop?.[index]}
+                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
+                name={`crop.${index}`}
+              >
+                {item}
+              </Checkbox>
+            ))}
+          </Accordion>
           <Accordion className={styles.accordion} accordionTitle={'Стоимость перевозки'}>
             <div className={styles.inputRow}>
               <Controller
@@ -177,83 +197,70 @@ export const Filters = (props: FiltersProps) => {
               />
             </div>
           </Accordion>
-          {/*  <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Отображать цену (НДС/б.НДС)'}>
-          <MultiCheckbox>
-            <ControlCheckbox className={styles.controlCheckbox}>Все</ControlCheckbox>
-            <NestedCheckbox
-              checked={false}
-              className={styles.nestedCheckbox}
-              setChecked={setValue}
-              name='loadingOnSaturday'
-            >
-              С НДС
-            </NestedCheckbox>
-            <NestedCheckbox
-              checked={false}
-              setChecked={setValue}
-              name='loadingOnSunday'
-            >
-              Без НДС
-            </NestedCheckbox>
-          </MultiCheckbox>
-        </Accordion> */}
+          {/* <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Отображать цену (НДС/б.НДС)'}>
+            <MultiCheckbox>
+              <ControlCheckbox className={styles.controlCheckbox}>Все</ControlCheckbox>
+              <NestedCheckbox
+                checked={false}
+                className={styles.nestedCheckbox}
+                setChecked={setValue}
+                name='loadingOnSaturday'
+              >
+                С НДС
+              </NestedCheckbox>
+              <NestedCheckbox
+                checked={false}
+                setChecked={setValue}
+                name='loadingOnSunday'
+              >
+                Без НДС
+              </NestedCheckbox>
+            </MultiCheckbox>
+          </Accordion> */}
           <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Таймслот'}>
             <MultiCheckbox>
               <ControlCheckbox className={styles.controlCheckbox}>Любой</ControlCheckbox>
-              <NestedCheckbox
-                checked={!!timeslot?.[0]}
-                className={styles.nestedCheckbox}
-                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? "Целевой" : "")}
-                name='timeslot.0'
-              >
-                Целевой
-              </NestedCheckbox>
-              <NestedCheckbox
-                checked={!!timeslot?.[1]}
-                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? "В общем доступе" : "")}
-                name='timeslot.1'
-              >
-                В общем доступе
-              </NestedCheckbox>
+              {options?.timeslot.map((item, index) => (
+                <NestedCheckbox
+                  key={item}
+                  checked={!!timeslot?.[index]}
+                  className={styles.nestedCheckbox}
+                  setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
+                  name={`timeslot.${index}`}
+                >
+                  {item}
+                </NestedCheckbox>
+              ))}
             </MultiCheckbox>
           </Accordion>
-          {/* <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Тип транспорта'}>
-          <MultiCheckbox>
-            <ControlCheckbox className={styles.controlCheckbox}>Любой</ControlCheckbox>
-            <NestedCheckbox
-              checked={false}
-              className={styles.nestedCheckbox}
-              setChecked={setValue}
-              name='loadingOnSaturday'
-            >
-              Сцепки
-            </NestedCheckbox>
-            <NestedCheckbox
-              checked={false}
-              setChecked={setValue}
-              name='loadingOnSunday'
-            >
-              Полуприцеп
-            </NestedCheckbox>
-            <NestedCheckbox
-              checked={false}
-              setChecked={setValue}
-              name='loadingOnSunday'
-            >
-              Тонар
-            </NestedCheckbox>
-          </MultiCheckbox>
-        </Accordion> */}
-          {/*  <Accordion className={styles.accordion} accordionTitle={'Способ погрузки'}>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Маниту</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Зерномет</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Из-под трубы</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Комбайн</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Кун</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Амкодор</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Вертикальный</Checkbox>
-          <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Элеватор</Checkbox>
-        </Accordion> */}
+          <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Тип транспорта'}>
+            <MultiCheckbox>
+              <ControlCheckbox className={styles.controlCheckbox}>Любой</ControlCheckbox>
+              {options?.load_types.map(({ id, title }, index) => (
+                <NestedCheckbox
+                  key={id}
+                  checked={!!load_types?.[index]}
+                  className={styles.nestedCheckbox}
+                  setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? id : "")}
+                  name={`load_types.${index}`}
+                >
+                  {title}
+                </NestedCheckbox>
+              ))}
+            </MultiCheckbox>
+          </Accordion>
+          <Accordion className={styles.accordion} accordionTitle={'Способ погрузки'}>
+            {options?.load_methods.map((item, index) => (
+              <Checkbox
+                key={item}
+                checked={!!load_method?.[index]}
+                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
+                name={`load_method.${index}`}
+              >
+                {item}
+              </Checkbox>
+            ))}
+          </Accordion>
           <Accordion className={styles.accordion} accordionTitle={'Возможность перегруза'}>
             <Controller
               name="is_overload"
@@ -300,35 +307,50 @@ export const Filters = (props: FiltersProps) => {
               )}
             />
           </Accordion>
-          {/* <Accordion className={styles.accordion} accordionTitle={'Дополнительные фильтры'}>
-          <Accordion className={styles.accordion} accordionTitle={'Тип выгрузки'}>
-            <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Боковая</Checkbox>
-            <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Задняя</Checkbox>
-            <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Самосвальная задняя</Checkbox>
-            <Checkbox checked={false} setChecked={setValue} name={'wheat'}>Самосвальная боковая</Checkbox>
-          </Accordion> */}
-          <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
-            <MultiCheckbox>
-              <ControlCheckbox className={styles.controlCheckbox}>Грузят в выходные</ControlCheckbox>
-              <NestedCheckbox
-                checked={!!saturdayState}
-                className={styles.nestedCheckbox}
-                setChecked={(_, checked) => setSaturdayState(checked ? 'суббота' : '')}
-                name='saturday'
-              >
-                СБ
-              </NestedCheckbox>
-              <NestedCheckbox
-                checked={!!sundayState}
-                setChecked={(_, checked) => setSundayState(checked ? 'воскресенье' : '')}
-                name='sunday'
-              >
-                ВС
-              </NestedCheckbox>
-            </MultiCheckbox>
-          </Accordion>
-          <Accordion className={styles.accordion} accordionTitle={'Хартия'}>
-            <Accordion className={styles.accordion} accordionTitle={'Возможность перегруза'}>
+          <Accordion
+            className={styles.accordion}
+            accordionTitle={'Дополнительные фильтры'}
+            classes={
+              {
+                contentWrapper: styles.additionalContentWrapper,
+                content: styles.additionalContent
+              }
+            }
+          >
+            <Accordion className={styles.accordion} accordionTitle={'Тип выгрузки'}>
+              {options?.unload_methods.map(({ id, title }, index) => (
+                <Checkbox
+                  key={id}
+                  checked={!!unload_methods?.[index]}
+                  className={styles.nestedCheckbox}
+                  setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? id : "")}
+                  name={`unload_methods.${index}`}
+                >
+                  {title}
+                </Checkbox>
+              ))}
+            </Accordion>
+            <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
+              <MultiCheckbox>
+                <ControlCheckbox className={styles.controlCheckbox}>Грузят в выходные</ControlCheckbox>
+                <NestedCheckbox
+                  checked={!!saturdayState}
+                  className={styles.nestedCheckbox}
+                  setChecked={(_, checked) => setSaturdayState(checked ? 'суббота' : '')}
+                  name='saturday'
+                >
+                  СБ
+                </NestedCheckbox>
+                <NestedCheckbox
+                  checked={!!sundayState}
+                  setChecked={(_, checked) => setSundayState(checked ? 'воскресенье' : '')}
+                  name='sunday'
+                >
+                  ВС
+                </NestedCheckbox>
+              </MultiCheckbox>
+            </Accordion>
+            <Accordion className={styles.accordion} accordionTitle={'Хартия'}>
               <Controller
                 name="is_full_charter"
                 control={control}

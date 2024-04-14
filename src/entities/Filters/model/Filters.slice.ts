@@ -16,7 +16,7 @@ const initialFiltersValue: Filters = {
   tariff_from: undefined,
   tariff_to: undefined,
   timeslot: undefined,
-  unload_method: undefined,
+  unload_methods: undefined,
   unload_region: undefined
 }
 

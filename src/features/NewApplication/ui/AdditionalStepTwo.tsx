@@ -1,15 +1,15 @@
 import { Text, TextSize, TextWeight } from '@shared/ui/Text'
 import styles from './NewApplication.module.scss'
-import { Select } from '@shared/ui/Select'
 import { Input } from '@shared/ui/Input'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import ArrowLeft from '@images/arrow-full-left.svg'
 import { MultiCheckbox, NestedCheckbox, ControlCheckbox } from '@shared/ui/MultiCheckbox'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { RadioButton } from '@shared/ui/RadioButton'
 import { useContext, useEffect, useState } from 'react'
 import { NewApplicationContext } from './NewApplication'
-import { InputAutocomplete } from '@shared/ui/InputAutocomplete'
+import { LoadingBlock } from '@shared/ui/LoadingBlock'
+import { useGetData } from '@shared/hook/useGetData'
 
 interface AdditionalStepOneProps {
   prevStep: () => void
@@ -20,17 +20,43 @@ interface AdditionalStepOneProps {
 export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
   const { toMainPart, prevStep, isLoading } = props;
 
-  const { control, setValue } = useContext(NewApplicationContext);
+  const { control, setValue, watch } = useContext(NewApplicationContext);
 
   const [saturdayState, setSaturdayState] = useState('');
   const [sundayState, setSundayState] = useState('');
+
+  const { data: options, isSuccess: isOptionsSuccess } = useGetData<{
+    crop: string[]
+    load_types: { id: string, title: string }[]
+    timeslot: string[]
+    unload_methods: { id: string, title: string }[]
+    load_methods: string[]
+  }>(
+    {
+      url: '/api/v1/options',
+      dataFlag: true,
+      withAuthToken: true,
+    })
 
   useEffect(() => {
     setValue("clarification_of_the_weekend", [saturdayState, sundayState].filter(Boolean).join(" и "))
   }, [saturdayState, sundayState])
 
+  const [unloadMethods, setUnloadMethods] = useState<string[]>([])
+
+  useEffect(() => {
+    if (unloadMethods) {
+      setValue("unload_methods", unloadMethods)
+    }
+  }, [unloadMethods])
+
   return (
     <>
+      {!isOptionsSuccess && (
+        <div className={styles.loading}>
+          <LoadingBlock />
+        </div>
+      )}
       <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}
@@ -38,7 +64,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
         >
           Тип выгрузки
         </Text>
-        <Controller
+        {/* <Controller
           name="unload_method"
           control={control}
           render={({ field: { value, name, onChange, onBlur } }) => (
@@ -50,6 +76,36 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
               onBlur={onBlur}
               autocompleteItems={["Боковая", "Задняя", "Самосвальная задняя", "Самосвальная боковая"]}
             />
+          )}
+        /> */}
+        <Controller
+          name="load_types"
+          control={control}
+          rules={{
+            required: "Необходимо выбрать один из вариантов",
+          }}
+          render={({ field: { name }, formState: { errors } }) => (
+            <div className={styles.inputsRowWithGap}>
+              <MultiCheckbox>
+                <ControlCheckbox>Любой</ControlCheckbox>
+                {options?.load_types.map(({ id, title }) => (
+                  <NestedCheckbox
+                    key={id}
+                    checked={!!unloadMethods?.includes(id)}
+                    setChecked={(_, checked) => {
+                      if (!checked) {
+                        setUnloadMethods((prev) => prev?.filter(item => item !== id))
+                        return;
+                      }
+                      setUnloadMethods(prev => [...(prev ?? []), id])
+                    }}
+                    name={title}
+                  >
+                    {title}
+                  </NestedCheckbox>
+                ))}
+              </MultiCheckbox>
+            </div>
           )}
         />
       </div>
@@ -119,14 +175,14 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
             <NestedCheckbox
               checked={!!saturdayState}
               className={styles.nestedCheckbox}
-              setChecked={() => setSaturdayState(prev => prev ? '' : 'суббота')}
+              setChecked={(_, checked) => setSaturdayState(checked ? 'суббота' : '')}
               name='saturday'
             >
               СБ
             </NestedCheckbox>
             <NestedCheckbox
               checked={!!sundayState}
-              setChecked={() => setSundayState(prev => prev ? '' : 'воскресенье')}
+              setChecked={(_, checked) => setSundayState(checked ? 'воскресенье' : '')}
               name='sunday'
             >
               ВС

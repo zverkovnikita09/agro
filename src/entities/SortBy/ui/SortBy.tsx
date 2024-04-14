@@ -1,11 +1,11 @@
 import cn from 'classnames';
 import styles from './SortBy.module.scss'
-import {CardContainer} from "@shared/ui/CardContainer";
-import {useEffect} from "react";
-import {useLocation} from "react-router-dom";
-import {Button} from "@shared/ui/Button";
-import {setSortBy, sortByNames, SortByValues} from "@entities/SortBy";
-import {useDispatch} from "react-redux";
+import { CardContainer } from "@shared/ui/CardContainer";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { Button } from "@shared/ui/Button";
+import { setSortBy, sortByNames, SortBySelectors, SortByValues } from "@entities/SortBy";
+import { useDispatch, useSelector } from "react-redux";
 
 interface SortByProps {
   className?: string;
@@ -16,6 +16,7 @@ interface SortByProps {
 export const SortBy = (props: SortByProps) => {
   const { className, isOpen, closeSorting } = props;
   const dispatch = useDispatch();
+  const selectedSorting = useSelector(SortBySelectors.selectSortByValue)
 
   const handleSortChange = (newSortBy: SortByValues) => {
     dispatch(setSortBy(newSortBy))
@@ -28,11 +29,19 @@ export const SortBy = (props: SortByProps) => {
     closeSorting();
   }, [location]);
 
+  if (!isOpen) return null
 
   return (
-    <CardContainer className={cn(styles.sortBy, className, { [styles.activeSorting]: isOpen })}>
-      {Object.entries(sortByNames).map(([key, value])=>(
-        <Button className={styles.button} onClick={() => handleSortChange(key as SortByValues)} fullWidth>{value}</Button>
+    <CardContainer className={cn(styles.sortBy, className)}>
+      {Object.entries(sortByNames).map(([key, value]) => (
+        <Button
+          className={cn(styles.button, { [styles.active]: key === selectedSorting })}
+          onClick={() => handleSortChange(key as SortByValues)}
+          key={key}
+          fullWidth
+        >
+          {value}
+        </Button>
       ))}
     </CardContainer>
   )
