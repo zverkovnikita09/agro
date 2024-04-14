@@ -235,13 +235,13 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
             control={control}
             rules={{ required: "Поле обязательно к заполнению" }}
             render={({ field: { value, name, onChange }, formState: { errors } }) => (
-              <Select
+              options?.load_methods?.length ? <Select
                 label='Способ погрузки'
                 options={options?.load_methods ?? []}
                 value={value}
                 setValue={onChange}
                 error={errors[name]?.message as string}
-              />
+              /> : <></>
             )}
           />
           <Controller

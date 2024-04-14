@@ -78,36 +78,27 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
             />
           )}
         /> */}
-        <Controller
-          name="load_types"
-          control={control}
-          rules={{
-            required: "Необходимо выбрать один из вариантов",
-          }}
-          render={({ field: { name }, formState: { errors } }) => (
-            <div className={styles.inputsRowWithGap}>
-              <MultiCheckbox>
-                <ControlCheckbox>Любой</ControlCheckbox>
-                {options?.load_types.map(({ id, title }) => (
-                  <NestedCheckbox
-                    key={id}
-                    checked={!!unloadMethods?.includes(id)}
-                    setChecked={(_, checked) => {
-                      if (!checked) {
-                        setUnloadMethods((prev) => prev?.filter(item => item !== id))
-                        return;
-                      }
-                      setUnloadMethods(prev => [...(prev ?? []), id])
-                    }}
-                    name={title}
-                  >
-                    {title}
-                  </NestedCheckbox>
-                ))}
-              </MultiCheckbox>
-            </div>
-          )}
-        />
+        <div className={styles.inputsRowWithGap}>
+          <MultiCheckbox>
+            <ControlCheckbox>Любой</ControlCheckbox>
+            {options?.load_types.map(({ id, title }) => (
+              <NestedCheckbox
+                key={id}
+                checked={!!unloadMethods?.includes(id)}
+                setChecked={(_, checked) => {
+                  if (!checked) {
+                    setUnloadMethods((prev) => prev?.filter(item => item !== id))
+                    return;
+                  }
+                  setUnloadMethods(prev => [...(prev ?? []), id])
+                }}
+                name={title}
+              >
+                {title}
+              </NestedCheckbox>
+            ))}
+          </MultiCheckbox>
+        </div>
       </div>
       <div className={styles.inputBlock}>
         <Text
