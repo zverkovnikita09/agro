@@ -1,26 +1,25 @@
 import cn from 'classnames';
-import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
-import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
-import { Accordion } from "@shared/ui/Accordion";
-import { InputRange } from "@shared/ui/InputRange";
-import { CardContainer } from "@shared/ui/CardContainer";
-import { Controller, useForm } from "react-hook-form";
-import { Select, SelectTheme } from "@shared/ui/Select";
-import { useLocation } from "react-router-dom";
-import { Checkbox } from "@shared/ui/Checkbox";
-import { RadioButton } from "@shared/ui/RadioButton";
-import { Input, InputTheme } from "@shared/ui/Input";
-import { ControlCheckbox, MultiCheckbox, NestedCheckbox } from "@shared/ui/MultiCheckbox";
-import { useEffect, useState } from "react";
-import { TogglerCheckbox } from "@shared/ui/TogglerCheckbox";
-import { useLocalStorage } from '@shared/hook/useLocalStorage';
-import { LSKeys } from '@shared/lib/globalVariables';
-import { Filters as FiltersType } from '../model/Filters.model';
-import { useDispatch, useSelector } from 'react-redux';
-import { FiltersSelectors } from '../model/Filters.selectors';
-import { useGetData } from '@shared/hook/useGetData';
-import { setFilters } from '../model/Filters.slice';
-import { LoadingBlock } from '@shared/ui/LoadingBlock';
+import {Text, TextColor, TextSize, TextWeight} from "@shared/ui/Text";
+import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
+import {Accordion} from "@shared/ui/Accordion";
+import {InputRange} from "@shared/ui/InputRange";
+import {CardContainer} from "@shared/ui/CardContainer";
+import {Controller, useForm} from "react-hook-form";
+import {useLocation} from "react-router-dom";
+import {Checkbox} from "@shared/ui/Checkbox";
+import {RadioButton} from "@shared/ui/RadioButton";
+import {Input, InputTheme} from "@shared/ui/Input";
+import {ControlCheckbox, MultiCheckbox, NestedCheckbox} from "@shared/ui/MultiCheckbox";
+import {useEffect, useState} from "react";
+import {TogglerCheckbox} from "@shared/ui/TogglerCheckbox";
+import {useLocalStorage} from '@shared/hook/useLocalStorage';
+import {LSKeys} from '@shared/lib/globalVariables';
+import {Filters as FiltersType} from '../model/Filters.model';
+import {useDispatch, useSelector} from 'react-redux';
+import {FiltersSelectors} from '../model/Filters.selectors';
+import {useGetData} from '@shared/hook/useGetData';
+import {setFilters} from '../model/Filters.slice';
+import {LoadingBlock} from '@shared/ui/LoadingBlock';
 import styles from './Filters.module.scss'
 
 interface FiltersProps {
@@ -34,6 +33,8 @@ export const Filters = (props: FiltersProps) => {
   const location = useLocation();
   const [needToSaveFilters, setNeedToSaveFilters] = useState(Boolean(JSON.parse(localStorage.getItem(LSKeys.FILTERS) as string)));
   const allFilters = useSelector(FiltersSelectors.selectAllFilters);
+  const [searchUnloadRegion, setSearchUnloadRegion] = useState('');
+  const [searchLoadRegion, setSearchLoadRegion] = useState('');
 
   useEffect(() => {
     closeFilters();
@@ -60,7 +61,7 @@ export const Filters = (props: FiltersProps) => {
       withAuthToken: true,
     })
 
-  const { data: regions, isSuccess: isRegionsSuccess } = useGetData<string[]>(
+  const { data: regions, isSuccess: isRegionsSuccess } = useGetData<{load_regions: string[], unload_regions: string[]}>(
     {
       url: '/api/v1/orders/regions',
       dataFlag: true,
@@ -71,7 +72,12 @@ export const Filters = (props: FiltersProps) => {
   const load_types = watch("load_types");
   const load_method = watch("load_method");
   const crop = watch("crop");
-  const unload_methods = watch("unload_methods")
+  const unload_methods = watch("unload_methods");
+
+  const load_region = watch("load_region");
+  const unload_region = watch("unload_region");
+  const load_city = watch("load_city");
+  const unload_city = watch("unload_city");
 
   //Грузят в выходные
   const [saturdayState, setSaturdayState] = useState(allFilters.clarification_of_the_weekend?.includes('суббота') || '');
@@ -143,22 +149,43 @@ export const Filters = (props: FiltersProps) => {
               prevValueTextTo='до'
             />
           </Accordion>
-          <Accordion className={styles.accordion} accordionTitle={'Область погрузки'}>
-            <Controller
-              name="load_region"
-              control={control}
-              render={({ field: { value, onChange } }) => (
-                <Select
-                  theme={SelectTheme.FILTERS}
-                  placeholder='Выберите одну или несколько'
-                  options={regions ?? []}
-                  value={value ?? []}
-                  setValue={onChange}
-                  multiple
-                />
-              )}
+          <Accordion className={styles.accordion} accordionTitle={'Регион погрузки'} maxContentHeight={360}>
+            <Input
+              value={searchLoadRegion}
+              onChange={e => setSearchLoadRegion(e.target.value)}
+              theme={InputTheme.FILTERS}
+              placeholder="Поиск..."
+              className={styles.searchInput}
             />
-            {/* <Select theme={SelectTheme.FILTERS} placeholder='Выберите район(ы)' options={[]} value={''} setValue={() => { }} /> */}
+            {regions?.load_regions?.filter(region => region.toUpperCase().includes(searchLoadRegion.toUpperCase())).map((item, index) => (
+              <Checkbox
+                key={item}
+                checked={!!load_region?.[index]}
+                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
+                name={`load_region.${index}`}
+              >
+                {item}
+              </Checkbox>
+            ))}
+          </Accordion>
+          <Accordion className={styles.accordion} accordionTitle={'Регион выгрузки'} maxContentHeight={360}>
+            <Input
+              value={searchUnloadRegion}
+              onChange={e => setSearchUnloadRegion(e.target.value)}
+              theme={InputTheme.FILTERS}
+              placeholder="Поиск..."
+              className={styles.searchInput}
+            />
+            {regions?.unload_regions?.filter(region => region.toUpperCase().includes(searchUnloadRegion.toUpperCase())).map((item, index) => (
+              <Checkbox
+                key={item}
+                checked={!!unload_region?.[index]}
+                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
+                name={`unload_region.${index}`}
+              >
+                {item}
+              </Checkbox>
+            ))}
           </Accordion>
           {/* <Accordion className={styles.accordion} accordionTitle={'Область выгрузки'}>
           <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => { }} />
@@ -168,7 +195,7 @@ export const Filters = (props: FiltersProps) => {
             <RadioButton checked={Number(newRegions) == 1} value={1} onChange={() => setNewRegions(1)}>Да</RadioButton>
             <RadioButton checked={Number(newRegions) === 0} value={0} onChange={() => setNewRegions(0)}>Нет</RadioButton>
           </Accordion> */}
-          <Accordion className={styles.accordion} accordionTitle={'Культура'}>
+          <Accordion className={styles.accordion} accordionTitle={'Культура'} maxContentHeight={360}>
             {options?.crop.map((item, index) => (
               <Checkbox
                 key={item}
@@ -281,14 +308,21 @@ export const Filters = (props: FiltersProps) => {
               name="is_overload"
               control={control}
               render={({ field: { value, onChange } }) => (
-                <RadioButton checked={Number(value) == 1} value={1} onChange={onChange}>Да</RadioButton>
+                <RadioButton checked={value === undefined} onChange={() => onChange(undefined)}>Не указано</RadioButton>
               )}
             />
             <Controller
               name="is_overload"
               control={control}
               render={({ field: { value, onChange } }) => (
-                <RadioButton checked={Number(value) === 0} value={0} onChange={onChange}>Нет</RadioButton>
+                <RadioButton checked={value === 1} onChange={() => onChange(1)}>Да</RadioButton>
+              )}
+            />
+            <Controller
+              name="is_overload"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <RadioButton checked={value === 0} onChange={() => onChange(0)}>Нет</RadioButton>
               )}
             />
           </Accordion>
@@ -370,14 +404,21 @@ export const Filters = (props: FiltersProps) => {
                 name="is_full_charter"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <RadioButton checked={Number(value) == 1} value={1} onChange={onChange}>Полная</RadioButton>
+                  <RadioButton checked={value === undefined} onChange={() => onChange(undefined)}>Не указано</RadioButton>
                 )}
               />
               <Controller
                 name="is_full_charter"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <RadioButton checked={Number(value) === 0} value={0} onChange={onChange}>Не полная</RadioButton>
+                  <RadioButton checked={value === 1} onChange={() => onChange(1)}>Полная</RadioButton>
+                )}
+              />
+              <Controller
+                name="is_full_charter"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <RadioButton checked={value  === 0} onChange={() => onChange(0)}>Не полная</RadioButton>
                 )}
               />
             </Accordion>

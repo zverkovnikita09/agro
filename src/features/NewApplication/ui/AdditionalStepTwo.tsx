@@ -84,7 +84,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
         <div className={styles.inputsRowWithGap}>
           <MultiCheckbox>
             <ControlCheckbox>Любой</ControlCheckbox>
-            {options?.load_types.map(({ id, title }) => (
+            {options?.unload_methods.map(({ id, title }) => (
               <NestedCheckbox
                 key={id}
                 checked={!!unloadMethods?.includes(id)}
@@ -129,7 +129,7 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
 
                 if (Number(startHours) > 23 || Number(endHours) > 23) return 'Неверный формат времени';
                 if (Number(startMinutes) > 59 || Number(endMinutes) > 59) return 'Неверный формат времени';
-                if (Number(startHours) > Number(endHours)) return 'Время начала больше времени окончания';
+                // if (Number(startHours) > Number(endHours)) return 'Время начала больше времени окончания';
                 if (Number(startHours) === Number(endHours) && Number(startMinutes) > Number(endMinutes)) return 'Время начала больше времени окончания';
                 return true
               }
