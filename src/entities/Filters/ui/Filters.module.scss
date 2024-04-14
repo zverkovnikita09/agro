@@ -83,10 +83,14 @@
 
 .accordion {
   border-top: 1px solid var(--special-grey-color2);
-
   &:last-child {
     border-bottom: 1px solid var(--special-grey-color2);
   }
+}
+
+.accordionContent{
+  max-height: 360px;
+  overflow-y: auto;
 }
 
 .saveFilters {
@@ -99,4 +103,8 @@
 
 .additionalContent {
   gap: 0;
+}
+
+.searchInput{
+  margin-bottom: 8px;
 }
