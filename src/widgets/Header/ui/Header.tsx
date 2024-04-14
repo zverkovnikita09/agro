@@ -18,21 +18,22 @@ interface HeaderProps {
   toggleFiltersOpen?: () => void;
   isSortingOpen?: boolean;
   toggleSortingOpen?: () => void;
+  isFiltersDisabled?: boolean;
 }
 
 export const Header = (props: HeaderProps) => {
-  const { className, isFiltersOpen, toggleFiltersOpen, isSortingOpen, toggleSortingOpen } = props;
+  const { className, isFiltersOpen, toggleFiltersOpen, isSortingOpen, toggleSortingOpen, isFiltersDisabled } = props;
   const [value, setValue] = useState("");
 
   const sortByValue = useSelector(SortBySelectors.selectSortByValue);
 
   return (
     <div className={cn(styles.header, className)}>
-      <Button className={cn(styles.filter, {[styles.activeFilter]: isFiltersOpen})} onClick={toggleFiltersOpen}>
+      <Button className={cn(styles.filter, {[styles.activeFilter]: isFiltersOpen}, {[styles.disabledFilters]: isFiltersDisabled})} onClick={toggleFiltersOpen}>
         <FilterIcon width={18} height={18} />
         <Text weight={TextWeight.MEDIUM} size={TextSize.M}>Фильтры</Text>
       </Button>
-      <Button className={cn(styles.sorting, {[styles.activeSorting]: isSortingOpen})} onClick={toggleSortingOpen}>
+      <Button className={cn(styles.sorting, {[styles.activeSorting]: isSortingOpen}, {[styles.disabledFilters]: isFiltersDisabled})} onClick={toggleSortingOpen}>
         <Text weight={TextWeight.MEDIUM} size={TextSize.M}>{sortByNames[sortByValue]}</Text>
         <Chevron width={18} height={18} />
       </Button>

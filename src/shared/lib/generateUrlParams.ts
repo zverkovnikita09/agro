@@ -6,7 +6,6 @@ export const generateUrlParams = (params: Record<string, string | number | undef
       if (Array.isArray(value)) {
         return value.filter(Boolean).map((item) => `${key}[]=${item}`).join('&');
       }
-      console.log(`${key}=${value}`);
       return `${key}=${value}`;
     })
     .join('&');

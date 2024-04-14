@@ -81,8 +81,12 @@ export const MainLayout = () => {
             isFiltersOpen={isFiltersActive}
             toggleSortingOpen={toggleSortingOpen}
             isSortingOpen={isSortingActive}
+            isFiltersDisabled={isFiltersDisabled}
           />
-          <Filters isOpen={isFiltersActive} closeFilters={() => setIsFiltersActive(false)} />
+          <Filters
+            isOpen={isFiltersActive}
+            closeFilters={() => setIsFiltersActive(false)}
+          />
           <SortBy
             isOpen={isSortingActive}
             closeSorting={() => setIsSortingActive(false)}
