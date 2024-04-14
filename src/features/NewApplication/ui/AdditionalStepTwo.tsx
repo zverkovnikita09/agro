@@ -38,11 +38,14 @@ export const AdditionalStepTwo = (props: AdditionalStepOneProps) => {
       withAuthToken: true,
     })
 
+
   useEffect(() => {
     setValue("clarification_of_the_weekend", [saturdayState, sundayState].filter(Boolean).join(" и "))
   }, [saturdayState, sundayState])
 
-  const [unloadMethods, setUnloadMethods] = useState<string[]>([])
+  const unload_methods = watch("unload_methods")
+
+  const [unloadMethods, setUnloadMethods] = useState<string[]>(unload_methods ?? [])
 
   useEffect(() => {
     if (unloadMethods) {

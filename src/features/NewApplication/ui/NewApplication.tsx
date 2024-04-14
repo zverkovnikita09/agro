@@ -12,7 +12,7 @@ import { MainLayoutContext } from '@shared/ui/MainLayout';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CloseButton } from '@shared/ui/CloseButton';
 import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
-import { Control, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
+import { Control, UseFormResetField, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
 import { ApplicationModel } from '@entities/Application/model/application.model';
 import { Stepper } from "@shared/ui/Stepper";
 import { Step } from "@shared/ui/Stepper/Step";
@@ -29,13 +29,14 @@ interface NewApplicationContextPros {
   watch: UseFormWatch<ApplicationModel>
   control: Control<ApplicationModel, any>
   setValue: UseFormSetValue<ApplicationModel>
+  resetField: UseFormResetField<ApplicationModel>
 }
 
 export const NewApplicationContext = createContext<NewApplicationContextPros>({} as NewApplicationContextPros)
 
 export const NewApplication = (props: NewApplicationProps) => {
   const { className } = props;
-  const [formStep, setFormStep] = useState(5);
+  const [formStep, setFormStep] = useState(3);
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -48,7 +49,7 @@ export const NewApplication = (props: NewApplicationProps) => {
     else navigate(RouterPaths.MAIN)
   }
 
-  const { handleSubmit, watch, control, setValue } = useForm<ApplicationModel>({
+  const { handleSubmit, watch, control, setValue, resetField } = useForm<ApplicationModel>({
     mode: "onBlur", defaultValues: {
       unit_of_measurement_for_cargo_shortage_rate: "%",
       distance: Math.floor(Math.random() * (10000 - 500) + 500)
@@ -116,7 +117,7 @@ export const NewApplication = (props: NewApplicationProps) => {
             <Step value={3} />
           </Stepper>
         }
-        <NewApplicationContext.Provider value={{ watch, control, setValue }}>
+        <NewApplicationContext.Provider value={{ watch, control, setValue, resetField }}>
           <form className={styles.form} onSubmit={handleSubmit(onSubmit())}>
             {FormContent()}
           </form>

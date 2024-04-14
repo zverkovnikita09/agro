@@ -12,25 +12,27 @@ import { createContext, useState } from 'react';
 import { Filters } from "@entities/Filters";
 import { YandexMap } from "@widgets/YandexMap";
 import { Notifications } from '@entities/Notifications';
-import {SortBy} from "@entities/SortBy";
+import { SortBy } from "@entities/SortBy";
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
   closeOverlay: () => void;
+  disableFilters: (status: boolean) => void;
 }
 
-export const MainLayoutContext = createContext<MainLayoutContextProps>({ openOverlay: () => { }, closeOverlay: () => { } })
+export const MainLayoutContext = createContext<MainLayoutContextProps>({} as MainLayoutContextProps)
 
 export const MainLayout = () => {
   const outlet = useOutlet();
   const navigate = useNavigate();
-  const [sortedData, setSortedData] = useState<any[]>([]);
 
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
   const [isFiltersActive, setIsFiltersActive] = useState(false);
 
   const [isSortingActive, setIsSortingActive] = useState(false);
+
+  const [isFiltersDisabled, setFiltersDisabled] = useState(false)
 
   const toggleFiltersOpen = () => {
     if (isSortingActive) setIsSortingActive(false)
@@ -44,6 +46,10 @@ export const MainLayout = () => {
 
   const openOverlay = () => setIsOverlayOpen(true)
   const closeOverlay = () => setIsOverlayOpen(false)
+
+  const disableFilters = (status: boolean) => {
+    setFiltersDisabled(status)
+  }
 
   const token = useSelector(UserSelectors.selectToken);
   const dispatch = useDispatch();
@@ -62,7 +68,7 @@ export const MainLayout = () => {
   if (isLoading) return <LoadingBlock />
 
   return (
-    <MainLayoutContext.Provider value={{ openOverlay, closeOverlay }}>
+    <MainLayoutContext.Provider value={{ openOverlay, closeOverlay, disableFilters }}>
       <Notifications />
       <div className={cn(styles.overlay, { [styles.active]: isOverlayOpen })} />
 

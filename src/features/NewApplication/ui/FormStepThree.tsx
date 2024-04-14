@@ -5,7 +5,7 @@ import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import { TextArea } from '@shared/ui/TextArea'
 import BurgerIcon from '@images/two-lines-burger.svg'
 import { Select } from '@shared/ui/Select'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
 
@@ -17,7 +17,7 @@ interface FormStepThreeProps {
 
 export const FormStepThree = (props: FormStepThreeProps) => {
   const { prevStep, toAdditional, isLoading } = props;
-  const { control, watch } = useContext(NewApplicationContext);
+  const { control, watch, resetField } = useContext(NewApplicationContext);
 
   const outage_begin = watch('outage_begin') // начало простоя
 
@@ -29,6 +29,11 @@ export const FormStepThree = (props: FormStepThreeProps) => {
     { name: "с 4-х суток", value: 4 },
   ]
 
+  useEffect(() => {
+    if (!outage_begin) resetField("outage_price")
+  }, [outage_begin])
+
+  /* console.log(price); */
   return (
     <>
       <div className={styles.inputBlock}>
@@ -56,7 +61,7 @@ export const FormStepThree = (props: FormStepThreeProps) => {
             name="outage_price"
             control={control}
             rules={{ required: false, min: { value: 1, message: "Стоимость простоя ₽/в сутки должна быть натуральным числом" } }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            render={({ field: { name, onChange, onBlur, value }, formState: { errors } }) => (
               <Input
                 label='Стоимость простоя ₽/в сутки'
                 type='number'

@@ -52,7 +52,9 @@ export const FormStepTwo = (props: FormStepTwoProps) => {
     { name: "10%", value: 10 },
   ]
 
-  const [loadTypes, setLoadTypes] = useState<string[]>([])
+  const load_types = watch("load_types")
+
+  const [loadTypes, setLoadTypes] = useState<string[]>(load_types)
 
   useEffect(() => {
     if (loadTypes) {

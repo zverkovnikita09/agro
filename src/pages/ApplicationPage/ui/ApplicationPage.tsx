@@ -19,6 +19,8 @@ import { RadialInfo } from "@shared/ui/RadialInfo";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
 import { useGetData } from "@shared/hook/useGetData";
 import { ApplicationModel } from "@entities/Application/model/application.model";
+import { useContext, useLayoutEffect } from 'react';
+import { MainLayoutContext } from '@shared/ui/MainLayout';
 
 interface ApplicationPageProps {
   className?: string;
@@ -30,6 +32,14 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
   const { id } = useParams();
 
   const { data: applicationInfo, isError, isLoading } = useGetData<ApplicationModel>({ url: `/api/v1/orders/${id}`, dataFlag: true })
+
+  const { disableFilters } = useContext(MainLayoutContext)
+
+  useLayoutEffect(() => {
+    disableFilters(true)
+
+    return () => disableFilters(false)
+  }, [])
 
   const {
     order_number,
@@ -294,7 +304,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Тип выгрузки</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_methods || "Не указано"}</Text>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_methods?.length ? unload_methods?.map(type => (type as unknown as { title: string }).title).join(", ") : "Не указано"}</Text>
             </div>
             <div className={styles.infoItem}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Время работы</Text>

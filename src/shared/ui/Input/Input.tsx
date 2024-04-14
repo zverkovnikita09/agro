@@ -91,6 +91,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     setIsLabelFixed(false)
   }, [value]);
 
+  useEffect(() => {
+    if (typeof value === "undefined" && typeof inputRef.current?.value !== "undefined") {
+      inputRef.current.value = ""
+    }
+  }, [value])
+
+/*   console.log(inputRef.current?.value, value); */
+
   /*   useEffect(() => {
       if (typeof value !== "undefined") setIsLabelFixed(!!value)
       console.log(typeof value !== "undefined", !!ref);

@@ -41,7 +41,7 @@ export const Filters = (props: FiltersProps) => {
 
   const [, setLSFilters] = useLocalStorage(LSKeys.FILTERS, null)
   const { control, watch, setValue, reset, handleSubmit } = useForm<FiltersType>({
-    defaultValues: allFilters,
+    /* defaultValues: allFilters, */
   })
   const distance_from = watch('distance_from');
   const distance_to = watch('distance_to');
@@ -91,15 +91,29 @@ export const Filters = (props: FiltersProps) => {
   }
 
   const handleFiltersReset = () => {
-    reset()
+    reset({
+      clarification_of_the_weekend: undefined,
+      crop: undefined,
+      distance_from: undefined,
+      distance_to: undefined,
+      is_full_charter: undefined,
+      is_overload: undefined,
+      load_method: undefined,
+      load_region: undefined,
+      load_types: undefined,
+      scale_length: undefined,
+      tariff_from: undefined,
+      tariff_to: undefined,
+      timeslot: undefined,
+      unload_methods: undefined,
+      unload_region: undefined
+    })
     setSundayState("")
     setSaturdayState("")
   }
 
-  if (!isOpen) return null
-
   return (
-    <CardContainer className={cn(styles.filters, className)}>
+    <CardContainer className={cn(styles.filters, className, { [styles.open]: isOpen })}>
       {
         (!isRegionsSuccess || !isOptionsSuccess) && <div className={styles.loading}><LoadingBlock /></div>
       }
@@ -133,7 +147,6 @@ export const Filters = (props: FiltersProps) => {
             <Controller
               name="load_region"
               control={control}
-              rules={{ required: "Поле обязательно к заполнению" }}
               render={({ field: { value, onChange } }) => (
                 <Select
                   theme={SelectTheme.FILTERS}
@@ -172,15 +185,17 @@ export const Filters = (props: FiltersProps) => {
               <Controller
                 name="tariff_from"
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    theme={InputTheme.FILTERS}
-                    placeholder='От'
-                    value={value}
-                    onChange={onChange}
-                    type='number'
-                  />
-                )}
+                render={({ field: { onChange, value } }) => {
+                  return (
+                    <Input
+                      theme={InputTheme.FILTERS}
+                      placeholder='От'
+                      value={value}
+                      onChange={onChange}
+                      type='number'
+                    />
+                  )
+                }}
               />
               <Controller
                 name="tariff_to"
