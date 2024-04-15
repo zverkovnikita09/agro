@@ -1,6 +1,9 @@
+@import "@src/app/styles/mediaQueries";
+
 .codeValidationForm {
   position: relative;
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   display: grid;
   gap: 16px;
   justify-items: center;
@@ -8,10 +11,28 @@
 
 .text {
   text-align: center;
+
+  @media (max-width: $mobile) {
+    font-size: 13px;
+  }
 }
 
 .resend{
   color: var(--primary-yellow);
   font-weight: 500;
   font-size: 16px;
+
+  @media (max-width: $mobile) {
+    font-size: 13px;
+  }
+}
+
+.count{
+  @media (max-width: $mobile) {
+    font-size: 13px;
+  }
+}
+
+.btn{
+  padding: 14px 28px;
 }
