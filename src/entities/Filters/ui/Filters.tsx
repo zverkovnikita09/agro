@@ -157,7 +157,7 @@ export const Filters = (props: FiltersProps) => {
               placeholder="Поиск..."
               className={styles.searchInput}
             />
-            {regions?.load_regions?.filter(region => region.toUpperCase().includes(searchLoadRegion.toUpperCase())).map((item, index) => (
+            {Object.values(regions?.load_regions || {}).filter(region => region.toUpperCase().includes(searchLoadRegion.toUpperCase())).map((item, index) => (
               <Checkbox
                 key={item}
                 checked={!!load_region?.[index]}
@@ -176,7 +176,7 @@ export const Filters = (props: FiltersProps) => {
               placeholder="Поиск..."
               className={styles.searchInput}
             />
-            {regions?.unload_regions?.filter(region => region.toUpperCase().includes(searchUnloadRegion.toUpperCase())).map((item, index) => (
+            {Object.values(regions?.unload_regions || {}).filter(region => region.toUpperCase().includes(searchUnloadRegion.toUpperCase())).map((item, index) => (
               <Checkbox
                 key={item}
                 checked={!!unload_region?.[index]}
