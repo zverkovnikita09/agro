@@ -21,6 +21,7 @@ import {useGetData} from '@shared/hook/useGetData';
 import {setFilters} from '../model/Filters.slice';
 import {LoadingBlock} from '@shared/ui/LoadingBlock';
 import styles from './Filters.module.scss'
+import {addNotification, NotificationType} from "@entities/Notifications";
 
 interface FiltersProps {
   className?: string;
@@ -41,9 +42,9 @@ export const Filters = (props: FiltersProps) => {
   }, [location]);
 
   const [, setLSFilters] = useLocalStorage(LSKeys.FILTERS, null)
-  const { control, watch, setValue, reset, handleSubmit } = useForm<FiltersType>({
-    /* defaultValues: allFilters, */
-  })
+  const { control, watch, setValue, reset, handleSubmit } = useForm<FiltersType>();
+  const minDistance = 0;
+  const maxDistance = 10000;
   const distance_from = watch('distance_from');
   const distance_to = watch('distance_to');
   const dispatch = useDispatch()
@@ -93,30 +94,26 @@ export const Filters = (props: FiltersProps) => {
     closeFilters()
     dispatch(setFilters(data))
     setLSFilters(needToSaveFilters ? data : null)
+    needToSaveFilters && dispatch(addNotification({ message: `Фильтры сохранены`, type: NotificationType.Success }));
     /* setNewRegions() */
   }
 
   const handleFiltersReset = () => {
-    reset({
-      clarification_of_the_weekend: undefined,
-      crop: undefined,
-      distance_from: undefined,
-      distance_to: undefined,
-      is_full_charter: undefined,
-      is_overload: undefined,
-      load_method: undefined,
-      load_region: undefined,
-      load_types: undefined,
-      scale_length: undefined,
-      tariff_from: undefined,
-      tariff_to: undefined,
-      timeslot: undefined,
-      unload_methods: undefined,
-      unload_region: undefined
-    })
+    reset()
     setSundayState("")
     setSaturdayState("")
+    dispatch(addNotification({ message: `Фильтры очищены`, type: NotificationType.Warning }));
   }
+
+  useEffect(() => {
+      Object.entries(allFilters).forEach(
+        ([name, value]) => setValue(name as keyof FiltersType, value));
+  }, []);
+
+  useEffect(() => {
+    if (distance_from === minDistance) setValue('distance_from', undefined);
+    if (distance_to === maxDistance) setValue('distance_to', undefined)
+  }, [distance_to, distance_from]);
 
   return (
     <CardContainer className={cn(styles.filters, className, { [styles.open]: isOpen })}>
@@ -141,15 +138,15 @@ export const Filters = (props: FiltersProps) => {
               setValue={setValue}
               value={[distance_from as number, distance_to as number]}
               names={{ from: 'distance_from', to: 'distance_to' }}
-              min={0}
-              max={10000}
+              min={minDistance}
+              max={maxDistance}
               step={500}
               units='км'
               prevValueTextFrom='от'
               prevValueTextTo='до'
             />
           </Accordion>
-          <Accordion className={styles.accordion} accordionTitle={'Регион погрузки'} maxContentHeight={360}>
+          <Accordion className={styles.accordion} accordionTitle={'Регион погрузки'}>
             <Input
               value={searchLoadRegion}
               onChange={e => setSearchLoadRegion(e.target.value)}
@@ -157,18 +154,20 @@ export const Filters = (props: FiltersProps) => {
               placeholder="Поиск..."
               className={styles.searchInput}
             />
-            {Object.values(regions?.load_regions || {}).filter(region => region.toUpperCase().includes(searchLoadRegion.toUpperCase())).map((item, index) => (
-              <Checkbox
-                key={item}
-                checked={!!load_region?.[index]}
-                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
-                name={`load_region.${index}`}
-              >
-                {item}
-              </Checkbox>
-            ))}
+            <div className={styles.accordionContent}>
+              {Object.values(regions?.load_regions || {}).filter(region => region.toUpperCase().includes(searchLoadRegion.toUpperCase())).map((item, index) => (
+                <Checkbox
+                  key={item}
+                  checked={!!load_region?.[index]}
+                  setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
+                  name={`load_region.${index}`}
+                >
+                  {item}
+                </Checkbox>
+              ))}
+            </div>
           </Accordion>
-          <Accordion className={styles.accordion} accordionTitle={'Регион выгрузки'} maxContentHeight={360}>
+          <Accordion className={styles.accordion} accordionTitle={'Регион выгрузки'}>
             <Input
               value={searchUnloadRegion}
               onChange={e => setSearchUnloadRegion(e.target.value)}
@@ -176,16 +175,18 @@ export const Filters = (props: FiltersProps) => {
               placeholder="Поиск..."
               className={styles.searchInput}
             />
-            {Object.values(regions?.unload_regions || {}).filter(region => region.toUpperCase().includes(searchUnloadRegion.toUpperCase())).map((item, index) => (
-              <Checkbox
-                key={item}
-                checked={!!unload_region?.[index]}
-                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
-                name={`unload_region.${index}`}
-              >
-                {item}
-              </Checkbox>
-            ))}
+            <div className={styles.accordionContent}>
+              {Object.values(regions?.unload_regions || {}).filter(region => region.toUpperCase().includes(searchUnloadRegion.toUpperCase())).map((item, index) => (
+                <Checkbox
+                  key={item}
+                  checked={!!unload_region?.[index]}
+                  setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
+                  name={`unload_region.${index}`}
+                >
+                  {item}
+                </Checkbox>
+              ))}
+            </div>
           </Accordion>
           {/* <Accordion className={styles.accordion} accordionTitle={'Область выгрузки'}>
           <Select theme={SelectTheme.FILTERS} placeholder='Выберите одну или несколько' options={[]} value={''} setValue={() => { }} />
@@ -195,19 +196,21 @@ export const Filters = (props: FiltersProps) => {
             <RadioButton checked={Number(newRegions) == 1} value={1} onChange={() => setNewRegions(1)}>Да</RadioButton>
             <RadioButton checked={Number(newRegions) === 0} value={0} onChange={() => setNewRegions(0)}>Нет</RadioButton>
           </Accordion> */}
-          <Accordion className={styles.accordion} accordionTitle={'Культура'} maxContentHeight={360}>
-            {options?.crop.map((item, index) => (
-              <Checkbox
-                key={item}
-                checked={!!crop?.[index]}
-                setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
-                name={`crop.${index}`}
-              >
-                {item}
-              </Checkbox>
-            ))}
+          <Accordion className={styles.accordion} accordionTitle={'Культура'}>
+            <div className={styles.accordionContent}>
+              {options?.crop.map((item, index) => (
+                <Checkbox
+                  key={item}
+                  checked={!!crop?.[index]}
+                  setChecked={(name, checked) => setValue(name as keyof FiltersType, checked ? item : "")}
+                  name={`crop.${index}`}
+                >
+                  {item}
+                </Checkbox>
+              ))}
+            </div>
           </Accordion>
-          <Accordion className={styles.accordion} accordionTitle={'Стоимость перевозки'}>
+          <Accordion className={styles.accordion} accordionTitle={'Стоимость перевозки ₽'}>
             <div className={styles.inputRow}>
               <Controller
                 name="tariff_from"
@@ -356,6 +359,26 @@ export const Filters = (props: FiltersProps) => {
               )}
             />
           </Accordion>
+          <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
+            <MultiCheckbox>
+              <ControlCheckbox className={styles.controlCheckbox}>Грузят в выходные</ControlCheckbox>
+              <NestedCheckbox
+                checked={!!saturdayState}
+                className={styles.nestedCheckbox}
+                setChecked={(_, checked) => setSaturdayState(checked ? 'суббота' : '')}
+                name='saturday'
+              >
+                СБ
+              </NestedCheckbox>
+              <NestedCheckbox
+                checked={!!sundayState}
+                setChecked={(_, checked) => setSundayState(checked ? 'воскресенье' : '')}
+                name='sunday'
+              >
+                ВС
+              </NestedCheckbox>
+            </MultiCheckbox>
+          </Accordion>
           <Accordion
             className={styles.accordion}
             accordionTitle={'Дополнительные фильтры'}
@@ -379,26 +402,6 @@ export const Filters = (props: FiltersProps) => {
                 </Checkbox>
               ))}
             </Accordion>
-            <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
-              <MultiCheckbox>
-                <ControlCheckbox className={styles.controlCheckbox}>Грузят в выходные</ControlCheckbox>
-                <NestedCheckbox
-                  checked={!!saturdayState}
-                  className={styles.nestedCheckbox}
-                  setChecked={(_, checked) => setSaturdayState(checked ? 'суббота' : '')}
-                  name='saturday'
-                >
-                  СБ
-                </NestedCheckbox>
-                <NestedCheckbox
-                  checked={!!sundayState}
-                  setChecked={(_, checked) => setSundayState(checked ? 'воскресенье' : '')}
-                  name='sunday'
-                >
-                  ВС
-                </NestedCheckbox>
-              </MultiCheckbox>
-            </Accordion>
             <Accordion className={styles.accordion} accordionTitle={'Хартия'}>
               <Controller
                 name="is_full_charter"
@@ -418,7 +421,7 @@ export const Filters = (props: FiltersProps) => {
                 name="is_full_charter"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <RadioButton checked={value  === 0} onChange={() => onChange(0)}>Не полная</RadioButton>
+                  <RadioButton checked={value === 0} onChange={() => onChange(0)}>Не полная</RadioButton>
                 )}
               />
             </Accordion>

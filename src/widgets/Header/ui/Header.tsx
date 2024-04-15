@@ -1,6 +1,5 @@
 import {Input} from "@shared/ui/Input";
 import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-import {useState} from 'react';
 import FilterIcon from "@images/filter.svg";
 import Chevron from "@images/chevron-left.svg";
 import styles from './Header.module.scss';
@@ -11,6 +10,7 @@ import {Text, TextSize, TextWeight} from "@shared/ui/Text";
 import {useSelector} from "react-redux";
 import {SortBySelectors} from "@entities/SortBy/model/SortBy.selector";
 import {sortByNames} from "@entities/SortBy";
+import {FiltersSelectors} from "@entities/Filters";
 
 interface HeaderProps {
   className?: string;
@@ -23,13 +23,17 @@ interface HeaderProps {
 
 export const Header = (props: HeaderProps) => {
   const { className, isFiltersOpen, toggleFiltersOpen, isSortingOpen, toggleSortingOpen, isFiltersDisabled } = props;
-  const [value, setValue] = useState("");
 
   const sortByValue = useSelector(SortBySelectors.selectSortByValue);
+  const allFilters = useSelector(FiltersSelectors.selectAllFilters);
+  const filteredValues = Object.values(allFilters).filter(filter => filter !== undefined && filter !== "");
 
   return (
     <div className={cn(styles.header, className)}>
       <Button className={cn(styles.filter, {[styles.activeFilter]: isFiltersOpen}, {[styles.disabledFilters]: isFiltersDisabled})} onClick={toggleFiltersOpen}>
+        {!!filteredValues.length &&
+          <div className={styles.counter}>{filteredValues.length}</div>
+        }
         <FilterIcon width={18} height={18} />
         <Text weight={TextWeight.MEDIUM} size={TextSize.M}>Фильтры</Text>
       </Button>

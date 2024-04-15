@@ -5,6 +5,7 @@
 }
 
 .filter {
+  position: relative;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -45,6 +46,12 @@
 
 .activeFilter, .activeSorting {
   background-color: var(--primary-yellow);
+}
+
+.activeFilter {
+  & .counter{
+    background-color: var(--white-color);
+  }
 }
 
 .activeSorting svg {
@@ -106,4 +113,20 @@
 .disabledFilters{
   pointer-events: none;
   color: var(--disabled-color);
+}
+
+.counter{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  top: -5px;
+  right: -5px;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  background-color: var(--primary-yellow);
+  transition: background-color .1s ease;
 }

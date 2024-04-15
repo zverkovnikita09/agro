@@ -89,8 +89,10 @@
 }
 
 .accordionContent{
-  max-height: 360px;
+  max-height: 250px;
   overflow-y: auto;
+  display: grid;
+  gap: 8px;
 }
 
 .saveFilters {
