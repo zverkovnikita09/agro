@@ -32,6 +32,9 @@ export const buildLoaders = (options: BuildOptions): ModuleOptions['rules'] => {
   const assetLoader = {
     test: /\.(png|jpg|jpeg|gif)$/i,
     type: 'asset/resource',
+    generator: {
+      filename: 'assets/images/[name][ext]'
+    }
   }
 
   const svgrLoader = {
@@ -48,6 +51,9 @@ export const buildLoaders = (options: BuildOptions): ModuleOptions['rules'] => {
   const fontsLoader = {
     test: /\.(woff|woff2|eot|ttf|otf)$/i,
     type: 'asset/resource',
+    generator: {
+      filename: 'assets/fonts/[name][ext]'
+    }
   }
 
   return [

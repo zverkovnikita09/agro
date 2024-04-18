@@ -1,19 +1,19 @@
 import cn from 'classnames';
 import styles from './CodeValidationForm.module.scss'
-import { Title } from '@shared/ui/Title';
-import { useLocalStorage } from '@shared/hook/useLocalStorage';
-import { useForm } from 'react-hook-form';
-import { PinConfirmInput } from '@shared/ui/PinConfirmInput';
-import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
-import { useSendData } from '@shared/hook/useSendData';
-import { LSKeys } from "@shared/lib/globalVariables";
-import { CodeValidationFormState } from '../model/codeValidationForm.model';
-import { setToken, setUser } from '@entities/User';
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from '@src/app/store/model/hook';
-import { useEffect, useState } from "react";
-import { Text } from "@shared/ui/Text";
-import { RouterPaths } from '@src/app/router';
+import {Title} from '@shared/ui/Title';
+import {useLocalStorage} from '@shared/hook/useLocalStorage';
+import {useForm} from 'react-hook-form';
+import {PinConfirmInput} from '@shared/ui/PinConfirmInput';
+import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button';
+import {useSendData} from '@shared/hook/useSendData';
+import {LSKeys} from "@shared/lib/globalVariables";
+import {CodeValidationFormState} from '../model/codeValidationForm.model';
+import {setToken, setUser} from '@entities/User';
+import {useNavigate} from "react-router-dom";
+import {useAppDispatch} from '@src/app/store/model/hook';
+import {useEffect, useState} from "react";
+import {Text, TextSize} from "@shared/ui/Text";
+import {RouterPaths} from '@src/app/router';
 
 interface CodeValidationFormProps {
   className?: string;
@@ -103,7 +103,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
   return (
     <form className={cn(styles.codeValidationForm, className)} onSubmit={handleSubmit(onSubmit)}>
       <Title>Вход</Title>
-      <p className={styles.text}>Мы отправили вам СМС с кодом подтверждения <br /> на этот номер {phoneNumber}</p>
+      <Text as="p" size={TextSize.L} className={styles.text}>Мы отправили вам СМС с кодом подтверждения <br /> на этот номер {phoneNumber}</Text>
       <PinConfirmInput
         cellCount={5}
         error={errors.code?.message}
@@ -112,7 +112,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
         setValue={(value) => setValue('code', value)}
       />
       {seconds !== 0
-        ? <Text>Отправить повторно через 00:{formatTime(seconds)}</Text>
+        ? <Text size={TextSize.L} className={styles.count}>Отправить повторно через 00:{formatTime(seconds)}</Text>
         :
         <Button
           className={styles.resend}
@@ -123,7 +123,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
         </Button>
       }
       <Button
-        className={styles.submitBtn}
+        className={styles.btn}
         theme={ButtonTheme.ACCENT}
         size={ButtonSize.M}
         isLoading={isSending}
@@ -134,7 +134,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
         Подтвердить
       </Button>
       <Button
-        className={styles.changeBtn}
+        className={styles.btn}
         theme={ButtonTheme.OUTLINE}
         size={ButtonSize.M}
         isLoading={isSending}

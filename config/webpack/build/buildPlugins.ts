@@ -2,6 +2,7 @@ import webpack, { Configuration } from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { BuildOptions } from "./types/types";
+import CopyWebpackPlugin from "copy-webpack-plugin"
 import dotenv from 'dotenv';
 
 export const buildPlugins = ({ mode, paths }: BuildOptions): Configuration['plugins'] => {
@@ -17,9 +18,22 @@ export const buildPlugins = ({ mode, paths }: BuildOptions): Configuration['plug
     return prev;
   }, {});
 
+
   const plugins: Configuration['plugins'] = [
     new HtmlWebpackPlugin({ template: paths.html }),
-    new webpack.DefinePlugin(envKeys)
+    new webpack.DefinePlugin(envKeys),
+    new CopyWebpackPlugin({
+      patterns: [{
+        from: 'public',
+        to: '',
+        globOptions: {
+          ignore: [
+            '**/index.html'
+          ]
+        }
+      }],
+
+    })
   ];
 
   if (isDev) {

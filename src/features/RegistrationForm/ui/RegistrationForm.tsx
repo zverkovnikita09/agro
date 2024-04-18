@@ -1,15 +1,14 @@
 import cn from 'classnames';
+import {Input} from '@shared/ui/Input';
+import {Controller, useForm} from 'react-hook-form';
+import {Title} from '@shared/ui/Title';
+import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button';
+import {useSendData} from '@shared/hook/useSendData';
+import {useLocalStorage} from '@shared/hook/useLocalStorage';
+import {LSKeys} from "@shared/lib/globalVariables";
+import {RegistrationFormState} from '../model/registrationForm.model';
+import {Text, TextSize} from "@shared/ui/Text";
 import styles from './RegistrationForm.module.scss'
-import { Input } from '@shared/ui/Input';
-import { Controller, useForm } from 'react-hook-form';
-import { Title } from '@shared/ui/Title';
-import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
-import { useSendData } from '@shared/hook/useSendData';
-import { useEffect } from 'react';
-import { useDebounce } from '@shared/hook/useDebounce';
-import { useLocalStorage } from '@shared/hook/useLocalStorage';
-import { LSKeys } from "@shared/lib/globalVariables";
-import { RegistrationFormState } from '../model/registrationForm.model';
 
 interface RegistrationFormProps {
   className?: string;
@@ -47,7 +46,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
   return (
     <form className={cn(styles.registrationForm, className)} onSubmit={handleSubmit(handleSendData)}>
       <Title>Вход</Title>
-      <p className={styles.text}>Сельхоз-хозяйственные грузоперевозки <br /> по всей России</p>
+      <Text as="p" size={TextSize.L} className={styles.text}>Сельхоз-хозяйственные грузоперевозки <br /> по всей России</Text>
       <Controller
         name="phone_number"
         control={control}

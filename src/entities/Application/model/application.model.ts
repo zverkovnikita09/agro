@@ -1,3 +1,8 @@
+interface Coord {
+  x: string;
+  y: string;
+}
+
 export interface ApplicationModel {
   id: string;
   crop: string;
@@ -32,12 +37,10 @@ export interface ApplicationModel {
   tolerance_to_the_norm?: number;
   start_order_at?: string;
   end_order_at?: string;
-  load_latitude: string;
-  load_longitude: string;
-  unload_latitude: string;
-  unload_longitude: string;
   load_place_name: string;
   unload_place_name: string;
+  load_coordinates: Coord;
+  unload_coordinates: Coord;
   cargo_weight: number;
   description?: string;
   load_types: string[];

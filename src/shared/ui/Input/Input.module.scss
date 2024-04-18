@@ -1,3 +1,5 @@
+@import "@src/app/styles/mediaQueries";
+
 .input {
   width: 100%;
   position: relative;
@@ -62,7 +64,6 @@
   border: 1px solid var(--text-color);
   font-size: 16px;
   line-height: 135%;
-  /*  height: 100%; */
 
   &:disabled {
     background-color: var(--white-color);
@@ -115,6 +116,10 @@
     &.disabled {
       color: var(--disabled-color);
     }
+  }
+
+  @media (max-width: $mobile) {
+    font-size: 14px;
   }
 }
 

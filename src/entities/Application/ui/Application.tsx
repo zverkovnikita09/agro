@@ -41,15 +41,15 @@ export const Application = (props: ApplicationProps) => {
           <Title size={TitleSize.APPLICATION_TITLE}>
             Заявка №{order_number}
           </Title>
-          <Text as='p' size={TextSize.S} color={TextColor.GREY}>
+          <Text as='p' size={TextSize.M} color={TextColor.GREY}>
             от: {created_at}
           </Text>
 
           <div>
-            <Text size={TextSize.S}>
+            <Text size={TextSize.M}>
               Сроки: &nbsp;
             </Text>
-            <Text size={TextSize.S} color={TextColor.GREY}>
+            <Text size={TextSize.M} color={TextColor.GREY}>
               {deadlines}
             </Text>
           </div>

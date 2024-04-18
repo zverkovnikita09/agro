@@ -7,7 +7,7 @@
 .trailItem {
   position: relative;
   padding-left: 13px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
 
   &:before{
@@ -43,7 +43,7 @@
     top: 50%;
   }
   &:last-child:after{
-    bottom: 50%;
+    bottom: 48%;
   }
 
   &:last-child{
