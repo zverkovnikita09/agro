@@ -60,8 +60,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     exporter_name,
     height_limit,
     is_overload,
-    load_latitude,
-    load_longitude,
     load_method,
     load_place_name,
     load_types,

@@ -3,3 +3,27 @@
   height: 100%;
   overflow: hidden;
 }
+
+.markWithContent {
+}
+
+.mark {
+  position: relative;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  outline: 2px solid var(--white-color);
+  background-color: var(--primary-yellow);
+}
+
+.markContent {
+  position: absolute;
+  right: -80px;
+  top: -10px;
+  padding: 2px 10px;
+  width: 80px;
+  height: 20px;
+  background-color: var(--white-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow-bottom);
+}

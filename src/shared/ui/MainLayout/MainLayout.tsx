@@ -73,7 +73,7 @@ export const MainLayout = () => {
       <div className={cn(styles.overlay, { [styles.active]: isOverlayOpen })} />
 
       <div className={styles.mainLayout}>
-        <YandexMap className={styles.map} />
+        <YandexMap  className={styles.map} />
 
         <div className={styles.header}>
           <Header

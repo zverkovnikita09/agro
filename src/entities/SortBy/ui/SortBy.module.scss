@@ -1,3 +1,5 @@
+@import "@src/app/styles/mediaQueries";
+
 .sortBy {
   position: absolute;
   /*TO FIX*/
@@ -12,6 +14,10 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
+
+  @media (max-width: $tablet) {
+    left: 75px;
+  }
 }
 
 .button {
