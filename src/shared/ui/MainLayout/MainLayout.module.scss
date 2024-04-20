@@ -38,6 +38,10 @@
   padding: 16px;
   width: 100%;
   height: calc(100vh - 59px);
+
+  &.mainPage{
+    pointer-events: none;
+  }
 }
 
 .overlay {

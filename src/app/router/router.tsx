@@ -5,6 +5,7 @@ import { CheckList } from "@widgets/CheckList";
 import { NewApplication } from "@features/NewApplication";
 import { NotFoundPage } from "@pages/NotFoundPage";
 import {ApplicationPage} from "@pages/ApplicationPage";
+import {SelectedApplication} from "@entities/SelectedApplication";
 
 export enum RouterPaths {
   MAIN = '/',
@@ -17,6 +18,7 @@ export enum RouterPaths {
 export const Router = () => (
   <Routes>
     <Route path={RouterPaths.MAIN} element={<MainLayout />}>
+      <Route index element={<SelectedApplication />} />
       <Route path={RouterPaths.CHECKLIST} element={<CheckList />} />
       <Route path={RouterPaths.NEW_APPLICATION} element={<NewApplication />} />
       <Route path={`${RouterPaths.APPLICATION}/:id`} element={<ApplicationPage />}/>

@@ -4,11 +4,13 @@ import { userReducer } from "@entities/User";
 import { notificationsReducer } from "@entities/Notifications";
 import { filtersReducer } from "@entities/Filters/model/Filters.slice";
 import { sortByReducer } from "@entities/SortBy/model/SortBy.slice";
+import {selectedApplicationReducer} from "@entities/SelectedApplication/model/SelectedApplication.slice";
 
 export const rootReducer: Reducer<RootState> = combineReducers({
   user: userReducer,
   notifications: notificationsReducer,
   filters: filtersReducer,
-  sortBy: sortByReducer
+  sortBy: sortByReducer,
+  selectedApplication: selectedApplicationReducer,
 });
 
