@@ -4,26 +4,21 @@
   overflow: hidden;
 }
 
-.markWithContent {
-}
-
-.mark {
+.balloon {
+  width: 400px;
   position: relative;
-  border-radius: 50%;
-  width: 12px;
-  height: 12px;
-  outline: 2px solid var(--white-color);
-  background-color: var(--primary-yellow);
 }
 
-.markContent {
+.ballonTriangle {
   position: absolute;
-  right: -80px;
-  top: -10px;
-  padding: 2px 10px;
-  width: 80px;
-  height: 20px;
-  background-color: var(--white-color);
-  border-radius: 8px;
-  box-shadow: var(--shadow-bottom);
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
+}
+
+.balloonContent {}
+
+.balloon {
+  display: block;
+  /*  width: 400px; */
 }

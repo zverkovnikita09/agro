@@ -1,23 +1,22 @@
 import cn from 'classnames';
 import styles from './YandexMap.module.scss'
-import {MapState, Map, YMaps, Placemark, withYMaps, WithYMapsProps, YMapsApi} from "react-yandex-maps";
-import {useDispatch, useSelector} from "react-redux";
-import {SortBySelectors} from "@entities/SortBy";
-import {FiltersSelectors} from "@entities/Filters";
-import {useGetData} from "@shared/hook/useGetData";
-import {ApplicationModel, Coord} from "@entities/Application/model/application.model";
+import { MapState, Map, YMaps, Placemark, WithYMapsProps, YMapsApi } from "react-yandex-maps";
+import { useDispatch, useSelector } from "react-redux";
+import { SortBySelectors } from "@entities/SortBy";
+import { FiltersSelectors } from "@entities/Filters";
+import { useGetData } from "@shared/hook/useGetData";
+import { ApplicationModel, Coord } from "@entities/Application/model/application.model";
 import iconMark from '@images/marker.png'
 import iconMarkFinish from '@images/marker-finish.png'
 import * as ReactDOMServer from "react-dom/server";
-import {MarkWithContent} from "@widgets/YandexMap/ui/MarkWithContent";
-import {useCallback, useEffect, useRef, useState} from "react";
-import {debounce} from "lodash-es";
-import {SelectedApplicationSelectors} from "@entities/SelectedApplication/model/SelectedApplication.selectors";
-import {setSelectedApplication} from "@entities/SelectedApplication/model/SelectedApplication.slice";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { debounce } from "lodash-es";
+import { SelectedApplicationSelectors } from "@entities/SelectedApplication/model/SelectedApplication.selectors";
+import { setSelectedApplication } from "@entities/SelectedApplication/model/SelectedApplication.slice";
+import { Marker } from './Marker';
 
 interface YandexMapProps {
   className?: string;
-  // onClick?: (e: MouseEvent) => void;
 }
 
 const defaultLibraries: string[] = [
@@ -35,11 +34,10 @@ const defaultLibraries: string[] = [
   "multiRouter.MultiRoute",
 ];
 
-export interface YandexMapPropsWithYMaps extends YandexMapProps, Partial<WithYMapsProps> {}
+export interface YandexMapPropsWithYMaps extends YandexMapProps, Partial<WithYMapsProps> { }
 export const YandexMap = (props: YandexMapPropsWithYMaps) => {
   const {
     className,
-    // onClick
   } = props;
   const map = useRef<HTMLElement>(null) as any;
   const route = useRef<MultiRoute>();
@@ -55,11 +53,11 @@ export const YandexMap = (props: YandexMapPropsWithYMaps) => {
   const sortBy = useSelector(SortBySelectors.selectSortByValue);
   const filters = useSelector(FiltersSelectors.selectAllFilters);
 
-  const {data: applications, isError, isLoading} = useGetData<ApplicationModel[]>(
+  const { data: applications, isError, isLoading } = useGetData<ApplicationModel[]>(
     {
       url: '/api/v1/orders',
       dataFlag: true,
-      params: {sort: sortBy, ...filters}
+      params: { sort: sortBy, ...filters }
     });
 
   const changeBounds = debounce(async () => {
@@ -112,7 +110,7 @@ export const YandexMap = (props: YandexMapPropsWithYMaps) => {
           wayPointStartIconLayout: "default#image",
           wayPointStartIconImageHref: iconMark,
           wayPointStartIconImageSize: [30, 37],
-          pinVisible:false,
+          pinVisible: false,
           routeActiveStrokeWidth: 8,
           balloonLayout: '',
           routeActiveStrokeColor: "rgba(242, 180, 48, 1)",
@@ -134,19 +132,23 @@ export const YandexMap = (props: YandexMapPropsWithYMaps) => {
       renderRoute(multiRoute);
     }
   };
-  useEffect(() => {
-    // if (ymaps) getRoute({x: 37.524, y: 55.749}, {x: 30.304908, y: 59.918072});
-  }, [ymaps]);
 
   const markerOnClick = useCallback(
-    (e: any, application: ApplicationModel) => {
+    (application: ApplicationModel) => (e: any) => {
       const placeMarker = e.get("target");
       placeMarker.balloon.close();
       dispatch(setSelectedApplication(application));
-      // onClick?.(e as MouseEvent);
     },
     [],
   );
+
+  useEffect(() => {
+    if (selectedApplication.length) {
+      getRoute(selectedApplication[0].load_coordinates, selectedApplication[0].unload_coordinates)
+    }
+
+    else clearRoute()
+  }, [selectedApplication])
 
   return (
     <div className={cn(styles.yandexMap, className)}>
@@ -164,22 +166,7 @@ export const YandexMap = (props: YandexMapPropsWithYMaps) => {
           onLoad={(ymaps) => setYmaps(ymaps)}
         >
           {applications?.map((application, index) => (
-            <Placemark
-              key={index}
-              geometry={[Number(application.load_coordinates.y), Number(application.load_coordinates.x)]}
-              properties={{
-                // iconContent: ReactDOMServer.renderToString(
-                //   <MarkWithContent />
-                // ),
-              }}
-              options={{
-                iconLayout: "default#image",
-                route: '',
-                iconImageSize: [30, 37],
-                iconImageHref: iconMark,
-              }}
-              onClick={(e: any) => markerOnClick(e, application)}
-            />
+            <Marker application={application} key={application.id} onClick={markerOnClick(application)} ymaps={ymaps} />
           ))}
         </Map>
       </YMaps>

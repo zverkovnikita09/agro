@@ -93,7 +93,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
   return (
     <div className={cn(styles.applicationPage, className)}>
       <div className={styles.heading}>
-        <BackButton defaultRoute={RouterPaths.CHECKLIST}>
+        <BackButton>
           <ArrowLeft width={24} height={24} />
         </BackButton>
         <Title size={TitleSize.S}>

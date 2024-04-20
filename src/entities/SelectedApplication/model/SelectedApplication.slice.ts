@@ -4,7 +4,7 @@ import { ApplicationModel } from "@entities/Application/model/application.model"
 
 const initialState: SelectedApplicationState = {
   selectedApplication: [
-    {
+    /* {
       "id": "9bd7fc1a-68d5-4050-aa43-6cc0a352e4ae",
       "created_at": "19.04.24",
       "deadlines": "22.04.24-27.04.24",
@@ -23,7 +23,7 @@ const initialState: SelectedApplicationState = {
         "x": "37.803",
         "y": "48.016"
       }
-    }
+    } */
   ]
 };
 
