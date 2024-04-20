@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import styles from './MainLayout.module.scss'
-import { Navigate, useNavigate, useOutlet } from "react-router-dom";
+import {Navigate, useLocation, useNavigate, useOutlet} from "react-router-dom";
 import { Header } from "@widgets/Header";
 import { Sidebar } from "@widgets/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import { setUser, UserSelectors } from "@entities/User";
 import { RouterPaths } from "@src/app/router";
 import { useGetData } from "@shared/hook/useGetData";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
-import { createContext, useState } from 'react';
+import {createContext, useLayoutEffect, useState} from 'react';
 import { Filters } from "@entities/Filters";
 import { YandexMap } from "@widgets/YandexMap";
 import { Notifications } from '@entities/Notifications';
@@ -53,6 +53,7 @@ export const MainLayout = () => {
 
   const token = useSelector(UserSelectors.selectToken);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const { isLoading } = useGetData({
     url: '/api/v1/user',
@@ -98,7 +99,7 @@ export const MainLayout = () => {
         </div>
 
         {outlet &&
-          <div className={styles.content}>
+          <div className={cn(styles.content, {[styles.mainPage]: location.pathname === RouterPaths.MAIN})}>
             {outlet}
           </div>
         }

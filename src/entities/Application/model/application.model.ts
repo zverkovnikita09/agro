@@ -1,6 +1,6 @@
-interface Coord {
-  x: string;
-  y: string;
+export interface Coord {
+  x: string | number;
+  y: string | number;
 }
 
 export interface ApplicationModel {
