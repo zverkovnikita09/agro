@@ -16,7 +16,12 @@
   gap: 6px;
 
   @media (max-width: $tablet) {
-    left: 75px;
+    left: 135px;
+  }
+
+  @media (max-width: $mobile) {
+    left: 9px;
+    width: calc(100% - 9px * 2);
   }
 }
 

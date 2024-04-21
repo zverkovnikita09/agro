@@ -141,7 +141,8 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             </div>}
           </div>
         </div>
-        <CardContainer className={styles.cardContainer} titleName='Маршрут'>
+        <div className={cn(styles.cardContainer, styles.routesContainer)}>
+          <Title as="h2" size={TitleSize.APPLICATION_TITLE} className={styles.routesTitle}>Маршрут</Title>
           <div className={cn(styles.infoGrid, styles.trail)}>
             {load_place_name && unload_place_name &&
               <TrailBlock
@@ -165,7 +166,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
               }
             </div>
           </div>
-        </CardContainer>
+        </div>
         <div className={styles.cargoInfo}>
           <ApplicationProperty
             className={styles.cargoInfo__item}

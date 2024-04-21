@@ -15,6 +15,7 @@ import { SelectedApplicationSelectors } from "@entities/SelectedApplication/mode
 import { setSelectedApplication } from "@entities/SelectedApplication/model/SelectedApplication.slice";
 import { Marker } from './Marker';
 
+
 interface YandexMapProps {
   className?: string;
 }
@@ -159,7 +160,8 @@ export const YandexMap = (props: YandexMapPropsWithYMaps) => {
         }}
       >
         <Map
-          defaultState={{ center: [51.665944, 39.191717], zoom: 5 }}
+          defaultState={{ center: [51.665944, 39.191717], zoom: 5}}
+          options={{suppressMapOpenBlock: true}}
           width='100%'
           height='100%'
           instanceRef={map}

@@ -6,7 +6,7 @@
   gap: 8px;
 }
 
-.filter {
+.toggleButton{
   position: relative;
   display: flex;
   gap: 8px;
@@ -16,22 +16,20 @@
   box-shadow: var(--shadow-bottom);
   position: relative;
   border-radius: 12px;
+  
+  @media (max-width: $mobile) {
+    padding: 12px;
+  }
+}
+
+.filter {
 
   &.placeholder {
     color: var(--disabled-color);
   }
-
 }
 
 .sorting {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: var(--white-color);
-  box-shadow: var(--shadow-bottom);
-  position: relative;
-  border-radius: 12px;
   max-width: 155px;
   width: 100%;
 
@@ -49,10 +47,15 @@
 
   @media (max-width: $tablet) {
     width: 50px;
+    display: block;
+  }
+
+  @media (max-width: $mobile) {
+    width: 42px;
   }
 }
 
-.activeFilter, .activeSorting {
+.activeFilter, .activeSorting, .activeSearch {
   background-color: var(--primary-yellow);
 }
 
@@ -109,6 +112,10 @@
   border-radius: 12px;
   padding: 3.5px 4px;
   box-shadow: var(--shadow-bottom);
+
+  @media (max-width: $mobile) {
+    margin-left: auto;
+  }
 }
 
 .button {
@@ -117,6 +124,12 @@
   font-weight: 600;
   color: black;
   min-width: 159px;
+
+  @media (max-width: $mobile) {
+    min-width: unset;
+    width: 100%;
+    padding: 10px 23px;
+  }
 }
 
 .disabledFilters{

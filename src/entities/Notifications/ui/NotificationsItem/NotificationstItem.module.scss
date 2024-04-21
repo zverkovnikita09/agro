@@ -1,3 +1,5 @@
+@import "@src/app/styles/mediaQueries";
+
 .notificationsItem {
   width: 415px;
   padding: 12px 34px 12px 16px;
@@ -6,6 +8,10 @@
   align-items: center;
   gap: 16px;
   margin-bottom: 10px;
+
+  @media (max-width: $mobileSmall) {
+    width: 100%;
+  }
 }
 
 .iconWrapper {

@@ -1,3 +1,5 @@
+@import "@src/app/styles/mediaQueries";
+
 .title {
   font-weight: 700;
   line-height: 135%;
@@ -10,14 +12,22 @@
   }
 }
 
+.size_xs {
+  font-size: 18px;
+}
+
 .size_s {
   font-size: 24px;
+
+  @media (max-width: $mobile) {
+    font-size: 17px;
+  }
 }
 
 .size_m {
   font-size: 32px;
 
-  @media (max-width: 768px) {
+  @media (max-width: $mobile) {
     font-size: 24px;
   }
 }

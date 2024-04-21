@@ -1,0 +1,40 @@
+@use "sass:math";
+
+$minScreenWidth: 375;
+$maxScreenWidth: 1440;
+
+@mixin adaptiveValue($property, $startSize, $maxSize, $widthFrom: $maxScreenWidth, $widthTo: $minScreenWidth) {
+  @if ($startSize==0) {
+    $startSize: 0.000001;
+  }
+  @if ($maxSize==0) {
+    $maxSize: 0.000001;
+  }
+
+  $addSize: math.div($startSize - $maxSize, 16);
+
+  // Формула плавающего значения
+  // Источник: https://css-tricks.com/linearly-scale-font-size-with-css-clamp-based-on-the-viewport/
+  $slope: math.div(($startSize - $maxSize), ($widthFrom - $widthTo));
+  $yIntersection: -$widthTo * $slope + $maxSize;
+  @if ($yIntersection==0) {
+    $yIntersection: 0.000001;
+  }
+  $flyValue: #{$yIntersection + px}" + " #{$slope * 100}vw;
+
+  // Получение значения свойства
+  $propertyValue: #{"clamp(" $maxSize + px "," $flyValue "," $startSize + px ")"};
+  // Если отрицательные значения
+  @if ($maxSize > $startSize) {
+    $propertyValue: #{"clamp(" $startSize + px "," $flyValue "," $maxSize + px ")"};
+  }
+
+  // Если поддерживается clamp();
+  @supports (#{$property}: $propertyValue) {
+    #{$property}: $propertyValue;
+  }
+  // Если не поддерживается clamp();
+  @supports not (#{$property}: $propertyValue) {
+    #{$property}: calc(#{$maxSize + px} + #{$addSize} * (100vw - #{$widthTo + px}) / #{math.div($widthFrom, 16) - math.div($widthTo, 16)});
+  }
+}

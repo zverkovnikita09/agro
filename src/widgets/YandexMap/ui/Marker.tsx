@@ -6,8 +6,10 @@ import iconMark from '@images/marker.png'
 import iconMarkGrey from '@images/marker-grey.png'
 import { useCallback, useEffect, useState } from "react"
 import styles from './YandexMap.module.scss'
-import { BalloonContent } from "./BalloonContent"
 import * as ReactDOMServer from "react-dom/server";
+import triangle from "@images/triangle.png";
+import {ApplicationContent} from "@entities/SelectedApplication/ui/ApplicationContent";
+import {isTouchDevice} from "@shared/lib/deviceSizeCheck";
 
 interface MarkerProps {
   application: ApplicationModel
@@ -62,6 +64,7 @@ export const Marker = ({ application, onClick, ymaps }: MarkerProps) => {
     if (ymaps) {
       const balloonContentLayout = ymaps!.templateLayoutFactory.createClass(
         `<div class="${styles.balloon} balloon-root">
+          <img src="${triangle}" class="${styles.ballonTriangle}" alt="Указатель">
           <div class="balloon-body balloon">$[properties.balloonContent]</div>
         </div>`,
         {
@@ -81,11 +84,22 @@ export const Marker = ({ application, onClick, ymaps }: MarkerProps) => {
     }
   }, [ymaps, iconImageSize]);
 
+  const renderBalloonLayout = () => {
+    if (!isTouchDevice() && application.id !== selectedApplication[0]?.id) return balloonLayout?.layout
+
+    return '';
+  }
+  const renderBalloonContent = () => {
+    if (!isTouchDevice() && application.id !== selectedApplication[0]?.id) return ReactDOMServer.renderToString(<ApplicationContent application={application} />)
+
+    return '';
+  }
+
   return (
     <Placemark
       geometry={[Number(application.load_coordinates.y), Number(application.load_coordinates.x)]}
       properties={{
-        balloonContent: application.id === selectedApplication[0]?.id ? "" : ReactDOMServer.renderToString(<BalloonContent application={application} />),
+        balloonContent: renderBalloonContent(),
       }}
       options={{
         iconLayout: "default#image",
@@ -93,7 +107,7 @@ export const Marker = ({ application, onClick, ymaps }: MarkerProps) => {
         iconImageSize,
         iconImageHref: !!selectedApplication.length ? selectedApplication[0].id === application.id ? iconMark : iconMarkGrey : iconMark,
         balloonOffset: [35, 0],
-        balloonLayout: balloonLayout?.layout,
+        balloonLayout: renderBalloonLayout(),
         hideIconOnBalloonOpen: false,
         balloonCloseButton: false,
         openBalloonOnClick: false,
