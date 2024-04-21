@@ -48,6 +48,7 @@
 }
 
 .expandedSidebar {
+  position: relative;
   width: 220px;
 
   .logo {
@@ -74,6 +75,14 @@
       flex: 1 0 auto;
     }
   }
+}
+
+.close{
+  position: absolute;
+  top: 26px;
+  right: 12px;
+  padding: 6px;
+  color: var(--text-color);
 }
 
 .sidebar__menu {

@@ -19,13 +19,16 @@ import { useRef, useState } from "react";
 import { Dropdown } from "@shared/ui/Dropdown";
 import { useDispatch } from "react-redux";
 import { removeUserData, setToken } from "@entities/User";
+import {CloseButton} from "@shared/ui/CloseButton";
 
 interface SidebarProps {
   className?: string;
+  onBurgerClose?: () => void;
+  isMobile?: boolean;
 }
 
 export const Sidebar = (props: SidebarProps) => {
-  const { className } = props;
+  const { className, onBurgerClose, isMobile } = props;
   const [isExpanded, setIsExpanded] = useLocalStorage(LSKeys.SIDEBAR_STATE, true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
@@ -50,11 +53,14 @@ export const Sidebar = (props: SidebarProps) => {
   }
 
   return (
-    <div className={cn(styles.sidebar, { [styles.expandedSidebar]: isExpanded }, className)}>
+    <div className={cn(styles.sidebar, { [styles.expandedSidebar]: isExpanded || isMobile }, className)}>
       <div className={styles.logo}>
         <LogoIcon width={30} height={30} />
         <LogoText width={48} height={23} />
       </div>
+      {isMobile &&
+        <CloseButton className={styles.close} onClick={onBurgerClose} />
+      }
       {/*<Logo width={85} height={32} className={styles.logo}/>*/}
       <div className={styles.sidebar__menu}>
         <NavLink
@@ -91,7 +97,9 @@ export const Sidebar = (props: SidebarProps) => {
           <UserCircle width={24} height={24} />
           <Text className={styles.linkText} weight={TextWeight.MEDIUM}>ИП “Транс-Агро”</Text>
         </Button>
-        <ArrowLeft className={styles.expandBtn} width={24} height={24} onClick={handleExpandClick} />
+        {!isMobile &&
+          <ArrowLeft className={styles.expandBtn} width={24} height={24} onClick={handleExpandClick} />
+        }
         <Dropdown
           className={styles.profileInfo__dropdown}
           fullWidth

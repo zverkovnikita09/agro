@@ -76,7 +76,7 @@ export const ApplicationProperty = (props: PropsWithChildren<ApplicationProperty
       <div className={styles[textPosition]}>
         {children}
         {additionalText &&
-          <Text color={additionalTextColor} weight={additionalTextWeight} size={additionalTextSize}>
+          <Text color={additionalTextColor} weight={additionalTextWeight} size={additionalTextSize} className={styles.additionalText}>
             {additionalText}
           </Text>
         }

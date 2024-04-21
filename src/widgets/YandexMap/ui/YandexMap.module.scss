@@ -5,8 +5,13 @@
 }
 
 .balloon {
+  display: block;
   width: 400px;
   position: relative;
+  background-color: var(--white-color);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-bottom);
 }
 
 .ballonTriangle {
@@ -17,8 +22,3 @@
 }
 
 .balloonContent {}
-
-.balloon {
-  display: block;
-  /*  width: 400px; */
-}

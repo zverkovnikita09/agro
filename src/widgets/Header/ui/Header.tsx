@@ -1,6 +1,8 @@
 import {Input} from "@shared/ui/Input";
 import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
 import FilterIcon from "@images/filter.svg";
+import SidebarIcon from "@images/category.svg";
+import SearchIcon from "@images/search.svg";
 import Chevron from "@images/chevron-left.svg";
 import {Link} from 'react-router-dom';
 import {RouterPaths} from '@src/app/router';
@@ -11,18 +13,46 @@ import {SortBySelectors} from "@entities/SortBy/model/SortBy.selector";
 import {sortByNames} from "@entities/SortBy";
 import {FiltersSelectors} from "@entities/Filters";
 import styles from './Header.module.scss';
+import {HeaderButtonsState} from "@shared/ui/MainLayout/model/mainLayout.models";
 
 interface HeaderProps {
   className?: string;
-  isFiltersOpen?: boolean;
-  toggleFiltersOpen?: () => void;
-  isSortingOpen?: boolean;
-  toggleSortingOpen?: () => void;
+  buttonsState: HeaderButtonsState;
+  handleButtonsStateToggle: (name: keyof HeaderButtonsState) => void;
   isFiltersDisabled?: boolean;
+  isTablet?: boolean;
+  isMobile?: boolean;
 }
 
 export const Header = (props: HeaderProps) => {
-  const { className, isFiltersOpen, toggleFiltersOpen, isSortingOpen, toggleSortingOpen, isFiltersDisabled } = props;
+  const {
+    className,
+    buttonsState: {search, burger, sortBy, filters},
+    handleButtonsStateToggle,
+    isFiltersDisabled,
+    isMobile,
+    isTablet
+  } = props;
+
+  const filterClasses = cn(
+    styles.toggleButton,
+    styles.filter,
+    {[styles.activeFilter]: filters},
+    {[styles.disabledFilters]: isFiltersDisabled}
+  )
+
+  const sortingClasses = cn(
+    styles.toggleButton,
+    styles.sorting,
+    {[styles.activeSorting]: sortBy},
+    {[styles.disabledFilters]: isFiltersDisabled}
+  )
+
+  const searchClasses = cn(
+    styles.toggleButton,
+    styles.searchButton,
+    {[styles.activeSearch]: search},
+  )
 
   const sortByValue = useSelector(SortBySelectors.selectSortByValue);
   const allFilters = useSelector(FiltersSelectors.selectAllFilters);
@@ -30,35 +60,38 @@ export const Header = (props: HeaderProps) => {
 
   return (
     <div className={cn(styles.header, className)}>
-      <Button className={cn(styles.filter, {[styles.activeFilter]: isFiltersOpen}, {[styles.disabledFilters]: isFiltersDisabled})} onClick={toggleFiltersOpen}>
+      {isTablet &&
+        <Button className={cn(styles.toggleButton)} onClick={() => handleButtonsStateToggle("burger")}>
+          <SidebarIcon width={18} height={18} />
+        </Button>
+      }
+      <Button className={filterClasses} onClick={() => handleButtonsStateToggle("filters")}>
         {!!filteredValues.length &&
           <div className={styles.counter}>{filteredValues.length}</div>
         }
         <FilterIcon width={18} height={18} />
         <Text weight={TextWeight.MEDIUM} size={TextSize.M} className={styles.buttonText}>Фильтры</Text>
       </Button>
-      <Button className={cn(styles.sorting, {[styles.activeSorting]: isSortingOpen}, {[styles.disabledFilters]: isFiltersDisabled})} onClick={toggleSortingOpen}>
+      <Button className={sortingClasses} onClick={() => handleButtonsStateToggle("sortBy")}>
         <Text weight={TextWeight.MEDIUM} size={TextSize.M} className={styles.buttonText}>{sortByNames[sortByValue]}</Text>
         <Chevron width={18} height={18} />
       </Button>
-      {/* <div className={cn(styles.city, { [styles.placeholder]: !value })}>
-        <LocationIcon className={styles.location} />
-        <Select
-          options={["Вся Россия", "Москва", "Воронеж", "Ханты-Мансийский Автономный округ"]}
-          setValue={setValue}
-          value={value}
-          className={styles.citySelect}
-          togglerClassName={styles.selectToggler}
-          placeholder='Выберите город'
-          noArrow
+      {!isMobile ? (
+        <Input
+          className={styles.search}
+          placeholder='Введите пункт погрузки'
+          autoComplete='off'
+          withSearchIcon
         />
-      </div> */}
-      <Input
-        className={styles.search}
-        placeholder='Введите пункт погрузки'
-        autoComplete='off'
-        withSearchIcon
-      />
+      )
+        : (
+          <Button className={searchClasses} onClick={() => handleButtonsStateToggle("search")}>
+            <SearchIcon width={18} height={18} />
+          </Button>
+        )
+
+      }
+
       <div className={styles.buttonWrapper}>
         <Button
           className={styles.button}

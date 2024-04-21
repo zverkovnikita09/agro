@@ -1,3 +1,6 @@
+@import "@src/app/styles/mediaQueries";
+@import "@src/app/styles/mixins";
+
 .applicationPage {
   border-radius: 12px;
   background: var(--white-color);
@@ -5,6 +8,10 @@
   height: 100%;
   display: grid;
   gap: 32px;
+
+  @media (max-width: $mobile) {
+    gap: 24px;
+  }
 }
 
 .content{
@@ -13,34 +20,90 @@
   flex-direction: column;
   gap: 32px;
   padding: 0 24px 16px;
+
+  @media (max-width: $tablet) {
+    gap: 24px;
+  }
+
+  @media (max-width: $mobile) {
+    padding: 0 12px 16px;
+  }
 }
 
 .heading{
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   padding: 24px 16px 0;
+
+  @media (max-width: $mobile) {
+    gap: 6px;
+  }
 }
 .headingButton{
   margin-left: auto;
+
+  @media (max-width: $mobileSmall) {
+    margin-top: 18px;
+    width: 100%;
+  }
 }
 
 .row{
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+
+  @media (max-width: $mobileSmall) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .cardContainer{
   display: grid;
   gap: 24px;
+  
+  @media (max-width: $mobile) {
+    padding: 16px;
+    gap: 16px;
+  }
+}
+
+.routesContainer{
+  padding: 24px 16px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-bottom);
+  
+  @media (max-width: $mobile) {
+    padding: unset;
+    border-radius: unset;
+    box-shadow: unset;
+    padding: 0;
+  }
+}
+
+.routesTitle{
+  @media (max-width: $mobile) {
+    display: none;
+  }
 }
 
 .infoGrid{
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(2, 1fr);
+
+  @media (max-width: $mobile) {
+    gap: 8px;
+
+  }
+  @media (max-width: $mobileSmall) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .clientInfo{
@@ -52,6 +115,11 @@
 .loadInfo{
   display: flex;
   gap: 16px;
+
+  @media (max-width: $mobileSmall) {
+    flex-direction: column;
+    width: 100%;
+  }
 }
 
 .loadInfo__item{
@@ -61,6 +129,10 @@
   padding: 12px;
   border-radius: 12px;
   background-color: var(--special-grey-color1);
+
+  @media (max-width: $mobileSmall) {
+    width: 100%;
+  }
 }
 
 .loadLimit{
@@ -69,14 +141,24 @@
 
 .trail{
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 12px;
+
+  @media (max-width: $mobileSmall) {
+    flex-direction: column;
+  }
 }
 
 .trailInfo{
   display: flex;
   gap: 12px;
   align-items: flex-end;
+
+  @media (max-width: $mobileSmall) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .trailInfo__item{
@@ -85,25 +167,44 @@
   padding: 12px;
   border-radius: 12px;
   background-color: var(--special-grey-color1);
+  @media (max-width: $mobileSmall) {
+    width: 100%;
+  }
 }
 
 .cargoInfo{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
+
+  @media (max-width: $tablet) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
 }
 
 .cargoInfo__item{
   gap: 12px;
-  font-size: 18px;
+  @include adaptiveValue("font-size", 18, 13);
   font-weight: 600;
   padding: 22px 16px;
   background-color: var(--white-color);
   box-shadow: var(--shadow-bottom);
+
+  @media (max-width: $tablet) {
+    padding: 12px;
+    gap: 8px;
+  }
 }
 
 .detailsGrid{
   grid-template-columns: repeat(3, 1fr);
+  @media (max-width: $mobile) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: $mobileSmall) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .infoItem{

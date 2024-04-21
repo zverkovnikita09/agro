@@ -1,4 +1,45 @@
+@import "@src/app/styles/mediaQueries";
+
 .selectedApplication {
   max-width: 444px;
   pointer-events: all;
+  position: relative;
+
+  @media (max-width: $mobile) {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.applicationCard{
+  display: grid;
+  gap: 16px;
+}
+
+.heading{
+  display: grid;
+  gap: 6px;
+}
+
+.headingRow{
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.cargoInfo{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.buttons{
+  display: grid;
+  gap: 8px;
 }

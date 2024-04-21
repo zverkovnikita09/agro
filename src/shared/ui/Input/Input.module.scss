@@ -127,6 +127,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  color: var(--disabled-color);
 
   &.icon_left {
     left: 16px;

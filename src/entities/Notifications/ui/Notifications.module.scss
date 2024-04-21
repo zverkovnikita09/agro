@@ -1,3 +1,5 @@
+@import "@src/app/styles/mediaQueries";
+
 .notifications {
 	position: fixed;
 	width: max-content;
@@ -6,4 +8,9 @@
 	top: calc(59px + 16px);
 	z-index: 9999;
 	right: 16px;
+
+	@media (max-width: $mobileSmall) {
+		width: calc(100% - 9px * 2);
+		right: 9px;
+	}
 }
