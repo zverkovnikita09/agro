@@ -36,7 +36,7 @@ export const NewApplicationContext = createContext<NewApplicationContextPros>({}
 
 export const NewApplication = (props: NewApplicationProps) => {
   const { className } = props;
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(2);
   const navigate = useNavigate();
   const { state } = useLocation();
   const formRef = useRef<HTMLFormElement>(null);
@@ -57,7 +57,12 @@ export const NewApplication = (props: NewApplicationProps) => {
     }
   });
 
-  const changeStep = (number: number) => () => setFormStep(number)
+  const changeStep = (number: number) => () => {
+    if (formRef.current) {
+      formRef.current.scrollTo(0, 0);
+    }
+    return setFormStep(number)
+  }
 
 
   const { handleSendData, isSending } = useSendData(
@@ -87,10 +92,6 @@ export const NewApplication = (props: NewApplicationProps) => {
   }
 
   const onSubmit = () => {
-    if (formRef.current) {
-      formRef.current.scrollTo(0, 0);
-    }
-
     switch (formStep) {
       case 1: return () => changeStep(2)();
       case 2: return () => changeStep(3)();
