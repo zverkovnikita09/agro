@@ -14,6 +14,7 @@ import { debounce } from "lodash-es";
 import { SelectedApplicationSelectors } from "@entities/SelectedApplication/model/SelectedApplication.selectors";
 import { setSelectedApplication } from "@entities/SelectedApplication/model/SelectedApplication.slice";
 import { Marker } from './Marker';
+import {useLocation} from "react-router-dom";
 
 
 interface YandexMapProps {
@@ -44,6 +45,7 @@ export const YandexMap = (props: YandexMapPropsWithYMaps) => {
   const route = useRef<MultiRoute>();
   const needToUpdateBounds = useRef<boolean>(true);
   const [ymaps, setYmaps] = useState<YMapsApi>();
+  const location = useLocation();
 
   const dispatch = useDispatch();
   const selectedApplication = useSelector(SelectedApplicationSelectors.selectSelectedApplication)
@@ -58,7 +60,8 @@ export const YandexMap = (props: YandexMapPropsWithYMaps) => {
     {
       url: '/api/v1/orders',
       dataFlag: true,
-      params: { sort: sortBy, ...filters }
+      params: { sort: sortBy, ...filters },
+      isEnabled: location.pathname === '/'
     });
 
   const changeBounds = debounce(async () => {
