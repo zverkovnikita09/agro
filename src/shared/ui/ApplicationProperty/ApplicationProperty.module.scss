@@ -1,7 +1,8 @@
 @import "@src/app/styles/mediaQueries";
+@import "@src/app/styles/mixins";
 
 .applicationProperty {
-  padding: 12px;
+  @include adaptiveValue("padding", 16, 12, 1440, 768);
   background-color: var(--special-grey-color2);
   border-radius: 12px;
   font-size: 14px;

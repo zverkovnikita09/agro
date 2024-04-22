@@ -1,3 +1,6 @@
+@import "@src/app/styles/mediaQueries";
+@import "@src/app/styles/mixins";
+
 .stepper {
   display: flex;
   width: 100%;
@@ -17,6 +20,10 @@
     flex: 1;
     height: 2px;
     width: 88px;
+    
+    @media (max-width: $mobile) {
+      @include adaptiveValue("width", 88, 50, 768, 375)
+    }
   }
 
   &:first-child:before, &:last-child:after{

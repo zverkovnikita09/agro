@@ -21,6 +21,7 @@ export const CheckList = (props: CheckListProps) => {
           <Tab value={1}>Активные</Tab>
           <Tab value={2}>На паузе</Tab>
           <Tab value={3}>Завершенные</Tab>
+          <Tab value={4}>С моими откликами</Tab>
         </div>
         <TabPanel value={0}>
           <ApplicationsList status={'Все'} />
@@ -32,6 +33,9 @@ export const CheckList = (props: CheckListProps) => {
           <ApplicationsList status={'На паузе'} />
         </TabPanel>
         <TabPanel value={3}>
+          <NotFoundBlock title='Заявок не найдено' additionalText='Вы не взяли ни одной заявки'/>
+        </TabPanel>
+        <TabPanel value={4}>
           <NotFoundBlock title='Заявок не найдено' additionalText='Вы не взяли ни одной заявки'/>
         </TabPanel>
       </Tabs>

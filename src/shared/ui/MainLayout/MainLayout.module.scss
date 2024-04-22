@@ -2,7 +2,7 @@
 
 .mainLayout {
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   grid-template-areas:
     'sidebar header'
@@ -41,7 +41,7 @@
   grid-area: sidebar;
   padding: 16px 0 16px 16px;
   top: 0;
-  height: 100vh;
+  height: 100dvh;
 }
 
 .burger {
@@ -97,7 +97,7 @@
   justify-self: center;
   padding: 16px;
   width: 100%;
-  height: calc(100vh - 59px);
+  height: calc(100dvh - 59px);
 
   &.mainPage{
     pointer-events: none;
