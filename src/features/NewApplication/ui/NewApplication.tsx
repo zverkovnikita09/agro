@@ -2,7 +2,7 @@ import cn from 'classnames';
 import styles from './NewApplication.module.scss'
 import { CardContainer } from '@shared/ui/CardContainer';
 import { Title, TitleSize } from '@shared/ui/Title';
-import { createContext, useContext, useLayoutEffect, useState } from 'react';
+import {createContext, useContext, useLayoutEffect, useRef, useState} from 'react';
 import { FormStepOne } from './FormStepOne';
 import { FormStepTwo } from './FormStepTwo';
 import { FormStepThree } from './FormStepThree';
@@ -39,6 +39,7 @@ export const NewApplication = (props: NewApplicationProps) => {
   const [formStep, setFormStep] = useState(1);
   const navigate = useNavigate();
   const { state } = useLocation();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { openOverlay, closeOverlay } = useContext(MainLayoutContext);
 
@@ -57,6 +58,7 @@ export const NewApplication = (props: NewApplicationProps) => {
   });
 
   const changeStep = (number: number) => () => setFormStep(number)
+
 
   const { handleSendData, isSending } = useSendData(
     {
@@ -85,6 +87,10 @@ export const NewApplication = (props: NewApplicationProps) => {
   }
 
   const onSubmit = () => {
+    if (formRef.current) {
+      formRef.current.scrollTo(0, 0);
+    }
+
     switch (formStep) {
       case 1: return () => changeStep(2)();
       case 2: return () => changeStep(3)();
@@ -118,7 +124,7 @@ export const NewApplication = (props: NewApplicationProps) => {
           </Stepper>
         }
         <NewApplicationContext.Provider value={{ watch, control, setValue, resetField }}>
-          <form className={styles.form} onSubmit={handleSubmit(onSubmit())}>
+          <form ref={formRef} className={styles.form} onSubmit={handleSubmit(onSubmit())}>
             {FormContent()}
           </form>
         </NewApplicationContext.Provider>
