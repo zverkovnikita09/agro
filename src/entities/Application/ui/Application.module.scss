@@ -1,3 +1,6 @@
+@import "@src/app/styles/mediaQueries";
+@import "@src/app/styles/mixins";
+
 .application {
   padding: 16px;
   display: grid;
@@ -7,7 +10,12 @@
 .application__content {
   display: grid;
   grid-template-columns: 2fr 3fr 2fr;
-  gap: 75px;
+  gap: 45px;
+  @include adaptiveValue("gap", 42, 16, 1440, 768);
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .application__column {
@@ -15,23 +23,50 @@
   gap: 16px;
 }
 
+.titleHeading{
+  display: grid;
+  gap: 16px;
+
+  @media (max-width: $mobile) {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
 
 .application__cargoInfo {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+
+  @media (max-width: $mobileSmall) {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 }
 
 .application__footer{
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: $mobile) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
 }
 
 .application__info{
   display: flex;
   align-items: center;
   gap: 16px;
+  @media (max-width: $mobile) {
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+  }
 }
 
 .viewCount{
@@ -45,10 +80,19 @@
 .buttons{
   display: flex;
   gap: 8px;
+  @media (max-width: $mobile) {
+    width: 100%;
+  }
+  @media (max-width: $mobileSmall) {
+    flex-direction: column;
+  }
 }
 
 .button{
   max-width: 104px;
   width: 100%;
   font-weight: 600;
+  @media (max-width: $mobile) {
+    max-width: none;
+  }
 }

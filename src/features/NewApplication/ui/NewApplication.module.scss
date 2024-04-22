@@ -1,3 +1,6 @@
+@import "@src/app/styles/mediaQueries";
+@import "@src/app/styles/mixins";
+
 .newApplication {
   display: grid;
   place-content: center;
@@ -7,7 +10,7 @@
 }
 
 .container {
-  width: 825px;
+  @include adaptiveValue("width", 825, 700, 1440, 991);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,6 +18,10 @@
   overflow-y: hidden;
   padding-right: 0;
   padding-left: 0;
+
+  @media (max-width: $mobile) {
+    @include adaptiveValue("width", 700, 359, 768, 375);
+  }
 }
 
 .closeBtn {
@@ -30,21 +37,34 @@
   flex-direction: column;
   gap: 32px;
   overflow-y: auto;
-  padding-right: 16px;
-  padding-left: 16px;
+  padding: 0 16px;
   min-height: 350px;
+
+  @media (max-width: $mobile) {
+    margin-top: 24px;
+    gap: 16px;
+    padding: 0 12px;
+  }
 }
 
 .inputsRow {
   display: grid;
   grid-template-columns: repeat(2, calc(50% - 8px));
   gap: 16px;
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .inputsThreeRow {
   display: grid;
   grid-template-columns: repeat(3, calc(33% - 8px));
   gap: 16px;
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .inputsRowWithGap {
@@ -65,10 +85,18 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+
+  @media (max-width: $mobile) {
+    flex-wrap: wrap;
+  }
 }
 
 .button {
   min-width: 104px;
+
+  @media (max-width: $mobile) {
+    width: 100%;
+  }
 }
 
 .additionalButton {
@@ -77,6 +105,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
+
+  @media (max-width: $mobile) {
+    margin-top: 8px;
+    margin-bottom: 24px;
+  }
 }
 
 .nestedCheckbox {
@@ -89,6 +122,10 @@
 
 .stepper{
   margin-top: 24px;
+
+  @media (max-width: $mobile) {
+    margin-top: 14px;
+  }
 }
 
 .successPopup{

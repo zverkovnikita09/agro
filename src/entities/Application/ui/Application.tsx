@@ -1,14 +1,13 @@
 import cn from 'classnames';
 import styles from './Application.module.scss'
-import { Title, TitleSize } from "@shared/ui/Title";
-import { Text, TextColor, TextSize } from "@shared/ui/Text";
-import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
-import { StatusBadge, StatusType } from "@shared/ui/StatusBadge";
+import {Title, TitleSize} from "@shared/ui/Title";
+import {Text, TextColor, TextSize} from "@shared/ui/Text";
+import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
+import {StatusBadge, StatusType} from "@shared/ui/StatusBadge";
 import Eye from '@images/eye.svg'
-import { ApplicationIcons, ApplicationProperty } from "@shared/ui/ApplicationProperty";
-import { CardContainer } from '@shared/ui/CardContainer';
+import {ApplicationIcons, ApplicationProperty} from "@shared/ui/ApplicationProperty";
+import {CardContainer} from '@shared/ui/CardContainer';
 import {TrailBlock} from "@shared/ui/TrailBlock";
-import {partial} from "lodash-es";
 import {ApplicationModel} from "@entities/Application/model/application.model";
 import {Link} from "react-router-dom";
 import {RouterPaths} from "@src/app/router";
@@ -38,12 +37,14 @@ export const Application = (props: ApplicationProps) => {
     <CardContainer className={cn(styles.application, className)}>
       <div className={styles.application__content}>
         <div className={styles.application__column}>
-          <Title size={TitleSize.APPLICATION_TITLE}>
-            Заявка №{order_number}
-          </Title>
-          <Text as='p' size={TextSize.M} color={TextColor.GREY}>
-            от: {created_at}
-          </Text>
+          <div className={styles.titleHeading}>
+            <Title size={TitleSize.APPLICATION_TITLE}>
+              Заявка №{order_number}
+            </Title>
+            <Text as='p' size={TextSize.M} color={TextColor.GREY}>
+              от: {created_at}
+            </Text>
+          </div>
 
           <div>
             <Text size={TextSize.M}>
@@ -103,7 +104,7 @@ export const Application = (props: ApplicationProps) => {
             <Eye width={18} height={18} />
             36
           </div>
-          <StatusBadge status={status} />
+          <StatusBadge status={StatusType.ACTIVE} />
         </div>
         <div className={styles.buttons}>
           <Button

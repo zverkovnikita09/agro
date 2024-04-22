@@ -36,7 +36,7 @@ export const NewApplicationContext = createContext<NewApplicationContextPros>({}
 
 export const NewApplication = (props: NewApplicationProps) => {
   const { className } = props;
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(3);
   const navigate = useNavigate();
   const { state } = useLocation();
 
