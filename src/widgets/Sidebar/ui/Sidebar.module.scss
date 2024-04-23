@@ -16,21 +16,20 @@
   position: relative;
   display: flex;
   gap: 4px;
-  width: 67px;
-  height: 40px;
+  width: 97px;
+  height: 57px;
 
   >*:first-child {
     position: absolute;
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    margin-left: 12px;
     flex-shrink: 0;
   }
 
   >*:last-child {
     position: absolute;
-    right: -10px;
+    right: -3px;
     top: 50%;
     transform: translateY(-50%);
     visibility: hidden;

@@ -19,7 +19,7 @@ import { useRef, useState } from "react";
 import { Dropdown } from "@shared/ui/Dropdown";
 import { useDispatch } from "react-redux";
 import { removeUserData, setToken } from "@entities/User";
-import {CloseButton} from "@shared/ui/CloseButton";
+import { CloseButton } from "@shared/ui/CloseButton";
 
 interface SidebarProps {
   className?: string;
@@ -55,13 +55,12 @@ export const Sidebar = (props: SidebarProps) => {
   return (
     <div className={cn(styles.sidebar, { [styles.expandedSidebar]: isExpanded || isMobile }, className)}>
       <div className={styles.logo}>
-        <LogoIcon width={30} height={30} />
-        <LogoText width={48} height={23} />
+        <LogoIcon width={52} height={52} />
+        <LogoText width={70} height={37} />
       </div>
       {isMobile &&
         <CloseButton className={styles.close} onClick={onBurgerClose} />
       }
-      {/*<Logo width={85} height={32} className={styles.logo}/>*/}
       <div className={styles.sidebar__menu}>
         <NavLink
           className={({ isActive }) => cn(styles.menu__link, { [styles.active]: isActive })}

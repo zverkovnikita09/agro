@@ -12,6 +12,7 @@ interface useSendDataProps<T> extends Omit<sendDataParams<T>, "data"> {
   onError?: (...args: any[]) => any
   withAuthToken?: boolean
   successNotification?: string
+  disableNotification?: boolean;
 }
 
 export const useSendData = <DataType extends {}>
@@ -21,6 +22,7 @@ export const useSendData = <DataType extends {}>
     withAuthToken,
     successNotification,
     headers = {},
+    disableNotification,
     ...otherParams
   }: useSendDataProps<DataType>) => {
   const [isSending, setIsSending] = useState(false)
@@ -44,7 +46,7 @@ export const useSendData = <DataType extends {}>
       successNotification && dispatch(addNotification({ message: successNotification, type: NotificationType.Success }));
     } catch (error) {
       if (error instanceof Error) {
-        dispatch(addNotification({ message: error.message, type: NotificationType.Error }))
+        !disableNotification && dispatch(addNotification({ message: error.message, type: NotificationType.Error }))
         setError(error.message)
         setIsError(true);
         onError?.(error);

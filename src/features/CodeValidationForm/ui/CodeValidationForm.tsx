@@ -1,19 +1,19 @@
 import cn from 'classnames';
 import styles from './CodeValidationForm.module.scss'
-import {Title} from '@shared/ui/Title';
-import {useLocalStorage} from '@shared/hook/useLocalStorage';
-import {useForm} from 'react-hook-form';
-import {PinConfirmInput} from '@shared/ui/PinConfirmInput';
-import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button';
-import {useSendData} from '@shared/hook/useSendData';
-import {LSKeys} from "@shared/lib/globalVariables";
-import {CodeValidationFormState} from '../model/codeValidationForm.model';
-import {setToken, setUser} from '@entities/User';
-import {useNavigate} from "react-router-dom";
-import {useAppDispatch} from '@src/app/store/model/hook';
-import {useEffect, useState} from "react";
-import {Text, TextSize} from "@shared/ui/Text";
-import {RouterPaths} from '@src/app/router';
+import { Title } from '@shared/ui/Title';
+import { useLocalStorage } from '@shared/hook/useLocalStorage';
+import { useForm } from 'react-hook-form';
+import { PinConfirmInput } from '@shared/ui/PinConfirmInput';
+import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
+import { useSendData } from '@shared/hook/useSendData';
+import { LSKeys } from "@shared/lib/globalVariables";
+import { CodeValidationFormState } from '../model/codeValidationForm.model';
+import { setToken, setUser } from '@entities/User';
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from '@src/app/store/model/hook';
+import { useEffect, useState } from "react";
+import { Text, TextSize } from "@shared/ui/Text";
+import { RouterPaths } from '@src/app/router';
 
 interface CodeValidationFormProps {
   className?: string;
@@ -60,6 +60,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
 
   const { isSending, handleSendData } = useSendData({
     url: "/api/v1/login/verification",
+    disableNotification: true,
     onSuccess: ({ data: { token, user } }) => {
       dispatch(setToken(token));
       setAuthToken(token);

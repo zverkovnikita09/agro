@@ -31,6 +31,7 @@ export const PinConfirmInput = (props: PinConfirmInputProps) => {
       <label className={cn(styles.pinConfirmInput, { [styles.error]: error }, className)} ref={labelRef}>
         <Input
           wrapperClassName='hiddenInput'
+          className='hiddenInput'
           mask={[...Array(cellCount)].map(() => '9').join("")}
           type='tel'
           maskChar=''
