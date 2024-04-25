@@ -14,7 +14,7 @@
   }
 }
 
-.content{
+.content {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -30,7 +30,7 @@
   }
 }
 
-.heading{
+.heading {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -41,7 +41,8 @@
     gap: 6px;
   }
 }
-.headingButton{
+
+.headingButton {
   margin-left: auto;
 
   @media (max-width: $mobileSmall) {
@@ -50,7 +51,7 @@
   }
 }
 
-.row{
+.row {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -63,21 +64,21 @@
   }
 }
 
-.cardContainer{
+.cardContainer {
   display: grid;
   gap: 24px;
-  
+
   @media (max-width: $mobile) {
     padding: 16px;
     gap: 16px;
   }
 }
 
-.routesContainer{
+.routesContainer {
   padding: 24px 16px;
   border-radius: 12px;
   box-shadow: var(--shadow-bottom);
-  
+
   @media (max-width: $mobile) {
     padding: unset;
     border-radius: unset;
@@ -86,13 +87,13 @@
   }
 }
 
-.routesTitle{
+.routesTitle {
   @media (max-width: $mobile) {
     display: none;
   }
 }
 
-.infoGrid{
+.infoGrid {
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(2, 1fr);
@@ -101,18 +102,19 @@
     gap: 8px;
 
   }
+
   @media (max-width: $mobileSmall) {
     grid-template-columns: 1fr;
   }
 }
 
-.clientInfo{
+.clientInfo {
   display: grid;
   gap: 12px;
   flex: 1 0 auto;
 }
 
-.loadInfo{
+.loadInfo {
   display: flex;
   gap: 16px;
 
@@ -122,7 +124,7 @@
   }
 }
 
-.loadInfo__item{
+.loadInfo__item {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -135,11 +137,11 @@
   }
 }
 
-.loadLimit{
+.loadLimit {
   color: var(--grey-text-color);
 }
 
-.trail{
+.trail {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -150,7 +152,12 @@
   }
 }
 
-.trailInfo{
+.trailInfo {
+  display: grid;
+  gap: 12px;
+}
+
+.trailInfoRow {
   display: flex;
   gap: 12px;
   align-items: flex-end;
@@ -161,18 +168,20 @@
   }
 }
 
-.trailInfo__item{
+.trailInfo__item {
   display: flex;
   gap: 6px;
   padding: 12px;
   border-radius: 12px;
   background-color: var(--special-grey-color1);
+  flex-wrap: wrap;
+
   @media (max-width: $mobileSmall) {
     width: 100%;
   }
 }
 
-.cargoInfo{
+.cargoInfo {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
@@ -183,7 +192,7 @@
   }
 }
 
-.cargoInfo__item{
+.cargoInfo__item {
   gap: 12px;
   @include adaptiveValue("font-size", 18, 13);
   font-weight: 600;
@@ -197,17 +206,19 @@
   }
 }
 
-.detailsGrid{
+.detailsGrid {
   grid-template-columns: repeat(3, 1fr);
+
   @media (max-width: $mobile) {
     grid-template-columns: repeat(2, 1fr);
   }
+
   @media (max-width: $mobileSmall) {
     grid-template-columns: 1fr;
   }
 }
 
-.infoItem{
+.infoItem {
   display: grid;
   gap: 4px;
   padding: 12px;
@@ -215,11 +226,11 @@
   background-color: var(--special-grey-color1);
 }
 
-.note{
+.note {
   display: grid;
   gap: 8px;
 }
 
-.loadBlock{
+.loadBlock {
   height: 100%;
 }

@@ -3,11 +3,14 @@ import styles from './NewApplication.module.scss'
 import { Calendar } from '@shared/ui/Calendar'
 import { Select } from '@shared/ui/Select'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { NewApplicationContext } from './NewApplication'
 import { Controller } from 'react-hook-form'
 import { useSearchByDadata } from '@shared/hook/useSearchByDadata'
 import dayjs from 'dayjs'
+import { Input } from '@shared/ui/Input'
+import { ApplicationMap } from './ApplicationMap'
+import { Coord } from '@entities/Application'
 
 interface FormStepOneProps {
   onCancel: () => void
@@ -15,19 +18,15 @@ interface FormStepOneProps {
 
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
-  const { control, watch } = useContext(NewApplicationContext);
+  const { control, watch, setValue } = useContext(NewApplicationContext);
 
   const [searchPlace, setSearchPlace] = useState('');
-  const [placeOptions, setPlaceOptions] = useState<string[]>([]);
+  const [placeOptions, setPlaceOptions] = useState<any[]>([]);
   const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
   const minPlaceQueryLength = 3;
 
-  const [searchCompany, setSearchCompany] = useState('');
-  const [companyOptions, setCompanyOptions] = useState<string[]>([]);
-  const [isCompanyOptionsLoading, setIsCompanyOptionsLoading] = useState(false);
-  const minCompanyQueryLength = 2;
-
-  const timeslotOptions = ['Целевой', 'В общем доступе']
+  const [fromCoords, setFromCoords] = useState<Coord>();
+  const [toCoords, setToCoords] = useState<Coord>();
 
   useSearchByDadata<{ suggestions: any[] }>({
     query: searchPlace,
@@ -35,23 +34,27 @@ export const FormStepOne = (props: FormStepOneProps) => {
     debounceTime: 700,
     minQueryLength: minPlaceQueryLength,
     onSuccess: (data) => {
-      setPlaceOptions(data?.suggestions.map(item => item.value) ?? []);
+      setPlaceOptions(data?.suggestions ?? []);
       setIsPlaceOptionsLoading(false);
     },
   });
 
-  useSearchByDadata<{ suggestions: any[] }>({
-    query: searchCompany,
-    target: 'party',
-    debounceTime: 700,
-    minQueryLength: minCompanyQueryLength,
-    onSuccess: (data) => {
-      setCompanyOptions(data?.suggestions.map(item => item.value) ?? []);
-      setIsCompanyOptionsLoading(false);
-    },
-  });
+  const load_place = watch("load_place_name");
+  const unload_place = watch("unload_place_name")
 
-  const start_order_at = watch("start_order_at")
+  const start_order_at = watch("start_order_at");
+
+  useEffect(() => {
+    if (load_place && placeOptions.length) {
+      setFromCoords({ y: placeOptions.find(item => item.value === load_place)?.data?.geo_lat, x: placeOptions.find(item => item.value === load_place)?.data?.geo_lon });
+    }
+  }, [load_place])
+
+  useEffect(() => {
+    if (unload_place && placeOptions.length) {
+      setToCoords({ y: placeOptions.find(item => item.value === unload_place)?.data?.geo_lat, x: placeOptions.find(item => item.value === unload_place)?.data?.geo_lon });
+    }
+  }, [unload_place])
 
   return (
     <>
@@ -126,7 +129,7 @@ export const FormStepOne = (props: FormStepOneProps) => {
                     setSearchPlace(value);
                   }}
                   hideOptions={isPlaceOptionsLoading}
-                  options={placeOptions}
+                  options={placeOptions.map(item => item.value as string)}
                   minLengthForOptions={minPlaceQueryLength}
                   value={value}
                   setValue={(value) => {
@@ -155,10 +158,11 @@ export const FormStepOne = (props: FormStepOneProps) => {
                     setSearchPlace(value);
                   }}
                   hideOptions={isPlaceOptionsLoading}
-                  options={placeOptions}
+                  options={placeOptions.map(item => item.value as string)}
                   minLengthForOptions={minPlaceQueryLength}
                   value={value}
                   setValue={(value) => {
+                    setToCoords({ y: placeOptions.find(item => item.value === value)?.data?.geo_lat, x: placeOptions.find(item => item.value === value)?.data?.geo_lon })
                     setSearchPlace("")
                     onChange(value)
                   }}
@@ -169,80 +173,22 @@ export const FormStepOne = (props: FormStepOneProps) => {
             />
           </div>
         </div>
-        <div className={styles.inputsRow}>
-          <Controller
-            name="terminal_name"
-            control={control}
-            rules={{ required: "Поле обязательно к заполнению" }}
-            render={({ field: { value, name, onChange }, formState: { errors } }) => (
-              <Select
-                label='Грузополучатель/терминал выгрузки'
-                withInputSearch
-                onSearchInput={(value) => {
-                  if (value.length < minCompanyQueryLength) {
-                    setCompanyOptions([]);
-                    return;
-                  }
-                  setIsCompanyOptionsLoading(true);
-                  setSearchCompany(value);
-                }}
-                hideOptions={isCompanyOptionsLoading}
-                options={companyOptions}
-                minLengthForOptions={minCompanyQueryLength}
-                value={value}
-                setValue={(value) => {
-                  setSearchCompany("")
-                  onChange(value)
-                }}
-                noArrow
-                error={errors[name]?.message as string}
-              />
-            )}
-          />
-          <Controller
-            name="timeslot"
-            control={control}
-            render={({ field: { value, name, onChange }, formState: { errors } }) => (
-              <Select
-                label='Таймслот'
-                options={timeslotOptions}
-                value={value}
-                setValue={onChange}
-                error={errors[name]?.message as string}
-              />
-            )}
-          />
-        </div>
-        <div className={styles.inputsRow}>
-          <Controller
-            name="exporter_name"
-            control={control}
-            render={({ field: { value, name, onChange }, formState: { errors } }) => (
-              <Select
-                label='Экспортер'
-                withInputSearch
-                onSearchInput={(value) => {
-                  if (value.length < minCompanyQueryLength) {
-                    setCompanyOptions([]);
-                    return;
-                  }
-                  setIsCompanyOptionsLoading(true);
-                  setSearchCompany(value);
-                }}
-                hideOptions={isCompanyOptionsLoading}
-                options={companyOptions}
-                minLengthForOptions={minCompanyQueryLength}
-                value={value}
-                setValue={(value) => {
-                  setSearchCompany("")
-                  onChange(value)
-                }}
-                noArrow
-                error={errors[name]?.message as string}
-              />
-            )}
-          />
-        </div>
+        <ApplicationMap from={fromCoords} to={toCoords} setDistance={(value) => setValue("distance", value)} />
+        <Controller
+          name="distance"
+          control={control}
+          rules={{ required: "Поле обязательно к заполнению", min: { value: 1, message: "Расстояние перевозки должно быть натуральным числом" } }}
+          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            <Input
+              label='Расстояние перевозки / км'
+              type='number'
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              error={errors[name]?.message as string}
+            />
+          )}
+        />
       </div>
       <div className={styles.buttonsContainer}>
         <Button

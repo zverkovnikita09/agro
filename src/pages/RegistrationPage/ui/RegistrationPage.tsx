@@ -5,14 +5,14 @@ import { RegistrationForm } from '@features/RegistrationForm';
 import { useState } from 'react';
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
 import { CodeValidationForm } from '@features/CodeValidationForm';
-import {LSKeys} from "@shared/lib/globalVariables";
-import {useDispatch, useSelector} from "react-redux";
-import {UserSelectors} from "@entities/User";
-import {useGetData} from "@shared/hook/useGetData";
-import {setUser} from "@entities/User";
-import {Navigate} from "react-router-dom";
-import {RouterPaths} from "@src/app/router";
-import {LoadingBlock} from "@shared/ui/LoadingBlock";
+import { LSKeys } from "@shared/lib/globalVariables";
+import { useDispatch, useSelector } from "react-redux";
+import { UserSelectors } from "@entities/User";
+import { useGetData } from "@shared/hook/useGetData";
+import { setUser } from "@entities/User";
+import { Navigate } from "react-router-dom";
+import { RouterPaths } from "@src/app/router";
+import { LoadingBlock } from "@shared/ui/LoadingBlock";
 
 interface RegistrationPageProps {
   className?: string;
@@ -27,17 +27,17 @@ export const RegistrationPage = (props: RegistrationPageProps) => {
   const token = useSelector(UserSelectors.selectToken);
   const dispatch = useDispatch();
 
-  const {isLoading} = useGetData({
+  const { isLoading } = useGetData({
     url: '/api/v1/user',
     withAuthToken: true,
     isEnabled: !!token,
     dataFlag: true,
-    onSuccess: (user) => {dispatch(setUser(user))},
+    onSuccess: (user) => dispatch(setUser(user)),
   });
 
   if (isLoading) return <LoadingBlock />
 
-  if (user) return <Navigate to={RouterPaths.MAIN} replace={true}/>
+  if (user) return <Navigate to={RouterPaths.MAIN} replace={true} />
 
   /*useSetDocumentTitle("Вход");*/
 

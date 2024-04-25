@@ -2,17 +2,28 @@
 
 .trailBlock {
   position: relative;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
+  &::after {
+    content: "";
+    border-left: 1px dashed var(--disabled-color);
+    position: absolute;
+    height: calc(100% - 20px);
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 }
 
 .trailItem {
   position: relative;
-  padding-left: 13px;
+  padding-left: 12px;
   font-size: 16px;
   font-weight: 500;
 
-  &:before{
+  &:before {
     content: '';
     display: block;
     position: absolute;
@@ -24,31 +35,34 @@
     border-radius: 50%;
     z-index: 1;
   }
-  &:first-child:before{
+
+  &:first-child:before {
     background-color: var(--primary-yellow);
     border: 1px solid black;
   }
-  &:last-child:before{
+
+  &:last-child:before {
     top: calc(50% + 12px / 2);
     background-color: var(--white-color);
     border: 1px solid black;
   }
 
-  &:after{
+  &:after {
     content: '';
     position: absolute;
-    border-left: 1px dashed var(--disabled-color);
     height: 50%;
     left: 3px;
   }
-  &:first-child:after{
+
+  &:first-child:after {
     top: 50%;
   }
-  &:last-child:after{
+
+  &:last-child:after {
     bottom: 48%;
   }
 
-  &:last-child{
+  &:last-child {
     padding-top: 12px;
   }
 

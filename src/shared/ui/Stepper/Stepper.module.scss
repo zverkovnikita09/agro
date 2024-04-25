@@ -22,7 +22,7 @@
     width: 88px;
     
     @media (max-width: $mobile) {
-      @include adaptiveValue("width", 88, 50, 768, 375)
+      @include adaptiveValue("width", 88, 30, 768, 375)
     }
   }
 

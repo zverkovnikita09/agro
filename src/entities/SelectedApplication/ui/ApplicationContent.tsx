@@ -1,26 +1,35 @@
 import styles from './SelectedApplication.module.scss'
-import {ApplicationModel} from "@entities/Application/model/application.model";
-import {Title, TitleSize} from "@shared/ui/Title";
-import {ViewCount} from "@shared/ui/ViewCount";
-import {Text, TextColor, TextSize} from "@shared/ui/Text";
-import {TrailBlock} from "@shared/ui/TrailBlock";
-import {ApplicationIcons, ApplicationProperty} from "@shared/ui/ApplicationProperty";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-import {Link} from "react-router-dom";
-import {RouterPaths} from "@src/app/router";
+import { ApplicationModel } from "@entities/Application/model/application.model";
+import { Title, TitleSize } from "@shared/ui/Title";
+import { ViewCount } from "@shared/ui/ViewCount";
+import { Text, TextColor, TextSize } from "@shared/ui/Text";
+import { TrailBlock } from "@shared/ui/TrailBlock";
+import { ApplicationIcons, ApplicationProperty } from "@shared/ui/ApplicationProperty";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { Link } from "react-router-dom";
+import { RouterPaths } from "@src/app/router";
+import { useSendData } from '@shared/hook/useSendData';
+import { useDispatch } from 'react-redux';
+import { NotificationType, addNotification } from '@entities/Notifications';
 
 interface ApplicationContentProps {
   application: Partial<ApplicationModel>;
-  withButtons?: boolean;
 }
-export const ApplicationContent = ({application, withButtons}: ApplicationContentProps) => {
+export const ApplicationContent = ({ application }: ApplicationContentProps) => {
+  const dispatch = useDispatch();
+
+  const { handleSendData, isSending } = useSendData({
+    url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
+      dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
+    }
+  })
 
   return (
     <div className={styles.applicationCard}>
       <div className={styles.heading}>
         <div className={styles.headingRow}>
           <Title as="h4" size={TitleSize.XS}>Заявка № {application.order_number}</Title>
-          <ViewCount views={36}/>
+          <ViewCount views={36} />
         </div>
         <Text as='p' size={TextSize.M} color={TextColor.GREY}>
           от: {application.created_at}
@@ -56,27 +65,27 @@ export const ApplicationContent = ({application, withButtons}: ApplicationConten
           {application.tariff} ₽
         </ApplicationProperty>
       </div>
-      {withButtons &&
-        <div className={styles.buttons}>
-          <Button
-            as={Link}
-            to={`${RouterPaths.APPLICATION}/${application.id}`}
-            className={styles.button}
-            theme={ButtonTheme.OUTLINE}
-            size={ButtonSize.S}
-          >
-            Подробнее
-          </Button>
-          <Button
-            className={styles.button}
-            theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
-            size={ButtonSize.S}
-            fullWidth
-          >
-            Откликнуться
-          </Button>
-        </div>
-      }
+      <div className={styles.buttons}>
+        <Button
+          as={Link}
+          to={`${RouterPaths.APPLICATION}/${application.id}`}
+          className={styles.button}
+          theme={ButtonTheme.OUTLINE}
+          size={ButtonSize.S}
+        >
+          Подробнее
+        </Button>
+        <Button
+          className={styles.button}
+          theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+          size={ButtonSize.S}
+          fullWidth
+          isLoading={isSending}
+          onClick={() => handleSendData({ order_id: application.id })}
+        >
+          Откликнуться
+        </Button>
+      </div>
     </div>
   )
 }

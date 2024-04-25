@@ -5,6 +5,7 @@ interface TrailBlockProps {
   className?: string;
   destinationFrom: string;
   destinationTo: string;
+  fullHeight?: boolean;
 }
 
 export const TrailBlock = (props: TrailBlockProps) => {

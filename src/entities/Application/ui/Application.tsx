@@ -1,27 +1,28 @@
 import cn from 'classnames';
 import styles from './Application.module.scss'
-import {Title, TitleSize} from "@shared/ui/Title";
-import {Text, TextColor, TextSize} from "@shared/ui/Text";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-import {StatusBadge, StatusType} from "@shared/ui/StatusBadge";
+import { Title, TitleSize } from "@shared/ui/Title";
+import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { StatusBadge, StatusType } from "@shared/ui/StatusBadge";
 import Eye from '@images/eye.svg'
-import {ApplicationIcons, ApplicationProperty} from "@shared/ui/ApplicationProperty";
-import {CardContainer} from '@shared/ui/CardContainer';
-import {TrailBlock} from "@shared/ui/TrailBlock";
-import {ApplicationModel} from "@entities/Application/model/application.model";
-import {Link} from "react-router-dom";
-import {RouterPaths} from "@src/app/router";
+import { ApplicationIcons, ApplicationProperty } from "@shared/ui/ApplicationProperty";
+import { CardContainer } from '@shared/ui/CardContainer';
+import { TrailBlock } from "@shared/ui/TrailBlock";
+import { ApplicationModel } from "@entities/Application/model/application.model";
+import { Link } from "react-router-dom";
+import { RouterPaths } from "@src/app/router";
+import { useSendData } from '@shared/hook/useSendData';
+import { useDispatch } from 'react-redux';
+import { NotificationType, addNotification } from '@entities/Notifications';
 
-interface ApplicationProps extends Partial<ApplicationModel>{
+interface ApplicationProps extends Partial<ApplicationModel> {
   className?: string;
-  status: StatusType;
 }
 
 export const Application = (props: ApplicationProps) => {
   const {
     className,
     id,
-    status,
     crop,
     deadlines,
     tariff,
@@ -30,8 +31,17 @@ export const Application = (props: ApplicationProps) => {
     unload_place_name,
     order_number,
     created_at,
-    volume
+    volume,
+    terminal_name
   } = props;
+
+  const dispatch = useDispatch()
+
+  const { handleSendData, isSending } = useSendData({
+    url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
+      dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
+    }
+  })
 
   return (
     <CardContainer className={cn(styles.application, className)}>
@@ -47,7 +57,7 @@ export const Application = (props: ApplicationProps) => {
           </div>
 
           <div>
-            <Text size={TextSize.M}>
+            <Text size={TextSize.M} weight={TextWeight.MEDIUM}>
               Сроки: &nbsp;
             </Text>
             <Text size={TextSize.M} color={TextColor.GREY}>
@@ -57,18 +67,21 @@ export const Application = (props: ApplicationProps) => {
 
         </div>
         <div className={styles.application__column}>
-          {/*<div>*/}
-          {/*  <Text size={TextSize.S} >*/}
-          {/*    Заказчик: &nbsp;*/}
-          {/*  </Text>*/}
-          {/*  <Text size={TextSize.S} color={TextColor.GREY}>*/}
-          {/*    ООО “Агротехервис”*/}
-          {/*  </Text>*/}
-          {/*</div>*/}
           <TrailBlock
+            className={styles.trailBlock}
             destinationFrom={load_place_name ?? ''}
             destinationTo={unload_place_name ?? ''}
           />
+          {terminal_name &&
+            <div>
+              <Text size={TextSize.M} weight={TextWeight.MEDIUM}>
+                Грузополучатель/Терминал выгрузки: &nbsp;
+              </Text>
+              <Text size={TextSize.M} color={TextColor.GREY}>
+                {terminal_name}
+              </Text>
+            </div>
+          }
         </div>
         <div className={styles.application__column}>
           <div className={styles.application__cargoInfo}>
@@ -104,7 +117,7 @@ export const Application = (props: ApplicationProps) => {
             <Eye width={18} height={18} />
             36
           </div>
-          <StatusBadge status={StatusType.ACTIVE} />
+          {/* <StatusBadge status={StatusType.ACTIVE} /> */}
         </div>
         <div className={styles.buttons}>
           <Button
@@ -120,6 +133,8 @@ export const Application = (props: ApplicationProps) => {
             className={styles.button}
             theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
             size={ButtonSize.S}
+            isLoading={isSending}
+            onClick={() => handleSendData({ order_id: id })}
           >
             Откликнуться
           </Button>

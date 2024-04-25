@@ -21,6 +21,9 @@ import { useGetData } from "@shared/hook/useGetData";
 import { ApplicationModel } from "@entities/Application/model/application.model";
 import { useContext, useLayoutEffect } from 'react';
 import { MainLayoutContext } from '@shared/ui/MainLayout';
+import { useSendData } from '@shared/hook/useSendData';
+import { useDispatch } from 'react-redux';
+import { NotificationType, addNotification } from '@entities/Notifications';
 
 interface ApplicationPageProps {
   className?: string;
@@ -70,8 +73,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     scale_length,
     tariff,
     load_place,
-    terminal_address,
-    terminal_inn,
     terminal_name,
     timeslot,
     tolerance_to_the_norm,
@@ -85,6 +86,14 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
   } = applicationInfo ?? {}
 
   const tariffWithNds = tariff && nds_percent && Math.ceil(tariff * nds_percent / 100 + tariff);
+
+  const dispatch = useDispatch()
+
+  const { handleSendData, isSending } = useSendData({
+    url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
+      dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
+    }
+  })
 
   if (isLoading) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
 
@@ -106,6 +115,8 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
           className={styles.headingButton}
           theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
           size={ButtonSize.S}
+          isLoading={isSending}
+          onClick={() => handleSendData({ order_id: id })}
         >
           Откликнуться
         </Button>
@@ -113,14 +124,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
       <div className={styles.content}>
         <div className={styles.row}>
           <div className={styles.clientInfo}>
-            {/*<div>*/}
-            {/*  <Text size={TextSize.XL} weight={TextWeight.SEMI_BOLD}>*/}
-            {/*    Заказчик: &nbsp;*/}
-            {/*  </Text>*/}
-            {/*  <Text size={TextSize.L} color={TextColor.GREY}>*/}
-            {/*    ООО “Агротехервис”*/}
-            {/*  </Text>*/}
-            {/*</div>*/}
             <div>
               <Text size={TextSize.XL} weight={TextWeight.SEMI_BOLD}>
                 Сроки: &nbsp;
@@ -151,19 +154,27 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
               />
             }
             <div className={styles.trailInfo}>
-              {
-                timeslot &&
+              {terminal_name &&
                 <div className={styles.trailInfo__item}>
-                  <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Таймслот:</Text>
-                  <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{timeslot}</Text>
+                  <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Грузополучатель/Терминал выгрузки</Text>
+                  <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{terminal_name}</Text>
                 </div>
               }
-              {exporter_name &&
-                <div className={styles.trailInfo__item}>
-                  <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Экспортер:</Text>
-                  <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{exporter_name}</Text>
-                </div>
-              }
+              <div className={styles.trailInfoRow}>
+                {exporter_name &&
+                  <div className={styles.trailInfo__item}>
+                    <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Экспортер:</Text>
+                    <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{exporter_name}</Text>
+                  </div>
+                }
+                {
+                  timeslot &&
+                  <div className={styles.trailInfo__item}>
+                    <Text size={TextSize.L} weight={TextWeight.MEDIUM}>Таймслот:</Text>
+                    <Text size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>{timeslot}</Text>
+                  </div>
+                }
+              </div>
             </div>
           </div>
         </div>

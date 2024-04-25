@@ -2,7 +2,7 @@ import cn from 'classnames';
 import styles from './NewApplication.module.scss'
 import { CardContainer } from '@shared/ui/CardContainer';
 import { Title, TitleSize } from '@shared/ui/Title';
-import {createContext, useContext, useLayoutEffect, useRef, useState} from 'react';
+import { createContext, useContext, useLayoutEffect, useRef, useState } from 'react';
 import { FormStepOne } from './FormStepOne';
 import { FormStepTwo } from './FormStepTwo';
 import { FormStepThree } from './FormStepThree';
@@ -20,6 +20,7 @@ import { useSendData } from '@shared/hook/useSendData';
 import { useDispatch } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
 import { RouterPaths } from '@src/app/router';
+import { FormStepFour } from './FormStepFour';
 
 interface NewApplicationProps {
   className?: string;
@@ -53,7 +54,6 @@ export const NewApplication = (props: NewApplicationProps) => {
   const { handleSubmit, watch, control, setValue, resetField } = useForm<ApplicationModel>({
     mode: "onBlur", defaultValues: {
       unit_of_measurement_for_cargo_shortage_rate: "%",
-      distance: Math.floor(Math.random() * (10000 - 500) + 500)
     }
   });
 
@@ -80,9 +80,10 @@ export const NewApplication = (props: NewApplicationProps) => {
     switch (formStep) {
       case 1: return <FormStepOne onCancel={closeForm} />
       case 2: return <FormStepTwo prevStep={changeStep(1)} />
-      case 3: return <FormStepThree prevStep={changeStep(2)} toAdditional={changeStep(4)} isLoading={isSending} />
-      case 4: return <AdditionalStepOne toMainPart={changeStep(3)} />
-      case 5: return <AdditionalStepTwo toMainPart={changeStep(3)} prevStep={changeStep(4)} isLoading={isSending} />
+      case 3: return <FormStepThree prevStep={changeStep(2)} />
+      case 4: return <FormStepFour prevStep={changeStep(3)} toAdditional={changeStep(4)} isLoading={isSending} />
+      case 5: return <AdditionalStepOne toMainPart={changeStep(4)} />
+      case 6: return <AdditionalStepTwo toMainPart={changeStep(4)} prevStep={changeStep(5)} isLoading={isSending} />
       default: return null
     }
   }
@@ -95,7 +96,8 @@ export const NewApplication = (props: NewApplicationProps) => {
     switch (formStep) {
       case 1: return () => changeStep(2)();
       case 2: return () => changeStep(3)();
-      case 4: return () => changeStep(5)();
+      case 3: return () => changeStep(4)();
+      case 5: return () => changeStep(6)();
       default: return onFormSend
     }
   }
@@ -122,6 +124,7 @@ export const NewApplication = (props: NewApplicationProps) => {
             <Step value={1} />
             <Step value={2} />
             <Step value={3} />
+            <Step value={4} />
           </Stepper>
         }
         <NewApplicationContext.Provider value={{ watch, control, setValue, resetField }}>

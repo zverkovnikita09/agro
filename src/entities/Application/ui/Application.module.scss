@@ -23,7 +23,11 @@
   gap: 16px;
 }
 
-.titleHeading{
+.trailBlock {
+  height: max-content;
+}
+
+.titleHeading {
   display: grid;
   gap: 16px;
 
@@ -46,7 +50,7 @@
   }
 }
 
-.application__footer{
+.application__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -58,10 +62,11 @@
   }
 }
 
-.application__info{
+.application__info {
   display: flex;
   align-items: center;
   gap: 16px;
+
   @media (max-width: $mobile) {
     justify-content: space-between;
     width: 100%;
@@ -69,7 +74,7 @@
   }
 }
 
-.viewCount{
+.viewCount {
   color: var(--disabled-color);
   display: flex;
   align-items: center;
@@ -77,21 +82,24 @@
   font-size: 12px;
 }
 
-.buttons{
+.buttons {
   display: flex;
   gap: 8px;
+
   @media (max-width: $mobile) {
     width: 100%;
   }
+
   @media (max-width: $mobileSmall) {
     flex-direction: column;
   }
 }
 
-.button{
+.button {
   max-width: 104px;
   width: 100%;
   font-weight: 600;
+
   @media (max-width: $mobile) {
     max-width: none;
   }

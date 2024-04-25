@@ -8,8 +8,8 @@ import { useCallback, useEffect, useState } from "react"
 import styles from './YandexMap.module.scss'
 import * as ReactDOMServer from "react-dom/server";
 import triangle from "@images/triangle.png";
-import {ApplicationContent} from "@entities/SelectedApplication/ui/ApplicationContent";
-import {isTouchDevice} from "@shared/lib/deviceSizeCheck";
+import { isTouchDevice } from "@shared/lib/deviceSizeCheck";
+import { BalloonContent } from "./BalloonContent"
 
 interface MarkerProps {
   application: ApplicationModel
@@ -90,7 +90,7 @@ export const Marker = ({ application, onClick, ymaps }: MarkerProps) => {
     return '';
   }
   const renderBalloonContent = () => {
-    if (!isTouchDevice() && application.id !== selectedApplication[0]?.id) return ReactDOMServer.renderToString(<ApplicationContent application={application} />)
+    if (!isTouchDevice() && application.id !== selectedApplication[0]?.id) return ReactDOMServer.renderToString(<BalloonContent application={application} />)
 
     return '';
   }

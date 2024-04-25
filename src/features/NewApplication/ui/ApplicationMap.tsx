@@ -1,23 +1,16 @@
-import cn from 'classnames';
-import styles from './YandexMap.module.scss'
-import { Map, YMaps, YMapsApi } from "react-yandex-maps";
-import { useDispatch, useSelector } from "react-redux";
-import { SortBySelectors } from "@entities/SortBy";
-import { FiltersSelectors } from "@entities/Filters";
-import { useGetData } from "@shared/hook/useGetData";
-import { ApplicationModel, Coord } from "@entities/Application/model/application.model";
+import { Coord } from "@entities/Application"
+import styles from './NewApplication.module.scss'
+import { Map, YMaps, YMapsApi } from "react-yandex-maps"
+import { debounce } from "lodash-es"
 import iconMark from '@images/marker.png'
 import iconMarkFinish from '@images/marker-finish.png'
-import { useCallback, useEffect, useRef, useState } from "react";
-import { debounce } from "lodash-es";
-import { SelectedApplicationSelectors } from "@entities/SelectedApplication/model/SelectedApplication.selectors";
-import { setSelectedApplication } from "@entities/SelectedApplication/model/SelectedApplication.slice";
-import { Marker } from './Marker';
-import { useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react"
+import { LoadingBlock } from "@shared/ui/LoadingBlock"
 
-
-interface YandexMapProps {
-  className?: string;
+interface ApplicationMapProps {
+  from?: Coord
+  to?: Coord
+  setDistance?: (distance: number) => void
 }
 
 const defaultLibraries: string[] = [
@@ -35,32 +28,15 @@ const defaultLibraries: string[] = [
   "multiRouter.MultiRoute",
 ];
 
-export const YandexMap = (props: YandexMapProps) => {
-  const {
-    className,
-  } = props;
-  const map = useRef<HTMLElement>(null) as any;
-  const route = useRef<MultiRoute>();
-  const needToUpdateBounds = useRef<boolean>(true);
-  const [ymaps, setYmaps] = useState<YMapsApi>();
-  const location = useLocation();
-
-  const dispatch = useDispatch();
-  const selectedApplication = useSelector(SelectedApplicationSelectors.selectSelectedApplication)
-
-  // @ts-ignore
+export const ApplicationMap = ({ from, to, setDistance }: ApplicationMapProps) => {
+  //@ts-ignore
   type MultiRoute = ymaps.multiRouter.MultiRoute;
 
-  const sortBy = useSelector(SortBySelectors.selectSortByValue);
-  const filters = useSelector(FiltersSelectors.selectAllFilters);
-
-  const { data: applications, isError, isLoading } = useGetData<ApplicationModel[]>(
-    {
-      url: '/api/v1/orders',
-      dataFlag: true,
-      params: { sort: sortBy, ...filters },
-      isEnabled: location.pathname === '/'
-    });
+  const map = useRef<HTMLElement>(null) as any;
+  const route = useRef<MultiRoute>();
+  const [ymaps, setYmaps] = useState<YMapsApi>();
+  const needToUpdateBounds = useRef<boolean>(true);
+  const [isLoading, setIsLoading] = useState(true)
 
   const changeBounds = debounce(async () => {
     const bounds = route?.current?.getBounds() ?? null;
@@ -121,30 +97,32 @@ export const YandexMap = (props: YandexMapProps) => {
 
       needToUpdateBounds.current = true;
 
+      multiRoute.model.events.add("requestsuccess", function () {
+        const activeRoute = multiRoute.getActiveRoute();
+        if (activeRoute?.properties.get("distance")?.value) {
+          setDistance?.(Math.ceil(activeRoute?.properties.get("distance", {})?.value / 1000))
+        }
+      });
+
       renderRoute(multiRoute);
     }
   };
 
-  const markerOnClick = useCallback(
-    (application: ApplicationModel) => (e: any) => {
-      const placeMarker = e.get("target");
-      placeMarker.balloon.close();
-      dispatch(setSelectedApplication(application));
-    },
-    [],
-  );
-
   useEffect(() => {
-    if (selectedApplication.length) {
-      getRoute(selectedApplication[0].load_coordinates, selectedApplication[0].unload_coordinates)
+    if (Object.keys(from ?? {}).length && Object.keys(to ?? {}).length) {
+      getRoute(from, to)
     }
 
     else clearRoute()
-  }, [selectedApplication])
+  }, [from, to])
 
   return (
-    <div className={cn(styles.yandexMap, className)}>
-
+    <div className={styles.map}>
+      {isLoading && (
+        <div className={styles.loading}>
+          <LoadingBlock />
+        </div>
+      )}
       <YMaps
         query={{
           load: defaultLibraries.join(","),
@@ -154,15 +132,14 @@ export const YandexMap = (props: YandexMapProps) => {
         <Map
           defaultState={{ center: [47.13, 39.42], zoom: 5 }}
           options={{ suppressMapOpenBlock: true }}
-          width='100%'
-          height='100%'
+          width="100%"
+          height="100%"
           instanceRef={map}
-          onLoad={(ymaps) => setYmaps(ymaps)}
-        >
-          {applications?.map((application, index) => (
-            <Marker application={application} key={application.id} onClick={markerOnClick(application)} ymaps={ymaps} />
-          ))}
-        </Map>
+          onLoad={(ymaps) => {
+            setYmaps(ymaps)
+            setIsLoading(false)
+          }}
+        />
       </YMaps>
     </div>
   )

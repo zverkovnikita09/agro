@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { NotificationsState } from './Notifications.model';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { NotificationType, NotificationsState } from './Notifications.model';
 
 const initialState: NotificationsState = {
   notifications: []
@@ -9,7 +9,7 @@ const notificationsSlice = createSlice({
   name: "notifications",
   initialState,
   reducers: {
-    addNotification(state, { payload: { message, type, timeout } }) {
+    addNotification(state, { payload: { message, type, timeout } }: PayloadAction<{ message: string, type: NotificationType, timeout?: number }>) {
       const id = performance.now().toString();
       return { ...state, notifications: [...state.notifications, { id, message, type, timeout }] }
     },

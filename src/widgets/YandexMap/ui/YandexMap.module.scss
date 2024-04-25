@@ -21,4 +21,24 @@
   transform: translateY(-50%);
 }
 
-.balloonContent {}
+.balloonContent {
+  display: grid;
+  gap: 16px;
+}
+
+.balloonContentHeading {
+  display: grid;
+  gap: 6px;
+}
+
+.balloonContentHeadingRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.balloonContentCargoInfo {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+}
