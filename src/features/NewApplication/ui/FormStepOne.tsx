@@ -86,7 +86,7 @@ export const FormStepOne = (props: FormStepOneProps) => {
             rules={{
               required: "Поле обязательно к заполнению", validate: (value) => {
                 if (!start_order_at) return true;
-                return value && value >= start_order_at! || 'Дата окончания меньше даты начала';
+                return value && value > start_order_at! || 'Дата окончания меньше даты начала';
               }
             }}
             render={(props) => (
