@@ -18,15 +18,12 @@ interface FormStepOneProps {
 
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
-  const { control, watch, setValue } = useContext(NewApplicationContext);
+  const { control, watch, setValue, coords, handleCoordsChange } = useContext(NewApplicationContext);
 
   const [searchPlace, setSearchPlace] = useState('');
   const [placeOptions, setPlaceOptions] = useState<any[]>([]);
   const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
   const minPlaceQueryLength = 3;
-
-  const [fromCoords, setFromCoords] = useState<Coord>();
-  const [toCoords, setToCoords] = useState<Coord>();
 
   useSearchByDadata<{ suggestions: any[] }>({
     query: searchPlace,
@@ -46,13 +43,13 @@ export const FormStepOne = (props: FormStepOneProps) => {
 
   useEffect(() => {
     if (load_place && placeOptions.length) {
-      setFromCoords({ y: placeOptions.find(item => item.value === load_place)?.data?.geo_lat, x: placeOptions.find(item => item.value === load_place)?.data?.geo_lon });
+      handleCoordsChange?.({ y: placeOptions.find(item => item.value === load_place)?.data?.geo_lat, x: placeOptions.find(item => item.value === load_place)?.data?.geo_lon }, "from");
     }
   }, [load_place])
 
   useEffect(() => {
     if (unload_place && placeOptions.length) {
-      setToCoords({ y: placeOptions.find(item => item.value === unload_place)?.data?.geo_lat, x: placeOptions.find(item => item.value === unload_place)?.data?.geo_lon });
+      handleCoordsChange?.({ y: placeOptions.find(item => item.value === unload_place)?.data?.geo_lat, x: placeOptions.find(item => item.value === unload_place)?.data?.geo_lon }, "to");
     }
   }, [unload_place])
 
@@ -162,7 +159,6 @@ export const FormStepOne = (props: FormStepOneProps) => {
                   minLengthForOptions={minPlaceQueryLength}
                   value={value}
                   setValue={(value) => {
-                    setToCoords({ y: placeOptions.find(item => item.value === value)?.data?.geo_lat, x: placeOptions.find(item => item.value === value)?.data?.geo_lon })
                     setSearchPlace("")
                     onChange(value)
                   }}
@@ -173,7 +169,7 @@ export const FormStepOne = (props: FormStepOneProps) => {
             />
           </div>
         </div>
-        <ApplicationMap from={fromCoords} to={toCoords} setDistance={(value) => setValue("distance", value)} />
+        <ApplicationMap setDistance={(value) => setValue("distance", value)} />
         <Controller
           name="distance"
           control={control}

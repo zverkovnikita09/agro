@@ -4,12 +4,11 @@ import { Map, YMaps, YMapsApi } from "react-yandex-maps"
 import { debounce } from "lodash-es"
 import iconMark from '@images/marker.png'
 import iconMarkFinish from '@images/marker-finish.png'
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { LoadingBlock } from "@shared/ui/LoadingBlock"
+import { NewApplicationContext } from "./NewApplication"
 
 interface ApplicationMapProps {
-  from?: Coord
-  to?: Coord
   setDistance?: (distance: number) => void
 }
 
@@ -28,9 +27,14 @@ const defaultLibraries: string[] = [
   "multiRouter.MultiRoute",
 ];
 
-export const ApplicationMap = ({ from, to, setDistance }: ApplicationMapProps) => {
+export const ApplicationMap = ({ setDistance }: ApplicationMapProps) => {
   //@ts-ignore
   type MultiRoute = ymaps.multiRouter.MultiRoute;
+  const { coords } = useContext(NewApplicationContext);
+
+  const { from, to } = coords ?? {};
+
+  /*  console.log(from , to) */
 
   const map = useRef<HTMLElement>(null) as any;
   const route = useRef<MultiRoute>();
@@ -68,7 +72,6 @@ export const ApplicationMap = ({ from, to, setDistance }: ApplicationMapProps) =
   const getRoute = (from?: Coord, to?: Coord) => {
     if (ymaps) {
       if (!(from && to)) {
-        clearRoute();
         return;
       }
       const multiRoute: MultiRoute = new ymaps.multiRouter.MultiRoute(
@@ -112,9 +115,7 @@ export const ApplicationMap = ({ from, to, setDistance }: ApplicationMapProps) =
     if (Object.keys(from ?? {}).length && Object.keys(to ?? {}).length) {
       getRoute(from, to)
     }
-
-    else clearRoute()
-  }, [from, to])
+  }, [from, to, ymaps])
 
   return (
     <div className={styles.map}>

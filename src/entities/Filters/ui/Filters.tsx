@@ -1,27 +1,27 @@
 import cn from 'classnames';
-import {Text, TextColor, TextSize, TextWeight} from "@shared/ui/Text";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-import {Accordion} from "@shared/ui/Accordion";
-import {InputRange} from "@shared/ui/InputRange";
-import {CardContainer} from "@shared/ui/CardContainer";
-import {Controller, useForm} from "react-hook-form";
-import {useLocation} from "react-router-dom";
-import {Checkbox} from "@shared/ui/Checkbox";
-import {RadioButton} from "@shared/ui/RadioButton";
-import {Input, InputTheme} from "@shared/ui/Input";
-import {ControlCheckbox, MultiCheckbox, NestedCheckbox} from "@shared/ui/MultiCheckbox";
-import {useEffect, useState} from "react";
-import {TogglerCheckbox} from "@shared/ui/TogglerCheckbox";
-import {useLocalStorage} from '@shared/hook/useLocalStorage';
-import {LSKeys} from '@shared/lib/globalVariables';
-import {Filters as FiltersType} from '../model/Filters.model';
-import {useDispatch, useSelector} from 'react-redux';
-import {FiltersSelectors} from '../model/Filters.selectors';
-import {useGetData} from '@shared/hook/useGetData';
-import {setFilters} from '../model/Filters.slice';
-import {LoadingBlock} from '@shared/ui/LoadingBlock';
+import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { Accordion } from "@shared/ui/Accordion";
+import { InputRange } from "@shared/ui/InputRange";
+import { CardContainer } from "@shared/ui/CardContainer";
+import { Controller, useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
+import { Checkbox } from "@shared/ui/Checkbox";
+import { RadioButton } from "@shared/ui/RadioButton";
+import { Input, InputTheme } from "@shared/ui/Input";
+import { ControlCheckbox, MultiCheckbox, NestedCheckbox } from "@shared/ui/MultiCheckbox";
+import { useEffect, useState } from "react";
+import { TogglerCheckbox } from "@shared/ui/TogglerCheckbox";
+import { useLocalStorage } from '@shared/hook/useLocalStorage';
+import { LSKeys } from '@shared/lib/globalVariables';
+import { Filters as FiltersType } from '../model/Filters.model';
+import { useDispatch, useSelector } from 'react-redux';
+import { FiltersSelectors } from '../model/Filters.selectors';
+import { useGetData } from '@shared/hook/useGetData';
+import { setFilters } from '../model/Filters.slice';
+import { LoadingBlock } from '@shared/ui/LoadingBlock';
 import styles from './Filters.module.scss'
-import {addNotification, NotificationType} from "@entities/Notifications";
+import { addNotification, NotificationType } from "@entities/Notifications";
 
 interface FiltersProps {
   className?: string;
@@ -34,6 +34,7 @@ export const Filters = (props: FiltersProps) => {
   const location = useLocation();
   const [needToSaveFilters, setNeedToSaveFilters] = useState(Boolean(JSON.parse(localStorage.getItem(LSKeys.FILTERS) as string)));
   const allFilters = useSelector(FiltersSelectors.selectAllFilters);
+  const filteredValues = Object.values(allFilters).filter(filter => filter !== undefined && filter !== "");
   const [searchUnloadRegion, setSearchUnloadRegion] = useState('');
   const [searchLoadRegion, setSearchLoadRegion] = useState('');
 
@@ -62,7 +63,7 @@ export const Filters = (props: FiltersProps) => {
       withAuthToken: true,
     })
 
-  const { data: regions, isSuccess: isRegionsSuccess } = useGetData<{load_regions: string[], unload_regions: string[]}>(
+  const { data: regions, isSuccess: isRegionsSuccess } = useGetData<{ load_regions: string[], unload_regions: string[] }>(
     {
       url: '/api/v1/orders/regions',
       dataFlag: true,
@@ -94,20 +95,18 @@ export const Filters = (props: FiltersProps) => {
     closeFilters()
     dispatch(setFilters(data))
     setLSFilters(needToSaveFilters ? data : null)
-    needToSaveFilters && dispatch(addNotification({ message: `Фильтры сохранены`, type: NotificationType.Success }));
-    /* setNewRegions() */
+    needToSaveFilters && filteredValues.length && dispatch(addNotification({ message: `Фильтры сохранены`, type: NotificationType.Success }));
   }
 
   const handleFiltersReset = () => {
     reset()
     setSundayState("")
     setSaturdayState("")
-    dispatch(addNotification({ message: `Фильтры очищены`, type: NotificationType.Warning }));
   }
 
   useEffect(() => {
-      Object.entries(allFilters).forEach(
-        ([name, value]) => setValue(name as keyof FiltersType, value));
+    Object.entries(allFilters).forEach(
+      ([name, value]) => setValue(name as keyof FiltersType, value));
   }, []);
 
   useEffect(() => {
