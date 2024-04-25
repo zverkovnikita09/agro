@@ -97,7 +97,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     }
   }, [value])
 
-/*   console.log(inputRef.current?.value, value); */
+  /*   console.log(inputRef.current?.value, value); */
 
   /*   useEffect(() => {
       if (typeof value !== "undefined") setIsLabelFixed(!!value)
@@ -136,7 +136,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           onBlur={handleBlur}
           onChange={onChange}
           disabled={disabled}
-
+          autoComplete='off'
           {...otherProps}
         /> :
         defaultInput()
