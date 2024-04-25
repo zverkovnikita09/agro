@@ -81,7 +81,7 @@ export const NewApplication = (props: NewApplicationProps) => {
       case 1: return <FormStepOne onCancel={closeForm} />
       case 2: return <FormStepTwo prevStep={changeStep(1)} />
       case 3: return <FormStepThree prevStep={changeStep(2)} />
-      case 4: return <FormStepFour prevStep={changeStep(3)} toAdditional={changeStep(4)} isLoading={isSending} />
+      case 4: return <FormStepFour prevStep={changeStep(3)} toAdditional={changeStep(5)} isLoading={isSending} />
       case 5: return <AdditionalStepOne toMainPart={changeStep(4)} />
       case 6: return <AdditionalStepTwo toMainPart={changeStep(4)} prevStep={changeStep(5)} isLoading={isSending} />
       default: return null
