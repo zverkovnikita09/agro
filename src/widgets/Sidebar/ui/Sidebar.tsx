@@ -64,7 +64,7 @@ export const Sidebar = (props: SidebarProps) => {
       <div className={styles.sidebar__menu}>
         <NavLink
           className={({ isActive }) => cn(styles.menu__link, { [styles.active]: isActive })}
-          to={'/lk'}
+          to={RouterPaths.LK}
         >
           <UserSquare width={20} height={20} />
           <Text className={styles.linkText} weight={TextWeight.MEDIUM}>Личный кабинет</Text>
@@ -83,18 +83,18 @@ export const Sidebar = (props: SidebarProps) => {
           <Archive width={20} height={20} />
           <Text className={styles.linkText} weight={TextWeight.MEDIUM}>Список заявок</Text>
         </NavLink>
-        <NavLink
+        {/*  <NavLink
           className={({ isActive }) => cn(styles.menu__link, { [styles.active]: isActive })}
           to={'/rays'}
         >
           <Truck width={20} height={20} />
           <Text className={styles.linkText} weight={TextWeight.MEDIUM}>Рейсы</Text>
-        </NavLink>
+        </NavLink> */}
       </div>
       <div className={styles.sidebarControl}>
         <Button buttonRef={profileButtonRef} className={styles.profileInfo} onClick={toggleDropdown}>
           <UserCircle width={24} height={24} />
-          <Text className={styles.linkText} weight={TextWeight.MEDIUM}>ИП “Транс-Агро”</Text>
+          <Text className={styles.linkText} weight={TextWeight.MEDIUM}>Пользователь</Text>
         </Button>
         {!isMobile &&
           <ArrowLeft className={styles.expandBtn} width={24} height={24} onClick={handleExpandClick} />
@@ -108,7 +108,7 @@ export const Sidebar = (props: SidebarProps) => {
           noBorder
         >
           <Button as={Link} className={styles.profileItem}>
-            <UserCircle width={24} height={24} /> ИП “Транс-Агро”
+            <UserCircle width={24} height={24} /> Пользователь
           </Button>
           <Button className={styles.profileItem} onClick={logout}>
             <Logout width={24} height={24} /> Выйти

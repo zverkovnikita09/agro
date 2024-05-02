@@ -1,22 +1,23 @@
 import cn from 'classnames';
 import styles from './MainLayout.module.scss'
-import {Navigate, useLocation, useNavigate, useOutlet} from "react-router-dom";
-import {Header} from "@widgets/Header";
-import {Sidebar} from "@widgets/Sidebar";
-import {useDispatch, useSelector} from "react-redux";
-import {setUser, UserSelectors} from "@entities/User";
-import {RouterPaths} from "@src/app/router";
-import {useGetData} from "@shared/hook/useGetData";
-import {LoadingBlock} from "@shared/ui/LoadingBlock";
-import {createContext, useLayoutEffect, useState} from 'react';
-import {Filters} from "@entities/Filters";
-import {YandexMap} from "@widgets/YandexMap";
-import {Notifications} from '@entities/Notifications';
-import {SortBy} from "@entities/SortBy";
-import {useWindowSize} from "@shared/hook/useWindowSize";
-import {isMobile, isMobileSmall, isTablet} from "@shared/lib/deviceSizeCheck";
-import {HeaderButtonsState} from "@shared/ui/MainLayout/model/mainLayout.models";
-import {Input} from "@shared/ui/Input";
+import { Navigate, useLocation, useNavigate, useOutlet } from "react-router-dom";
+import { Header } from "@widgets/Header";
+import { Sidebar } from "@widgets/Sidebar";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, UserSelectors } from "@entities/User";
+import { RouterPaths } from "@src/app/router";
+import { useGetData } from "@shared/hook/useGetData";
+import { LoadingBlock } from "@shared/ui/LoadingBlock";
+import { createContext, useLayoutEffect, useState } from 'react';
+import { Filters } from "@entities/Filters";
+import { YandexMap } from "@widgets/YandexMap";
+import { Notifications } from '@entities/Notifications';
+import { SortBy } from "@entities/SortBy";
+import { useWindowSize } from "@shared/hook/useWindowSize";
+import { isMobile, isMobileSmall, isTablet } from "@shared/lib/deviceSizeCheck";
+import { HeaderButtonsState } from "@shared/ui/MainLayout/model/mainLayout.models";
+import { Input } from "@shared/ui/Input";
+import { Button, ButtonSize, ButtonTheme } from '../Button';
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
@@ -47,7 +48,7 @@ export const MainLayout = () => {
       const [key, initialValue] = currentValue;
       const value = buttonValue !== undefined ? buttonValue : !initialValue;
 
-      return {...previousValue, [key]: key === name && value}
+      return { ...previousValue, [key]: key === name && value }
     }, {} as HeaderButtonsState)
 
     setHeaderButtonsState(newButtonState);
@@ -64,28 +65,28 @@ export const MainLayout = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const {isLoading} = useGetData({
+  const { isLoading } = useGetData({
     url: '/api/v1/user',
     withAuthToken: true,
     isEnabled: !!token,
     dataFlag: true,
-    onSuccess: (user) => {
+    onSuccess: ({ user }) => {
       dispatch(setUser(user))
     },
     onError: () => navigate(RouterPaths.LOGIN),
   });
 
-  if (!token) return <Navigate to={RouterPaths.LOGIN} replace={true}/>
+  if (!token) return <Navigate to={RouterPaths.LOGIN} replace={true} />
 
-  if (isLoading) return <LoadingBlock/>
+  if (isLoading) return <LoadingBlock />
 
   return (
-    <MainLayoutContext.Provider value={{openOverlay, closeOverlay, disableFilters}}>
-      <Notifications/>
-      <div className={cn(styles.overlay, {[styles.active]: isOverlayOpen})}/>
+    <MainLayoutContext.Provider value={{ openOverlay, closeOverlay, disableFilters }}>
+      <Notifications />
+      <div className={cn(styles.overlay, { [styles.active]: isOverlayOpen })} />
 
       <div className={styles.mainLayout}>
-        <YandexMap className={styles.map}/>
+        <YandexMap className={styles.map} />
 
         <div className={styles.header}>
           <Header
@@ -104,31 +105,43 @@ export const MainLayout = () => {
             closeSorting={() => handleButtonsStateToggle("sortBy", false)}
           />
           {isMobile(windowSize) &&
+            <div className={cn(styles.searchWrapper, { [styles.searchOpen]: headerButtonsState.search })}>
               <Input
-                wrapperClassName={cn(styles.search, {[styles.searchOpen]: headerButtonsState.search})}
+                wrapperClassName={styles.search}
                 className={styles.searchInput}
                 placeholder='Введите пункт погрузки'
                 autoComplete='off'
                 withSearchIcon
               />
+              <Button
+                size={ButtonSize.S}
+                theme={ButtonTheme.GREY}
+                className={styles.searchSubmit}
+              >
+                Найти
+              </Button>
+            </div>
           }
         </div>
 
         {!isTablet(windowSize)
           ? (
             <div className={styles.sidebar}>
-              <Sidebar/>
+              <Sidebar />
             </div>
           )
           : (
-            <div className={cn(styles.burger, {[styles.burgerOpen]: headerButtonsState.burger})}>
+            <div
+              className={cn(styles.burger, { [styles.burgerOpen]: headerButtonsState.burger })}
+              onClick={() => handleButtonsStateToggle("burger")}
+            >
               <Sidebar isMobile onBurgerClose={() => handleButtonsStateToggle("burger")} />
             </div>
           )
         }
 
         {outlet &&
-          <div className={cn(styles.content, {[styles.mainPage]: location.pathname === RouterPaths.MAIN})}>
+          <div className={cn(styles.content, { [styles.mainPage]: location.pathname === RouterPaths.MAIN })}>
             {outlet}
           </div>
         }

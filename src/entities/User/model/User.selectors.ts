@@ -7,7 +7,10 @@ const selectToken = createSelector(selectUserState, (state) => state.token);
 
 const selectUserData = createSelector(selectUserState, (state) => state.user);
 
+const selectUserRole = createSelector(selectUserData, (state) => state?.roles?.[0]?.slug)
+
 export const UserSelectors = {
     selectToken,
-    selectUserData
+    selectUserData,
+    selectUserRole
 }

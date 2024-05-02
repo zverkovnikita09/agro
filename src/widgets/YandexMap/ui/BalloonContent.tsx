@@ -16,7 +16,7 @@ export const BalloonContent = ({ application }: BalloonContentProps) => {
       <div className={styles.balloonContentHeading}>
         <div className={styles.balloonContentHeadingRow}>
           <Title as="h4" size={TitleSize.XS}>Заявка № {application.order_number}</Title>
-          <ViewCount views={36} />
+          <ViewCount views={application?.view_counter ?? 0} />
         </div>
         <Text as='p' size={TextSize.M} color={TextColor.GREY}>
           от: {application.created_at}

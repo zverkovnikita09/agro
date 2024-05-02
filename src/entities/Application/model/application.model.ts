@@ -48,4 +48,5 @@ export interface ApplicationModel {
   is_full_charter?: number;
   unload_methods?: string[];
   created_at?: string;
+  view_counter: number;
 }

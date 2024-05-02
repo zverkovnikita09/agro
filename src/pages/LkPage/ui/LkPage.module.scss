@@ -1,0 +1,94 @@
+@import "@src/app/styles/mediaQueries";
+@import "@src/app/styles/mixins";
+
+.lkPage {
+  border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  /* display: grid; */
+  gap: 32px;
+  overflow: auto;
+}
+
+.heading {
+  display: flex;
+  gap: 24px;
+}
+
+.headingInfo {
+  width: 100%;
+  max-width: 374px;
+}
+
+.headingInfoTitle {
+  margin-bottom: 24px;
+}
+
+.headingInfoItem {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.editButton {
+  height: max-content;
+  margin-left: auto;
+}
+
+.tabsHeading {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-top: 32px;
+
+  @media (max-width: $mobile) {
+    padding: 0 12px 12px;
+    overflow-x: auto;
+  }
+}
+
+.personalData {
+  display: grid;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.documents {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 24px;
+  gap: 12px;
+}
+
+.documentItem {
+  gap: 12px;
+  @include adaptiveValue("font-size", 18, 13);
+  font-weight: 600;
+  padding: 22px 16px;
+  background-color: var(--white-color);
+  box-shadow: var(--shadow-bottom);
+
+  @media (max-width: $tablet) {
+    padding: 12px;
+    gap: 8px;
+  }
+}
+
+.passportData {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 24px;
+  gap: 12px;
+}
+
+.information {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 24px;
+  gap: 12px;
+}
+
+.note {
+  display: grid;
+  gap: 8px;
+}

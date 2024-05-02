@@ -12,7 +12,7 @@ import { ErrorBlock } from '../ErrorBlock';
 interface CalendarProps {
   className?: string;
   placeholder?: string;
-  value?: string;
+  value?: string | number;
   onChange: (value: string | undefined) => void
   error?: string
 }

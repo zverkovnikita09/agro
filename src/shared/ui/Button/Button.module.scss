@@ -71,6 +71,12 @@
   border-color: var(--accent-color);
 }
 
+.grey {
+  background-color: var(--disabled-color);
+  color: var(--white-color);
+  border-radius: 10px;
+}
+
 .size_m {
   padding: 14px 28px;
   font-size: 16px;

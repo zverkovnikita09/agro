@@ -17,10 +17,11 @@ import { ApplicationModel, Coord } from '@entities/Application/model/application
 import { Stepper } from "@shared/ui/Stepper";
 import { Step } from "@shared/ui/Stepper/Step";
 import { useSendData } from '@shared/hook/useSendData';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
 import { RouterPaths } from '@src/app/router';
 import { FormStepFour } from './FormStepFour';
+import { Role, UserSelectors } from '@entities/User';
 
 interface NewApplicationProps {
   className?: string;
@@ -28,7 +29,7 @@ interface NewApplicationProps {
 
 type Coords = { from: Coord, to: Coord };
 
-interface NewApplicationContextPros {
+interface NewApplicationContextProps {
   watch: UseFormWatch<ApplicationModel>
   control: Control<ApplicationModel, any>
   setValue: UseFormSetValue<ApplicationModel>
@@ -37,7 +38,7 @@ interface NewApplicationContextPros {
   handleCoordsChange?: (value: Coord, name: keyof Coords) => void
 }
 
-export const NewApplicationContext = createContext<NewApplicationContextPros>({} as NewApplicationContextPros)
+export const NewApplicationContext = createContext<NewApplicationContextProps>({} as NewApplicationContextProps)
 
 export const NewApplication = (props: NewApplicationProps) => {
   const { className } = props;
@@ -76,7 +77,6 @@ export const NewApplication = (props: NewApplicationProps) => {
     }
     return setFormStep(number)
   }
-
 
   const { handleSendData, isSending } = useSendData(
     {
@@ -127,12 +127,18 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   useDocumentEvent('keydown', closeOnEsc);
 
+  const userRole = useSelector(UserSelectors.selectUserRole)
+
+  useLayoutEffect(() => {
+    /* userRole !== Role.LOGIST && navigate(RouterPaths.MAIN) */
+  }, [userRole])
+
   return (
     <div className={cn(styles.newApplication, className)}>
       <CardContainer className={styles.container}>
         <CloseButton onClick={closeForm} className={styles.closeBtn} />
         <Title size={TitleSize.S}>Новая заявка</Title>
-        {formStep <= 3 &&
+        {formStep <= 4 &&
           <Stepper className={styles.stepper} value={formStep}>
             <Step value={1} />
             <Step value={2} />

@@ -9,8 +9,9 @@ import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { Link } from "react-router-dom";
 import { RouterPaths } from "@src/app/router";
 import { useSendData } from '@shared/hook/useSendData';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
+import { Role, UserSelectors } from '@entities/User';
 
 interface ApplicationContentProps {
   application: Partial<ApplicationModel>;
@@ -18,18 +19,20 @@ interface ApplicationContentProps {
 export const ApplicationContent = ({ application }: ApplicationContentProps) => {
   const dispatch = useDispatch();
 
-  const { handleSendData, isSending } = useSendData({
+  const { handleSendData, isSending, isSuccess } = useSendData({
     url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
     }
   })
+
+  const userRole = useSelector(UserSelectors.selectUserRole);
 
   return (
     <div className={styles.applicationCard}>
       <div className={styles.heading}>
         <div className={styles.headingRow}>
           <Title as="h4" size={TitleSize.XS}>Заявка № {application.order_number}</Title>
-          <ViewCount views={36} />
+          <ViewCount views={application?.view_counter ?? 0} />
         </div>
         <Text as='p' size={TextSize.M} color={TextColor.GREY}>
           от: {application.created_at}
@@ -75,16 +78,17 @@ export const ApplicationContent = ({ application }: ApplicationContentProps) => 
         >
           Подробнее
         </Button>
-        <Button
-          className={styles.button}
-          theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
-          size={ButtonSize.S}
-          fullWidth
-          isLoading={isSending}
-          onClick={() => handleSendData({ order_id: application.id })}
-        >
-          Откликнуться
-        </Button>
+        {!isSuccess && userRole === Role.CLIENT &&
+          <Button
+            className={styles.button}
+            theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+            size={ButtonSize.S}
+            fullWidth
+            isLoading={isSending}
+            onClick={() => handleSendData({ order_id: application.id })}
+          >
+            Откликнуться
+          </Button>}
       </div>
     </div>
   )

@@ -5,7 +5,7 @@ import cn from 'classnames'
 import { ErrorBlock } from "../ErrorBlock";
 import style from './Select.module.scss'
 import { Text, TextSize } from "../Text";
-import { Input } from "../Input";
+import { Input, InputProps } from "../Input";
 import { ClickAwayListener, Popper } from "@mui/material";
 
 interface OptionType {
@@ -32,6 +32,7 @@ interface CommonSelectProps {
   minLengthForOptions?: number;
   hideOptions?: boolean;
   theme?: SelectTheme;
+  searchInputProps?: InputProps
 }
 
 interface MultipleSelectProps<T = unknown> {
@@ -66,6 +67,7 @@ export const Select = (props: SelectProps) => {
     onSearchInput,
     minLengthForOptions = 0,
     hideOptions,
+    searchInputProps,
   } = props
 
   const [, setIsFocused] = useState(false);
@@ -143,8 +145,13 @@ export const Select = (props: SelectProps) => {
   }, [inputValue])
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    onSearchInput?.(e.target.value);
+    if (typeof e === "object") {
+      setInputValue(e.target.value);
+      onSearchInput?.(e.target.value);
+      return
+    }
+    setInputValue(e);
+    onSearchInput?.(e);
   }
 
   useEffect(() => {
@@ -173,6 +180,7 @@ export const Select = (props: SelectProps) => {
               //to fix for optiontype
               if (typeof value === 'string' && value) onSearchInput?.(value);
             }}
+            {...searchInputProps}
           />
         }
         <div

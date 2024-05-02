@@ -100,7 +100,6 @@
 
   @media (max-width: $mobile) {
     gap: 8px;
-
   }
 
   @media (max-width: $mobileSmall) {
@@ -216,14 +215,6 @@
   @media (max-width: $mobileSmall) {
     grid-template-columns: 1fr;
   }
-}
-
-.infoItem {
-  display: grid;
-  gap: 4px;
-  padding: 12px;
-  border-radius: 12px;
-  background-color: var(--special-grey-color1);
 }
 
 .note {

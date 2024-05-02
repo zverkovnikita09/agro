@@ -89,12 +89,18 @@
   z-index: 1;
 }
 
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
 .search {
   padding: 12px 16px;
   box-shadow: var(--shadow-bottom);
   border: none;
   border-radius: 12px;
   font-size: 14px;
+  padding-right: 80px;
 
   &::-webkit-input-placeholder {
     color: var(--disabled-color);
@@ -104,6 +110,13 @@
     color: var(--disabled-color);
     opacity: 1;
   }
+}
+
+.searchSubmit {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .buttonWrapper {

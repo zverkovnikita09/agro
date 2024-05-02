@@ -10,7 +10,6 @@ import { useSearchByDadata } from '@shared/hook/useSearchByDadata'
 import dayjs from 'dayjs'
 import { Input } from '@shared/ui/Input'
 import { ApplicationMap } from './ApplicationMap'
-import { Coord } from '@entities/Application'
 
 interface FormStepOneProps {
   onCancel: () => void
@@ -18,7 +17,7 @@ interface FormStepOneProps {
 
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
-  const { control, watch, setValue, coords, handleCoordsChange } = useContext(NewApplicationContext);
+  const { control, watch, setValue, handleCoordsChange } = useContext(NewApplicationContext);
 
   const [searchPlace, setSearchPlace] = useState('');
   const [placeOptions, setPlaceOptions] = useState<any[]>([]);

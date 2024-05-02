@@ -12,8 +12,9 @@ import { ApplicationModel } from "@entities/Application/model/application.model"
 import { Link } from "react-router-dom";
 import { RouterPaths } from "@src/app/router";
 import { useSendData } from '@shared/hook/useSendData';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
+import { Role, UserSelectors } from '@entities/User';
 
 interface ApplicationProps extends Partial<ApplicationModel> {
   className?: string;
@@ -32,16 +33,19 @@ export const Application = (props: ApplicationProps) => {
     order_number,
     created_at,
     volume,
-    terminal_name
+    terminal_name,
+    view_counter,
   } = props;
 
   const dispatch = useDispatch()
 
-  const { handleSendData, isSending } = useSendData({
+  const { handleSendData, isSending, isSuccess } = useSendData({
     url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
     }
   })
+
+  const userRole = useSelector(UserSelectors.selectUserRole);
 
   return (
     <CardContainer className={cn(styles.application, className)}>
@@ -93,18 +97,18 @@ export const Application = (props: ApplicationProps) => {
             <ApplicationProperty
               icon={ApplicationIcons.BOX_3D}
             >
-              {volume} тонн
+              {volume}&nbsp;тонн
             </ApplicationProperty>
             <ApplicationProperty
               icon={ApplicationIcons.ROUTING}
             >
-              {distance} км
+              {distance}&nbsp;км
             </ApplicationProperty>
             <ApplicationProperty
               icon={ApplicationIcons.CARD_COIN}
               additionalText='Без НДС'
             >
-              {tariff} ₽
+              {tariff}&nbsp;₽
             </ApplicationProperty>
           </div>
         </div>
@@ -115,7 +119,7 @@ export const Application = (props: ApplicationProps) => {
             className={styles.viewCount}
           >
             <Eye width={18} height={18} />
-            36
+            {view_counter}
           </div>
           {/* <StatusBadge status={StatusType.ACTIVE} /> */}
         </div>
@@ -129,15 +133,16 @@ export const Application = (props: ApplicationProps) => {
           >
             Подробнее
           </Button>
-          <Button
-            className={styles.button}
-            theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
-            size={ButtonSize.S}
-            isLoading={isSending}
-            onClick={() => handleSendData({ order_id: id })}
-          >
-            Откликнуться
-          </Button>
+          {!isSuccess && userRole === Role.CLIENT &&
+            <Button
+              className={styles.button}
+              theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+              size={ButtonSize.S}
+              isLoading={isSending}
+              onClick={() => handleSendData({ order_id: id })}
+            >
+              Откликнуться
+            </Button>}
         </div>
       </div>
     </CardContainer>

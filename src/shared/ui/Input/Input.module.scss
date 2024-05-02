@@ -67,6 +67,7 @@
 
   &:disabled {
     background-color: var(--white-color);
+    color: var(--disabled-color);
   }
 
   &::-webkit-inner-spin-button {

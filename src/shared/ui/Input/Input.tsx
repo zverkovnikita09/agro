@@ -97,18 +97,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     }
   }, [value])
 
-  /*   console.log(inputRef.current?.value, value); */
-
-  /*   useEffect(() => {
-      if (typeof value !== "undefined") setIsLabelFixed(!!value)
-      console.log(typeof value !== "undefined", !!ref);
-      
-    }, [value, inputRef.current?.value]) */
-
   const defaultInput = (additionalProps?: InputHTMLAttributes<HTMLInputElement>) => <input
     id={id}
     type={type}
-    value={!disabled ? value : undefined}
+    value={value}
     className={cn(style.textField, ...additionalInputClasses)}
     ref={inputRef}
     placeholder={!label ? placeholder : undefined}
@@ -119,6 +111,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     {...additionalProps}
     {...otherProps}
   />
+
+  const onNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if ((/^[\d.]+$/).test(e.target.value)) {
+      onChange?.(e.target.value as unknown as ChangeEvent<HTMLInputElement>)
+    }
+    else onChange?.("" as unknown as ChangeEvent<HTMLInputElement>);
+  }
 
   const TextField = () => {
     switch (type) {
@@ -140,7 +139,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           {...otherProps}
         /> :
         defaultInput()
-      case "number": return defaultInput({ onWheel: (e) => (e.target as HTMLInputElement).blur(), autoComplete: "off" })
+      case "number": return defaultInput({ type: "tel", onChange: onNumberChange, autoComplete: "off" })
       default: return defaultInput();
     }
   }

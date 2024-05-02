@@ -22,8 +22,10 @@ import { ApplicationModel } from "@entities/Application/model/application.model"
 import { useContext, useLayoutEffect } from 'react';
 import { MainLayoutContext } from '@shared/ui/MainLayout';
 import { useSendData } from '@shared/hook/useSendData';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
+import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem';
+import { Role, UserSelectors } from '@entities/User';
 
 interface ApplicationPageProps {
   className?: string;
@@ -89,15 +91,16 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   const dispatch = useDispatch()
 
-  const { handleSendData, isSending } = useSendData({
+  const { handleSendData, isSending, isSuccess } = useSendData({
     url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
     }
   })
+  
+  const userRole = useSelector(UserSelectors.selectUserRole);
 
   if (isLoading) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
 
-  // if (isError) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
 
   return (
     <div className={cn(styles.applicationPage, className)}>
@@ -111,15 +114,16 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
         <Text as='p' size={TextSize.L} color={TextColor.GREY}>
           от: {created_at}
         </Text>
-        <Button
-          className={styles.headingButton}
-          theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
-          size={ButtonSize.S}
-          isLoading={isSending}
-          onClick={() => handleSendData({ order_id: id })}
-        >
-          Откликнуться
-        </Button>
+        {!isSuccess && userRole === Role.CLIENT &&
+          <Button
+            className={styles.headingButton}
+            theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+            size={ButtonSize.S}
+            isLoading={isSending}
+            onClick={() => handleSendData({ order_id: id })}
+          >
+            Откликнуться
+          </Button>}
       </div>
       <div className={styles.content}>
         <div className={styles.row}>
@@ -193,7 +197,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             icon={ApplicationIcons.BOX_3D}
             iconColor={ApplicationIconColor.ACCENT}
           >
-            {volume} тонн
+            {volume}&nbsp;тонн
           </ApplicationProperty>
           <ApplicationProperty
             className={styles.cargoInfo__item}
@@ -205,7 +209,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             additionalTextColor={TextColor.GREY}
             additionalTextWeight={TextWeight.MEDIUM}
           >
-            {distance} км
+            {distance}&nbsp;км
           </ApplicationProperty>
           <ApplicationProperty
             className={styles.cargoInfo__item}
@@ -218,70 +222,55 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             additionalTextColor={TextColor.GREY}
             additionalTextWeight={TextWeight.MEDIUM}
           >
-            {tariff} ₽ Без НДС
+            {tariff}&nbsp;₽ Без НДС
           </ApplicationProperty>
         </div>
         <CardContainer className={styles.cardContainer} titleName='Детали погрузки'>
           <div className={cn(styles.infoGrid, styles.detailsGrid)}>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Тип транспорта</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>
-                {load_types?.map(type => (type as unknown as { title: string }).title).join(", ")}
-              </Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Способ погрузки</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{load_method}</Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Возможность перегруза</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{is_overload ? 'Да' : 'Нет'}</Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Длина весов</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{scale_length} м</Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Ограничения по
-                высоте</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{height_limit} м</Text>
-            </div>
+            <ApplicationInfoItem title='Тип транспорта'>
+              {load_types?.map(type => (type as unknown as { title: string }).title).join(", ")}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Способ погрузки'>
+              {load_method}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Возможность перегруза'>
+              {is_overload ? 'Да' : 'Нет'}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Длина весов'>
+              {scale_length} м
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Ограничения по высоте'>
+              {height_limit} м
+            </ApplicationInfoItem>
             {tolerance_to_the_norm &&
-              <div className={styles.infoItem}>
-                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Допуск к норме</Text>
-                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{tolerance_to_the_norm} %</Text>
-              </div>
+              <ApplicationInfoItem title='Допуск к норме'>
+                {tolerance_to_the_norm} %
+              </ApplicationInfoItem>
             }
           </div>
         </CardContainer>
         {!!outage_begin && (
           <CardContainer className={styles.cardContainer} titleName='Простой'>
             <div className={styles.infoGrid}>
-              <div className={styles.infoItem}>
-                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Начало периода простоя</Text>
-                <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>
-                  {outage_begin === 2 ? "Со" : "C"} {outage_begin}-х суток
-                </Text>
-              </div>
+              <ApplicationInfoItem title='Начало периода простоя'>
+                {outage_begin === 2 ? "Со" : "C"} {outage_begin}-х суток
+              </ApplicationInfoItem>
               {outage_price &&
-                <div className={styles.infoItem}>
-                  <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Стоимость простоя</Text>
-                  <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{outage_price} ₽ <span className={styles.loadLimit}>/ Сутки</span></Text>
-                </div>
+                <ApplicationInfoItem title='Стоимость простоя'>
+                  {outage_price} ₽ <span className={styles.loadLimit}>/ Сутки</span>
+                </ApplicationInfoItem>
               }
             </div>
           </CardContainer>
         )}
         <CardContainer className={styles.cardContainer} titleName='Информация'>
           <div className={styles.infoGrid}>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Контактное лицо</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{contact_name}</Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Номер телефона</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{contact_phone}</Text>
-            </div>
+            <ApplicationInfoItem title='Контактное лицо'>
+              {contact_name}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Номер телефона'>
+              {contact_phone}
+            </ApplicationInfoItem>
           </div>
           {description &&
             <div className={styles.note}>
@@ -292,38 +281,27 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
         </CardContainer>
         <CardContainer className={styles.cardContainer} titleName='Дополнительные параметры'>
           <div className={styles.infoGrid}>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate ? `${cargo_shortage_rate} ${unit_of_measurement_for_cargo_shortage_rate}` : "Не указано"}</Text>
-            </div>
-            {/* <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Норма недостачи груза в килограммах</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_shortage_rate} кг</Text>
-            </div> */}
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Стоимость груза</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{cargo_price ? `${cargo_price} ₽` : "Не указано"} </Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Место погрузки</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{load_place || "Не указано"}</Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Подъезд</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{approach || "Не указано"}</Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Тип выгрузки</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{unload_methods?.length ? unload_methods?.map(type => (type as unknown as { title: string }).title).join(", ") : "Не указано"}</Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Время работы</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{work_time || "Не указано"}</Text>
-            </div>
-            <div className={styles.infoItem}>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Хартия</Text>
-              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{is_full_charter !== null ? is_full_charter ? "Полная" : "Не полная" : "Не указано"}</Text>
-            </div>
+            <ApplicationInfoItem title='Норма недостачи груза'>
+              {cargo_shortage_rate ? `${cargo_shortage_rate} ${unit_of_measurement_for_cargo_shortage_rate}` : "Не указано"}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Стоимость груза'>
+              {cargo_price ? `${cargo_price} ₽` : "Не указано"}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Место погрузки'>
+              {load_place || "Не указано"}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Подъезд'>
+              {approach || "Не указано"}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Тип выгрузки'>
+              {unload_methods?.length ? unload_methods?.map(type => (type as unknown as { title: string }).title).join(", ") : "Не указано"}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Время работы'>
+              {work_time || "Не указано"}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Хартия'>
+              {is_full_charter !== null ? is_full_charter ? "Полная" : "Не полная" : "Не указано"}
+            </ApplicationInfoItem>
           </div>
         </CardContainer>
       </div>

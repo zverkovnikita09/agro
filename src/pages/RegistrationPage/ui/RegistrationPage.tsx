@@ -32,7 +32,7 @@ export const RegistrationPage = (props: RegistrationPageProps) => {
     withAuthToken: true,
     isEnabled: !!token,
     dataFlag: true,
-    onSuccess: (user) => dispatch(setUser(user)),
+    onSuccess: ({user}) => dispatch(setUser(user)),
   });
 
   if (isLoading) return <LoadingBlock />
