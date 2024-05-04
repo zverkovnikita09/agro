@@ -218,12 +218,15 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
             rules={{
               required: "Поле обязательно к заполнению"
             }}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <Calendar
-                placeholder='Дата выдачи'
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Дата выдачи'
                 value={value}
                 onChange={onChange}
-                error={error?.message}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+                mask="99.99.9999"
+                type="tel"
               />
             )}
           />
@@ -268,7 +271,16 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
         </div>
       </div>
       <div className={styles.buttonsContainer}>
-        <Button className={styles.additionalButton} onClick={onDeleteProfile}>
+        <Button
+          className={styles.additionalButton}
+          withConfirm
+          alertPopupProps={{
+            confirmText: 'Вы действительнохотите удалить свой профиль?',
+            additionalText: 'Внимание! В случае удаления кабинета данные удаляться безвозвратно',
+            cancelButtonText: 'Вернуться',
+            confirmButtonText: 'Удалить',
+          }}
+          onClick={onDeleteProfile}>
           Удалить профиль
         </Button>
         <Button

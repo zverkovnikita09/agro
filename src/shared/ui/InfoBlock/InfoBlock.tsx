@@ -24,7 +24,7 @@ interface InfoBlockProps {
   iconColor?: InfoBlockIconColor;
   iconSize?: number;
   titleText: string;
-  additionalText: string;
+  additionalText?: string;
 }
 
 export const InfoBlock = (props: PropsWithChildren<InfoBlockProps>) => {
@@ -41,11 +41,11 @@ export const InfoBlock = (props: PropsWithChildren<InfoBlockProps>) => {
   const Icon = (): Nullable<ReactElement> => {
     switch (icon) {
       case InfoBlockIcons.INFO_ICON:
-        return <Info width={iconSize} height={iconSize} />
+        return <Info width={iconSize} height={iconSize}/>
       case InfoBlockIcons.TRUCK:
-        return <Truck width={iconSize} height={iconSize} />
+        return <Truck width={iconSize} height={iconSize}/>
       case InfoBlockIcons.EDIT:
-        return <Edit width={iconSize} height={iconSize} />
+        return <Edit width={iconSize} height={iconSize}/>
       default:
         return null
     }
@@ -66,14 +66,16 @@ export const InfoBlock = (props: PropsWithChildren<InfoBlockProps>) => {
         >
           {titleText}
         </Text>
-        <Text
-          as="p"
-          size={TextSize.M}
-          weight={TextWeight.REGULAR}
-          color={TextColor.GREY}
-        >
-          {additionalText}
-        </Text>
+        {additionalText &&
+          <Text
+            as="p"
+            size={TextSize.M}
+            weight={TextWeight.REGULAR}
+            color={TextColor.GREY}
+          >
+            {additionalText}
+          </Text>
+        }
       </div>
 
       {children}

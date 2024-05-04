@@ -43,7 +43,7 @@
   color: var(--white-color);
 }
 
-.outline, .outline_accent {
+.outline, .outline_accent, .outline_alert {
   /*TO FIX*/
   border: 1px solid #122533;
   background-color: var(--white-color);
@@ -69,6 +69,11 @@
 
 .outline_accent {
   border-color: var(--accent-color);
+}
+
+.outline_alert{
+  border-color: var(--special-error);
+  color: var(--special-error);
 }
 
 .grey {

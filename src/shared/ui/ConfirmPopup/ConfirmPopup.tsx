@@ -1,55 +1,66 @@
-import { Button, ButtonSize, ButtonTheme } from "../Button"
-import { Popup, PopupProps } from "../Popup"
+import {Button, ButtonSize, ButtonTheme} from "../Button"
+import {Popup, PopupProps} from "../Popup"
 import style from './ConfirmPopup.module.scss'
+import {InfoBlock, InfoBlockIcons} from "@shared/ui/InfoBlock";
 
 export interface ConfirmPopupProps extends Omit<PopupProps, "children"> {
   confirmText: string
-  primaryButtonText?: string
-  onPrimaryButtonClick?: () => void
-  secondaryButtonText?: string
-  onSecondaryButtonClick?: () => void
+  additionalText?: string
+  cancelButtonText?: string
+  onCancelButtonClick?: () => void
+  confirmButtonText?: string
+  onConfirmButtonClick?: () => void
 }
 
 export const ConfirmPopup = ({
   confirmText,
-  onPrimaryButtonClick,
-  primaryButtonText,
-  onSecondaryButtonClick,
-  secondaryButtonText,
+  additionalText,
+  onCancelButtonClick,
+  cancelButtonText,
+  onConfirmButtonClick,
+  confirmButtonText,
   closePopup,
   ...props
 }: ConfirmPopupProps) => {
 
   const onCancel = () => {
-    onSecondaryButtonClick?.();
+    onConfirmButtonClick?.();
     closePopup()
   }
 
   const onConfirm = () => {
-    onPrimaryButtonClick?.()
+    onCancelButtonClick?.()
     closePopup()
   }
 
   return (
     <Popup {...props} closePopup={closePopup}>
       <div className={style.confirmPopup}>
-        <p className={style.text}>{confirmText}</p>
-        <div className={style.buttons}>
-          <Button
-            theme={ButtonTheme.OUTLINE}
-            size={ButtonSize.S}
-            onClick={onCancel}
-          >
-            {secondaryButtonText || 'Вернуться'}
-          </Button>
-          <Button
-            theme={ButtonTheme.PRIMARY}
-            size={ButtonSize.S}
-            onClick={onConfirm}
-          >
-            {primaryButtonText || 'Закрыть'}
-          </Button>
-        </div>
+        <InfoBlock
+          titleText={confirmText}
+          additionalText={additionalText}
+          icon={InfoBlockIcons.INFO_ICON}
+          iconSize={46}
+        >
+          <div className={style.buttons}>
+            <Button
+              className={style.button}
+              theme={ButtonTheme.OUTLINE_ALERT}
+              size={ButtonSize.S}
+              onClick={onConfirm}
+            >
+              {confirmButtonText || 'Подтвердить'}
+            </Button>
+            <Button
+              className={style.button}
+              theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+              size={ButtonSize.S}
+              onClick={onCancel}
+            >
+              {cancelButtonText || 'Отменить'}
+            </Button>
+          </div>
+        </InfoBlock>
       </div>
     </Popup>
   )
