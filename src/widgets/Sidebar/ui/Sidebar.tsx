@@ -17,8 +17,8 @@ import { Button } from "@shared/ui/Button";
 import { Text, TextWeight } from "@shared/ui/Text";
 import { useRef, useState } from "react";
 import { Dropdown } from "@shared/ui/Dropdown";
-import { useDispatch } from "react-redux";
-import { removeUserData, setToken } from "@entities/User";
+import { useDispatch, useSelector } from "react-redux";
+import { Role, UserSelectors, removeUserData, setToken } from "@entities/User";
 import { CloseButton } from "@shared/ui/CloseButton";
 
 interface SidebarProps {
@@ -52,8 +52,18 @@ export const Sidebar = (props: SidebarProps) => {
     navigate('/login');
   }
 
+  const userData = useSelector(UserSelectors.selectUserData)
+  const userRole = useSelector(UserSelectors.selectUserRole);
+
+  const sidebarProfileText = (): string => {
+    if (userData?.userInfo) return userData.userInfo.name;
+    if (userRole === Role.CLIENT) return "Пользователь"
+    if (userRole === Role.LOGIST) return "Логист"
+    return ""
+  }
+
   return (
-    <div className={cn(styles.sidebar, { [styles.expandedSidebar]: isExpanded || isMobile }, className)}>
+    <div className={cn(styles.sidebar, { [styles.expandedSidebar]: isExpanded || isMobile }, className)} onClick={e => e.stopPropagation()}>
       <div className={styles.logo}>
         <LogoIcon width={52} height={52} />
         <LogoText width={70} height={37} />
@@ -94,7 +104,7 @@ export const Sidebar = (props: SidebarProps) => {
       <div className={styles.sidebarControl}>
         <Button buttonRef={profileButtonRef} className={styles.profileInfo} onClick={toggleDropdown}>
           <UserCircle width={24} height={24} />
-          <Text className={styles.linkText} weight={TextWeight.MEDIUM}>Пользователь</Text>
+          <Text className={styles.linkText} weight={TextWeight.MEDIUM}>{sidebarProfileText()}</Text>
         </Button>
         {!isMobile &&
           <ArrowLeft className={styles.expandBtn} width={24} height={24} onClick={handleExpandClick} />
@@ -107,8 +117,8 @@ export const Sidebar = (props: SidebarProps) => {
           onClose={toggleDropdown}
           noBorder
         >
-          <Button as={Link} className={styles.profileItem}>
-            <UserCircle width={24} height={24} /> Пользователь
+          <Button as={Link} className={styles.profileItem} to={RouterPaths.LK} onClick={toggleDropdown}>
+            <UserCircle width={24} height={24} /> {sidebarProfileText()}
           </Button>
           <Button className={styles.profileItem} onClick={logout}>
             <Logout width={24} height={24} /> Выйти

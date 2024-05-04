@@ -2,8 +2,6 @@ import cn from 'classnames';
 import styles from './CheckList.module.scss'
 import { Tab, TabPanel, Tabs } from "@shared/ui/Tabs";
 import { ApplicationsList } from "@widgets/ApplicationsList";
-import { LoadingBlock } from "@shared/ui/LoadingBlock";
-import { NotFoundBlock } from "@shared/ui/NotFoundBlock";
 
 
 interface CheckListProps {
@@ -24,7 +22,7 @@ export const CheckList = (props: CheckListProps) => {
           <ApplicationsList />
         </TabPanel>
         <TabPanel value={1}>
-          <NotFoundBlock title='Заявок не найдено' additionalText='Вы не взяли ни одной заявки' />
+          <ApplicationsList type='withMyResponses' noApplicationText='Вы не взяли ни одной заявки' />
         </TabPanel>
       </Tabs>
     </div>

@@ -3,12 +3,19 @@ import styles from './LkPage.module.scss'
 import { ApplicationIcons, ApplicationProperty } from '@shared/ui/ApplicationProperty'
 import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem'
 import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text'
+import { UserInfo } from '@entities/User'
 
 interface PersonalData {
-
+  userInfo?: UserInfo
 }
 
-export const PersonalData = ({ }: PersonalData) => {
+export const PersonalData = ({ userInfo }: PersonalData) => {
+  if (!userInfo) return (
+    <div className={styles.noInfoWrapper}>
+      Профиль то заполни еблан
+    </div>
+  )
+
   return (
     <div className={styles.personalData}>
       <CardContainer titleName='Личные данные'>

@@ -36,7 +36,9 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   const { id } = useParams();
 
-  const { data: applicationInfo, isError, isLoading } = useGetData<ApplicationModel>({ url: `/api/v1/orders/${id}`, dataFlag: true })
+  const { data: applicationInfo, isError, /* isLoading: isApplicationLoading, */ isSuccess: isApplicationSuccess } = useGetData<ApplicationModel>({ url: `/api/v1/orders/${id}`, dataFlag: true, withAuthToken: true })
+
+  const { data: userApplications, /* isLoading: isUserApplicationsLoading, */ isSuccess: isUserApplicationsSuccess } = useGetData<ApplicationModel[]>({ url: '/api/v1/user-orders', dataFlag: true, withAuthToken: true })
 
   const { disableFilters } = useContext(MainLayoutContext)
 
@@ -84,7 +86,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     work_time,
     is_full_charter,
     unload_methods,
-    created_at
+    created_at,
   } = applicationInfo ?? {}
 
   const tariffWithNds = tariff && nds_percent && Math.ceil(tariff * nds_percent / 100 + tariff);
@@ -96,11 +98,10 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
     }
   })
-  
+
   const userRole = useSelector(UserSelectors.selectUserRole);
 
-  if (isLoading) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
-
+  if (!isApplicationSuccess || !isUserApplicationsSuccess) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
 
   return (
     <div className={cn(styles.applicationPage, className)}>
@@ -114,7 +115,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
         <Text as='p' size={TextSize.L} color={TextColor.GREY}>
           от: {created_at}
         </Text>
-        {!isSuccess && userRole === Role.CLIENT &&
+        {!isSuccess && userRole === Role.CLIENT && !userApplications?.find(item => item.id === id) &&
           <Button
             className={styles.headingButton}
             theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
@@ -305,6 +306,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
           </div>
         </CardContainer>
       </div>
-    </div>
+    </div >
   )
 }

@@ -3,9 +3,9 @@ import { ButtonHTMLAttributes, MouseEvent, PropsWithChildren, RefCallback, RefOb
 import { Spinner, SpinnerTheme } from '../Spinner/Spinner';
 import style from './Button.module.scss'
 import { Link } from 'react-router-dom';
-/* import { PopupProps } from '../Popup';
-import { ConfirmPopupProps, ConfirmPopup } from '../ConfirmPopup'; */
 import { usePopupState } from '@shared/hook/usePopupState';
+import { ConfirmPopup, ConfirmPopupProps } from '../ConfirmPopup';
+import { PopupProps } from '../Popup';
 
 export enum ButtonSize {
   PRIMARY = '',
@@ -49,8 +49,8 @@ interface AnchorProps extends Omit<ButtonProps, "as" | "buttonRef" | "onClick"> 
 
 export type ComponentButtonProps =
   (ButtonProps | AnchorProps)
-/*  & ({ withAlert?: true, alertPopupProps: Omit<ConfirmPopupProps, keyof PopupProps> }
-   | { withAlert?: false, alertPopupProps?: Omit<ConfirmPopupProps, keyof PopupProps> }); */
+  & ({ withConfirm?: true, alertPopupProps: Omit<ConfirmPopupProps, keyof PopupProps> }
+    | { withConfirm?: false, alertPopupProps?: Omit<ConfirmPopupProps, keyof PopupProps> });
 
 export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
   const {
@@ -66,9 +66,9 @@ export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
     buttonRef,
     fullWidth,
     state,
-    /*  withAlert,
-     alertPopupProps, */
-    /*     onClick, */
+    withConfirm,
+    alertPopupProps,
+    onClick,
     ...otherProps
   } = props;
 
@@ -81,11 +81,11 @@ export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
 
   const Component = as;
 
-  /* const { isOpen: isConfirmOpen, closePopup: closeConfirm, openPopup: openConfirm } = usePopupState(); */
+  const { isOpen: isConfirmOpen, closePopup: closeConfirm, openPopup: openConfirm } = usePopupState();
 
   return (
     <>
-      {/*  {withAlert && (
+      {withConfirm && (
         <ConfirmPopup
           closePopup={closeConfirm}
           {...(alertPopupProps ?? {})}
@@ -93,7 +93,7 @@ export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
           onPrimaryButtonClick={onClick}
           isActive={isConfirmOpen}
         />
-      )} */}
+      )}
       <Component
         className={cn(style.button, additionalClasses)}
         type={as === 'button' ? type : undefined}
@@ -102,7 +102,7 @@ export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
         ref={buttonRef}
         state={state}
         //@ts-ignore
-        /* onClick={!withAlert ? onClick : openConfirm} */
+        onClick={!withConfirm ? onClick : openConfirm}
         {...otherProps}
       >
         {isLoading ?

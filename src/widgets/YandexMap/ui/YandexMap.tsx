@@ -59,6 +59,7 @@ export const YandexMap = (props: YandexMapProps) => {
       url: '/api/v1/orders',
       dataFlag: true,
       params: { sort: sortBy, ...filters },
+      withAuthToken: true,
       isEnabled: location.pathname === '/'
     });
 

@@ -25,6 +25,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
 
   const { handleSendData, isSending } = useSendData({
     url: "/api/v1/login",
+    disableNotification: true,
     onSuccess: ({ data: { user: { code } } }) => {
       setPhoneNumber(getValues("phone_number"))
       alert(code)

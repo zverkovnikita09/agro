@@ -18,6 +18,7 @@ import { Role, UserSelectors } from '@entities/User';
 
 interface ApplicationProps extends Partial<ApplicationModel> {
   className?: string;
+  withMyResponse?: boolean;
 }
 
 export const Application = (props: ApplicationProps) => {
@@ -35,6 +36,7 @@ export const Application = (props: ApplicationProps) => {
     volume,
     terminal_name,
     view_counter,
+    withMyResponse = false
   } = props;
 
   const dispatch = useDispatch()
@@ -133,7 +135,7 @@ export const Application = (props: ApplicationProps) => {
           >
             Подробнее
           </Button>
-          {!isSuccess && userRole === Role.CLIENT &&
+          {!isSuccess && userRole === Role.CLIENT && !withMyResponse &&
             <Button
               className={styles.button}
               theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}

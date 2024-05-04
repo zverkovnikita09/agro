@@ -9,6 +9,11 @@ import { Tab, TabPanel, Tabs } from '@shared/ui/Tabs';
 import { PersonalData } from './PersonalData';
 import { UserPhoto } from '@shared/ui/UserPhoto';
 import { RouterPaths } from '@src/app/router';
+import { useGetData } from '@shared/hook/useGetData';
+import { LoadingBlock } from '@shared/ui/LoadingBlock';
+import { Role, UserInfo } from '@entities/User';
+import { useContext, useLayoutEffect } from 'react';
+import { MainLayoutContext } from '@shared/ui/MainLayout';
 
 interface LkPageProps {
   className?: string;
@@ -16,6 +21,28 @@ interface LkPageProps {
 
 export const LkPage = (props: LkPageProps) => {
   const { className } = props;
+
+  const { isLoading, isSuccess, data } = useGetData<{
+    user: {
+      userinfo: UserInfo, roles?: [
+        { slug: Role }
+      ]
+    }
+  }>({ url: "/api/v1/user", withAuthToken: true, dataFlag: true })
+
+  const { disableFilters } = useContext(MainLayoutContext)
+
+  useLayoutEffect(() => {
+    disableFilters(true)
+
+    return () => disableFilters(false)
+  }, [])
+
+  if (!isSuccess) return (
+    <CardContainer className={cn(styles.lkPage, className)}>
+      <LoadingBlock />
+    </CardContainer>
+  )
 
   return (
     <CardContainer className={cn(styles.lkPage, className)}>
@@ -57,7 +84,7 @@ export const LkPage = (props: LkPageProps) => {
           <Tab value={0}>Личные данные</Tab>
         </div>
         <TabPanel value={0}>
-          <PersonalData />
+          <PersonalData userInfo={data?.user.userinfo} />
         </TabPanel>
       </Tabs>
     </CardContainer>

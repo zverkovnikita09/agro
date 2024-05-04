@@ -130,7 +130,7 @@ export const NewApplication = (props: NewApplicationProps) => {
   const userRole = useSelector(UserSelectors.selectUserRole)
 
   useLayoutEffect(() => {
-    /* userRole !== Role.LOGIST && navigate(RouterPaths.MAIN) */
+    userRole !== Role.LOGIST && navigate(RouterPaths.MAIN)
   }, [userRole])
 
   return (
