@@ -11,9 +11,10 @@ import { Select } from "@shared/ui/Select";
 interface StepTwoProps {
   onPrev: () => void
   isLoading?: boolean
+  onDeleteProfile: () => void
 }
 
-export const StepTwo = ({ onPrev, isLoading }: StepTwoProps) => {
+export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) => {
   const { control, watch, setValue } = useContext(EditProfileContext);
   return (
     <>
@@ -24,16 +25,54 @@ export const StepTwo = ({ onPrev, isLoading }: StepTwoProps) => {
         >
           Введите ИНН
         </Text>
-
+        <Controller
+          name="juridical_address"
+          control={control}
+          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            <Input
+              label='Юридический адрес'
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              error={errors[name]?.message as string}
+            />
+          )}
+        />
+        <Controller
+          name="office_address"
+          control={control}
+          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            <Input
+              label='Фактический адрес'
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              error={errors[name]?.message as string}
+            />
+          )}
+        />
+        <Controller
+          name="tax_system"
+          control={control}
+          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            <Input
+              label='Система налогооблажения'
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              error={errors[name]?.message as string}
+            />
+          )}
+        />
       </div>
-      <div className={styles.inputBlock}>
+      {/* <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}
           size={TextSize.XL}
         >
           Документы
-        </Text>
-        {/* <div className={styles.inputsThreeRow}>
+        </Text> */}
+      {/* <div className={styles.inputsThreeRow}>
           <Controller
             name="series"
             control={control}
@@ -156,9 +195,9 @@ export const StepTwo = ({ onPrev, isLoading }: StepTwoProps) => {
             )}
           />
         </div> */}
-      </div>
+      {/* </div> */}
       <div className={styles.buttonsContainer}>
-        <Button className={styles.additionalButton} /* onClick={toAdditional} */>
+        <Button className={styles.additionalButton} onClick={onDeleteProfile}>
           Удалить профиль
         </Button>
         <Button

@@ -79,7 +79,7 @@ export const LkPage = (props: LkPageProps) => {
           className={styles.editButton}
           to={RouterPaths.LK_EDIT}
         >
-          {user?.userinfo ? 'Редактировать профиль' : 'Заполнить профиль'}
+          {user?.userinfo.type ? 'Редактировать профиль' : 'Заполнить профиль'}
         </Button>
       </div>
       <Tabs>
