@@ -24,6 +24,7 @@ export const LkPage = (props: LkPageProps) => {
 
   const { isLoading, isSuccess, data } = useGetData<{
     user: {
+      phone_number: string
       userinfo: UserInfo, roles?: [
         { slug: Role }
       ]
@@ -37,6 +38,8 @@ export const LkPage = (props: LkPageProps) => {
 
     return () => disableFilters(false)
   }, [])
+
+  const { user } = data || {};
 
   if (!isSuccess) return (
     <CardContainer className={cn(styles.lkPage, className)}>
@@ -54,19 +57,19 @@ export const LkPage = (props: LkPageProps) => {
             size={TitleSize.S}
             className={styles.headingInfoTitle}
           >
-            ИП Федоров
+            {user?.userinfo?.name || user?.phone_number}
           </Title>
           <div className={styles.headingInfoItem}>
             <Text weight={TextWeight.BOLD} size={TextSize.L}>ИНН</Text>
-            <Text color={TextColor.GREY} size={TextSize.L}>7484668468</Text>
+            <Text color={TextColor.GREY} size={TextSize.L}>{user?.userinfo?.inn || "Не указано"}</Text>
           </div>
           <div className={styles.headingInfoItem}>
             <Text weight={TextWeight.BOLD} size={TextSize.L}>ОГРН</Text>
-            <Text color={TextColor.GREY} size={TextSize.L}>748468468468</Text>
+            <Text color={TextColor.GREY} size={TextSize.L}>{user?.userinfo?.ogrn || "Не указано"}</Text>
           </div>
           <div className={styles.headingInfoItem}>
             <Text weight={TextWeight.BOLD} size={TextSize.L}>Основной ОКВЭД</Text>
-            <Text color={TextColor.GREY} size={TextSize.L}>7484</Text>
+            <Text color={TextColor.GREY} size={TextSize.L}>{user?.userinfo?.okved || "Не указано"}</Text>
           </div>
         </div>
         <Button
@@ -76,7 +79,7 @@ export const LkPage = (props: LkPageProps) => {
           className={styles.editButton}
           to={RouterPaths.LK_EDIT}
         >
-          Редактировать профиль
+          {user?.userinfo ? 'Редактировать профиль' : 'Заполнить профиль'}
         </Button>
       </div>
       <Tabs>
@@ -84,7 +87,7 @@ export const LkPage = (props: LkPageProps) => {
           <Tab value={0}>Личные данные</Tab>
         </div>
         <TabPanel value={0}>
-          <PersonalData userInfo={data?.user.userinfo} />
+          <PersonalData userInfo={user?.userinfo} />
         </TabPanel>
       </Tabs>
     </CardContainer>

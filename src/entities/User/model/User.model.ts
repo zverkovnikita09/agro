@@ -19,6 +19,7 @@ export interface PersonalData {
   office_address: string
   tax_system: string
   department_code: string
+  type?: "ИП" | "ООО"
 }
 
 export type UserInfo = MainOrganisationInfo & PersonalData

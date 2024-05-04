@@ -50,7 +50,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
         render={({ formState: { errors }, field: { value, onChange } }) => (
           <Input
             placeholder='Ваш номер телефона'
-            mask="+7 (999) 999-99-99"
+            mask="+79999999999"
             type='tel'
             value={value}
             onChange={onChange}

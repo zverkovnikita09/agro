@@ -52,7 +52,7 @@ export const FormStepFour = ({ isLoading, prevStep, toAdditional }: FormStepFour
             render={({ formState: { errors }, field: { value, name, onChange, onBlur } }) => (
               <Input
                 label='Номер телефона'
-                mask="+7 (999) 999-99-99"
+                mask="+79999999999"
                 type='tel'
                 value={value}
                 onChange={onChange}

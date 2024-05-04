@@ -8,6 +8,8 @@ import { ApplicationPage } from "@pages/ApplicationPage";
 import { SelectedApplication } from "@entities/SelectedApplication";
 import { LkPage } from "@pages/LkPage";
 import { EditProfile } from "@features/EditProfile";
+import { ProtectedRoute } from "@providers/ProtectedRoute";
+import { Role } from "@entities/User";
 
 export enum RouterPaths {
   MAIN = '/',
@@ -23,10 +25,22 @@ export const Router = () => (
   <Routes>
     <Route path={RouterPaths.MAIN} element={<MainLayout />}>
       <Route index element={<SelectedApplication />} />
-      <Route path={RouterPaths.LK} element={<LkPage />} />
-      <Route path={RouterPaths.LK_EDIT} element={<EditProfile />} />
+      <Route path={RouterPaths.LK} element={
+        <ProtectedRoute targetRole={Role.CLIENT}>
+          <LkPage />
+        </ProtectedRoute>
+      } />
+      <Route path={RouterPaths.LK_EDIT} element={
+        <ProtectedRoute targetRole={Role.CLIENT}>
+          <EditProfile />
+        </ProtectedRoute>
+      } />
       <Route path={RouterPaths.CHECKLIST} element={<CheckList />} />
-      <Route path={RouterPaths.NEW_APPLICATION} element={<NewApplication />} />
+      <Route path={RouterPaths.NEW_APPLICATION} element={
+        <ProtectedRoute>
+          <NewApplication />
+        </ProtectedRoute>
+      } />
       <Route path={`${RouterPaths.APPLICATION}/:id`} element={<ApplicationPage />} />
     </Route>
     <Route path={RouterPaths.LOGIN} element={<RegistrationPage />} />

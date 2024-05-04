@@ -127,12 +127,6 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   useDocumentEvent('keydown', closeOnEsc);
 
-  const userRole = useSelector(UserSelectors.selectUserRole)
-
-  useLayoutEffect(() => {
-    userRole !== Role.LOGIST && navigate(RouterPaths.MAIN)
-  }, [userRole])
-
   return (
     <div className={cn(styles.newApplication, className)}>
       <CardContainer className={styles.container}>

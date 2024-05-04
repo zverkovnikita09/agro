@@ -72,13 +72,14 @@ export const Sidebar = (props: SidebarProps) => {
         <CloseButton className={styles.close} onClick={onBurgerClose} />
       }
       <div className={styles.sidebar__menu}>
-        <NavLink
-          className={({ isActive }) => cn(styles.menu__link, { [styles.active]: isActive })}
-          to={RouterPaths.LK}
-        >
-          <UserSquare width={20} height={20} />
-          <Text className={styles.linkText} weight={TextWeight.MEDIUM}>Личный кабинет</Text>
-        </NavLink>
+        {userRole === Role.CLIENT &&
+          <NavLink
+            className={({ isActive }) => cn(styles.menu__link, { [styles.active]: isActive })}
+            to={RouterPaths.LK}
+          >
+            <UserSquare width={20} height={20} />
+            <Text className={styles.linkText} weight={TextWeight.MEDIUM}>Личный кабинет</Text>
+          </NavLink>}
         <NavLink
           className={({ isActive }) => cn(styles.menu__link, { [styles.active]: isActive })}
           to={RouterPaths.MAIN}
@@ -117,9 +118,11 @@ export const Sidebar = (props: SidebarProps) => {
           onClose={toggleDropdown}
           noBorder
         >
-          <Button as={Link} className={styles.profileItem} to={RouterPaths.LK} onClick={toggleDropdown}>
-            <UserCircle width={24} height={24} /> {sidebarProfileText()}
-          </Button>
+          {userRole === Role.CLIENT &&
+            <Button as={Link} className={styles.profileItem} to={RouterPaths.LK} onClick={toggleDropdown}>
+              <UserCircle width={24} height={24} /> {sidebarProfileText()}
+            </Button>
+          }
           <Button className={styles.profileItem} onClick={logout}>
             <Logout width={24} height={24} /> Выйти
           </Button>
