@@ -120,7 +120,7 @@ export const Sidebar = (props: SidebarProps) => {
         >
           {userRole === Role.CLIENT &&
             <Button as={Link} className={styles.profileItem} to={RouterPaths.LK} onClick={toggleDropdown}>
-              <UserCircle width={24} height={24} /> {sidebarProfileText()}
+              <UserCircle width={24} height={24} /> <Text className={styles.sidebarProfileText}>{sidebarProfileText()}</Text>
             </Button>
           }
           <Button className={styles.profileItem} onClick={logout}>

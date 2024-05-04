@@ -27,7 +27,7 @@
     content: '';
     display: block;
     position: absolute;
-    top: 50%;
+    top: 11px;
     transform: translateY(-50%);
     left: 0;
     width: 7px;
@@ -42,7 +42,7 @@
   }
 
   &:last-child:before {
-    top: calc(50% + 12px / 2);
+    top: calc(100% - 10px);
     background-color: var(--white-color);
     border: 1px solid black;
   }

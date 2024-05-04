@@ -44,6 +44,10 @@
   visibility: hidden;
   color: inherit;
   transition-delay: 0.05s;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  max-width: 130px;
 }
 
 .expandedSidebar {
@@ -147,10 +151,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
+
   & >*:first-child{
     flex-shrink: 0;
   }
   &:last-child{
     color: var(--special-error);
   }
+}
+
+.sidebarProfileText{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  max-width: 130px;
 }

@@ -25,7 +25,12 @@
 }
 
 .headingInfo {
-  flex: 1 1 70%;
+  max-width: 374px;
+  width: 100%;
+
+  @media (max-width: $tablet) {
+    flex: 1 1 70%;
+  }
 }
 
 .headingInfoTitle {
