@@ -12,6 +12,8 @@ interface ProtectedRouteProps {
 export const ProtectedRoute = ({ targetRole = Role.LOGIST, redirectRoute = RouterPaths.MAIN, children }: PropsWithChildren<ProtectedRouteProps>) => {
   const userRole = useSelector(UserSelectors.selectUserRole);
 
+  if (!userRole) return null;
+
   if (userRole !== targetRole) return <Navigate to={redirectRoute} replace={true} />
 
   return children;

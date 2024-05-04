@@ -68,8 +68,8 @@ export const ApplicationProperty = (props: PropsWithChildren<ApplicationProperty
       default:
         return null
     }
-
   };
+
   return (
     <div className={cn(styles.applicationProperty, className)}>
       {icon &&
