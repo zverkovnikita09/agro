@@ -218,12 +218,15 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
             rules={{
               required: "Поле обязательно к заполнению"
             }}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <Calendar
-                placeholder='Дата выдачи'
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='Дата выдачи'
                 value={value}
                 onChange={onChange}
-                error={error?.message}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+                mask="99.99.9999"
+                type="tel"
               />
             )}
           />
