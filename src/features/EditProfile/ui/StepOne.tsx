@@ -268,7 +268,16 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
         </div>
       </div>
       <div className={styles.buttonsContainer}>
-        <Button className={styles.additionalButton} onClick={onDeleteProfile}>
+        <Button
+          className={styles.additionalButton}
+          withConfirm
+          alertPopupProps={{
+            confirmText: 'Вы действительнохотите удалить свой профиль?',
+            additionalText: 'Внимание! В случае удаления кабинета данные удаляться безвозвратно',
+            cancelButtonText: 'Вернуться',
+            confirmButtonText: 'Удалить',
+          }}
+          onClick={onDeleteProfile}>
           Удалить профиль
         </Button>
         <Button

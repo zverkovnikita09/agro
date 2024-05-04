@@ -20,6 +20,7 @@ export enum ButtonTheme {
   ACCENT_WITH_BLACK_TEXT = 'accent_with_black_text',
   OUTLINE = 'outline',
   OUTLINE_ACCENT = 'outline_accent',
+  OUTLINE_ALERT = 'outline_alert',
   GREY = 'grey',
 }
 
@@ -90,7 +91,7 @@ export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
           closePopup={closeConfirm}
           {...(alertPopupProps ?? {})}
           confirmText={alertPopupProps?.confirmText || 'Подтвердите действие'}
-          onPrimaryButtonClick={onClick}
+          onCancelButtonClick={onClick}
           isActive={isConfirmOpen}
         />
       )}
