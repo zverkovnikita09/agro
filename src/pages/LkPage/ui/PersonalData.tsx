@@ -1,19 +1,34 @@
-import { CardContainer } from '@shared/ui/CardContainer'
+import {CardContainer} from '@shared/ui/CardContainer'
 import styles from './LkPage.module.scss'
-import { ApplicationIcons, ApplicationProperty } from '@shared/ui/ApplicationProperty'
-import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem'
-import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text'
-import { UserInfo } from '@entities/User'
+import {ApplicationIcons, ApplicationProperty} from '@shared/ui/ApplicationProperty'
+import {ApplicationInfoItem} from '@shared/ui/ApplicationInfoItem'
+import {Text, TextColor, TextSize, TextWeight} from '@shared/ui/Text'
+import {UserInfo} from '@entities/User'
+import {InfoBlock, InfoBlockIconColor, InfoBlockIcons} from "@shared/ui/InfoBlock";
+import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
 
 interface PersonalData {
   userInfo?: UserInfo
 }
 
 export const PersonalData = ({ userInfo }: PersonalData) => {
-  if (!userInfo) return (
-    <div className={styles.noInfoWrapper}>
-      Профиль то заполни еблан
-    </div>
+  if (!userInfo?.type) return (
+    <InfoBlock
+      icon={InfoBlockIcons.EDIT}
+      iconSize={46}
+      iconColor={InfoBlockIconColor.GREY}
+      titleText={'Профиль не заполнен'}
+      additionalText={'Заполните личные данные профиля'}
+      className={styles.noInfoWrapper}
+    >
+      <Button
+        className={styles.infoButton}
+        size={ButtonSize.SM}
+        theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+      >
+        Заполнить профиль
+      </Button>
+    </InfoBlock>
   )
 
   return (
