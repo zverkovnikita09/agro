@@ -59,7 +59,7 @@ export const PersonalData = ({ userInfo }: PersonalData) => {
           </ApplicationInfoItem>
         </div>
       </CardContainer>
-      {/* <CardContainer titleName='Документы'>
+      <CardContainer titleName='Документы'>
         <div className={styles.documents}>
           <a href="">
             <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
@@ -97,7 +97,7 @@ export const PersonalData = ({ userInfo }: PersonalData) => {
             </ApplicationProperty>
           </a>
         </div>
-      </CardContainer> */}
+      </CardContainer>
       <CardContainer titleName='Информация'>
         <div className={styles.information}>
           <ApplicationInfoItem title='Юридический адрес'>
