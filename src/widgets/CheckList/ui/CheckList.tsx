@@ -2,6 +2,8 @@ import cn from 'classnames';
 import styles from './CheckList.module.scss'
 import { Tab, TabPanel, Tabs } from "@shared/ui/Tabs";
 import { ApplicationsList } from "@widgets/ApplicationsList";
+import { useSelector } from 'react-redux';
+import { Role, UserSelectors } from '@entities/User';
 
 
 interface CheckListProps {
@@ -10,6 +12,14 @@ interface CheckListProps {
 
 export const CheckList = (props: CheckListProps) => {
   const { className } = props;
+
+  const userRole = useSelector(UserSelectors.selectUserRole);
+
+  if (userRole === Role.LOGIST) return (
+    <div className={cn(styles.checkList, className, styles.logist)}>
+      <ApplicationsList />
+    </div>
+  )
 
   return (
     <div className={cn(styles.checkList, className)}>

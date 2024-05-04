@@ -45,7 +45,7 @@ export interface sendDataParams<T> {
   method?: string
   params?: Record<string, string | number | undefined>
   defaultErrorMessage?: string
-  type?: 'FormData' | 'JSON'
+  type?: 'FormData' | 'JSON' | "x-www-form-urlencoded"
 }
 
 export const sendData = async <DataType extends {}>
@@ -78,6 +78,23 @@ export const sendData = async <DataType extends {}>
 
   if (type === 'JSON') {
     dataToSend = JSON.stringify(data)
+  }
+
+  if (type === "x-www-form-urlencoded") {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (typeof value === "undefined" || value === null || value === "") return
+      if (Array.isArray(value)) {
+        formatArrayToFormData(key, value).forEach(({ name: itemKey, value: itemValue, }) => {
+          searchParams.append(itemKey, String(itemValue))
+        })
+        return
+      }
+      searchParams.append(key, String(value))
+
+      dataToSend = searchParams;
+    })
   }
 
   const queryParams = JSON.stringify(params) === '{}' ? '' : '?' + generateUrlParams(params);

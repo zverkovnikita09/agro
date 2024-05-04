@@ -1,11 +1,13 @@
-import {CardContainer} from '@shared/ui/CardContainer'
+import { CardContainer } from '@shared/ui/CardContainer'
 import styles from './LkPage.module.scss'
-import {ApplicationIcons, ApplicationProperty} from '@shared/ui/ApplicationProperty'
-import {ApplicationInfoItem} from '@shared/ui/ApplicationInfoItem'
-import {Text, TextColor, TextSize, TextWeight} from '@shared/ui/Text'
-import {UserInfo} from '@entities/User'
-import {InfoBlock, InfoBlockIconColor, InfoBlockIcons} from "@shared/ui/InfoBlock";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
+import { ApplicationIcons, ApplicationProperty } from '@shared/ui/ApplicationProperty'
+import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem'
+import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text'
+import { UserInfo } from '@entities/User'
+import { InfoBlock, InfoBlockIconColor, InfoBlockIcons } from "@shared/ui/InfoBlock";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { Link } from 'react-router-dom'
+import { RouterPaths } from '@src/app/router'
 
 interface PersonalData {
   userInfo?: UserInfo
@@ -25,6 +27,8 @@ export const PersonalData = ({ userInfo }: PersonalData) => {
         className={styles.infoButton}
         size={ButtonSize.SM}
         theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+        as={Link}
+        to={RouterPaths.LK_EDIT}
       >
         Заполнить профиль
       </Button>
@@ -35,27 +39,27 @@ export const PersonalData = ({ userInfo }: PersonalData) => {
     <div className={styles.personalData}>
       <CardContainer titleName='Личные данные'>
         <div className={styles.passportData}>
-          <ApplicationInfoItem title='Серия паспорта'>
-            1234
-          </ApplicationInfoItem>
+          {<ApplicationInfoItem title='Серия паспорта'>
+            {userInfo.series}
+          </ApplicationInfoItem>}
           <ApplicationInfoItem title='Номер паспорта'>
-            345768
+            {userInfo.number}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='Код подразделения'>
-            613-012
+            {userInfo.department_code}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='Дата выдачи'>
-            28.09.2009
+            {userInfo.issue_date_at}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='Кем выдан'>
-            ГУ МВД РОССИИ ПО РОСТОВСКОЙ ОБЛАСТИ
+            {userInfo.department}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='СНИЛС'>
-            123456445643
+            {userInfo.snils}
           </ApplicationInfoItem>
         </div>
       </CardContainer>
-      <CardContainer titleName='Документы'>
+      {/* <CardContainer titleName='Документы'>
         <div className={styles.documents}>
           <a href="">
             <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
@@ -93,18 +97,18 @@ export const PersonalData = ({ userInfo }: PersonalData) => {
             </ApplicationProperty>
           </a>
         </div>
-      </CardContainer>
+      </CardContainer> */}
       <CardContainer titleName='Информация'>
         <div className={styles.information}>
-          <ApplicationInfoItem title='Серия паспорта'>
-            1234
+          <ApplicationInfoItem title='Юридический адрес'>
+            {userInfo.juridical_address}
           </ApplicationInfoItem>
-          <ApplicationInfoItem title='Номер паспорта'>
-            345768
+          <ApplicationInfoItem title='Фактический адрес'>
+            {userInfo.office_address}
           </ApplicationInfoItem>
           <div className={styles.note}>
             <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Система налогооблажения</Text>
-            <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>УСН (6%)</Text>
+            <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{userInfo.tax_system}</Text>
           </div>
         </div>
       </CardContainer>

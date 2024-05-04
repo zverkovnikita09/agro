@@ -12,9 +12,10 @@ import dayjs from "dayjs";
 
 interface StepOneProps {
   onCancel: () => void
+  onDeleteProfile: () => void
 }
 
-export const StepOne = ({ onCancel }: StepOneProps) => {
+export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
   const { control, watch, setValue } = useContext(EditProfileContext);
 
   const [searchCompany, setSearchCompany] = useState('');
@@ -41,6 +42,7 @@ export const StepOne = ({ onCancel }: StepOneProps) => {
       setValue("inn", companyOptions.find(item => item.value === company)?.data?.inn);
       setValue("ogrn", companyOptions.find(item => item.value === company)?.data?.ogrn);
       setValue("okved", companyOptions.find(item => item.value === company)?.data?.okved);
+      setValue("type", companyOptions.find(item => item.value === company)?.data?.type === "LEGAL" ? "ООО" : "ИП");
     }
   }, [company])
 
@@ -266,7 +268,7 @@ export const StepOne = ({ onCancel }: StepOneProps) => {
         </div>
       </div>
       <div className={styles.buttonsContainer}>
-        <Button className={styles.additionalButton}>
+        <Button className={styles.additionalButton} onClick={onDeleteProfile}>
           Удалить профиль
         </Button>
         <Button

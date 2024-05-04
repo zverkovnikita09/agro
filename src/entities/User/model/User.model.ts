@@ -26,7 +26,7 @@ export type UserInfo = MainOrganisationInfo & PersonalData
 export interface User {
   id: string
   phone_number: string,
-  userInfo?: UserInfo
+  userinfo?: UserInfo
   roles?: [
     { slug: Role }
   ]
