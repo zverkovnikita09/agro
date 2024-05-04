@@ -1,11 +1,15 @@
+@import "@src/app/styles/mediaQueries";
+@import "@src/app/styles/mixins";
+
 .userPhoto {
   display: block;
   position: relative;
-  width: 156px;
-  height: 156px;
+  @include adaptiveValue("width", 156, 76, 1440, 375);
+  @include adaptiveValue("height", 156, 76, 1440, 375);
   border-radius: 50%;
   color: var(--grey-text-color);
   transition: 0.2s;
+  flex-shrink: 0;
 }
 
 .withBackground {
