@@ -17,7 +17,7 @@ interface FormStepOneProps {
 
 export const FormStepOne = (props: FormStepOneProps) => {
   const { onCancel } = props;
-  const { control, watch, setValue, handleCoordsChange } = useContext(NewApplicationContext);
+  const { control, watch, setValue, handleCoordsChange, isDirty } = useContext(NewApplicationContext);
 
   const [searchPlace, setSearchPlace] = useState('');
   const [placeOptions, setPlaceOptions] = useState<any[]>([]);
@@ -191,6 +191,13 @@ export const FormStepOne = (props: FormStepOneProps) => {
           size={ButtonSize.S}
           className={styles.button}
           onClick={onCancel}
+          withConfirm={isDirty}
+          alertPopupProps={{
+            confirmText: "Внимание",
+            additionalText: "Если вы закроете заявку, введенные вами данные не сохранятся",
+            cancelButtonText: 'Вернуться',
+            confirmButtonText: 'Закрыть',
+          }}
         >
           Отмена
         </Button>

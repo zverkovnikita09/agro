@@ -12,7 +12,7 @@ import { MainLayoutContext } from '@shared/ui/MainLayout';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CloseButton } from '@shared/ui/CloseButton';
 import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
-import { Control, UseFormResetField, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
+import { Control, UseFormGetFieldState, UseFormResetField, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
 import { ApplicationModel, Coord } from '@entities/Application/model/application.model';
 import { Stepper } from "@shared/ui/Stepper";
 import { Step } from "@shared/ui/Stepper/Step";
@@ -36,6 +36,7 @@ interface NewApplicationContextProps {
   resetField: UseFormResetField<ApplicationModel>
   coords?: Partial<Coords>;
   handleCoordsChange?: (value: Coord, name: keyof Coords) => void
+  isDirty?: boolean
 }
 
 export const NewApplicationContext = createContext<NewApplicationContextProps>({} as NewApplicationContextProps)
@@ -60,16 +61,16 @@ export const NewApplication = (props: NewApplicationProps) => {
 
   const dispatch = useDispatch();
 
-  const closeForm = () => {
-    if (state?.allowPrevUrl) navigate(-1)
-    else navigate(RouterPaths.MAIN)
-  }
-
-  const { handleSubmit, watch, control, setValue, resetField } = useForm<ApplicationModel>({
+  const { handleSubmit, watch, control, setValue, resetField, formState: { isDirty } } = useForm<ApplicationModel>({
     mode: "onBlur", defaultValues: {
       unit_of_measurement_for_cargo_shortage_rate: "%",
     }
   });
+
+  const closeForm = () => {
+    if (state?.allowPrevUrl) navigate(-1)
+    else navigate(RouterPaths.MAIN)
+  }
 
   const changeStep = (number: number) => () => {
     if (formRef.current) {
@@ -130,7 +131,17 @@ export const NewApplication = (props: NewApplicationProps) => {
   return (
     <div className={cn(styles.newApplication, className)}>
       <CardContainer className={styles.container}>
-        <CloseButton onClick={closeForm} className={styles.closeBtn} />
+        <CloseButton
+          onClick={closeForm}
+          className={styles.closeBtn}
+          withConfirm={isDirty}
+          alertPopupProps={{
+            confirmText: "Внимание",
+            additionalText: "Если вы закроете заявку, введенные вами данные не сохранятся",
+            cancelButtonText: 'Вернуться',
+            confirmButtonText: 'Закрыть',
+          }}
+        />
         <Title size={TitleSize.S}>Новая заявка</Title>
         {formStep <= 4 &&
           <Stepper className={styles.stepper} value={formStep}>
@@ -140,7 +151,7 @@ export const NewApplication = (props: NewApplicationProps) => {
             <Step value={4} />
           </Stepper>
         }
-        <NewApplicationContext.Provider value={{ watch, control, setValue, resetField, coords, handleCoordsChange }}>
+        <NewApplicationContext.Provider value={{ watch, control, setValue, resetField, coords, handleCoordsChange, isDirty }}>
           <form ref={formRef} className={styles.form} onSubmit={handleSubmit(onSubmit())}>
             {FormContent()}
           </form>

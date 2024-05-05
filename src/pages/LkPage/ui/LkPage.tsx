@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import styles from './LkPage.module.scss'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Title, TitleSize } from '@shared/ui/Title';
 import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text';
 import { CardContainer } from '@shared/ui/CardContainer';
@@ -9,11 +9,11 @@ import { Tab, TabPanel, Tabs } from '@shared/ui/Tabs';
 import { PersonalData } from './PersonalData';
 import { UserPhoto } from '@shared/ui/UserPhoto';
 import { RouterPaths } from '@src/app/router';
-import { useGetData } from '@shared/hook/useGetData';
 import { LoadingBlock } from '@shared/ui/LoadingBlock';
-import { Role, UserInfo } from '@entities/User';
+import { UserSelectors } from '@entities/User';
 import { useContext, useLayoutEffect } from 'react';
 import { MainLayoutContext } from '@shared/ui/MainLayout';
+import { useSelector } from 'react-redux';
 
 interface LkPageProps {
   className?: string;
@@ -21,15 +21,6 @@ interface LkPageProps {
 
 export const LkPage = (props: LkPageProps) => {
   const { className } = props;
-
-  const { isLoading, isSuccess, data } = useGetData<{
-    user: {
-      phone_number: string
-      userinfo: UserInfo, roles?: [
-        { slug: Role }
-      ]
-    }
-  }>({ url: "/api/v1/user", withAuthToken: true, dataFlag: true })
 
   const { disableFilters } = useContext(MainLayoutContext)
 
@@ -39,13 +30,18 @@ export const LkPage = (props: LkPageProps) => {
     return () => disableFilters(false)
   }, [])
 
-  const { user } = data || {};
+  const isLoading = useSelector(UserSelectors.selectIsUserDataLoading)
+  const isError = useSelector(UserSelectors.selectIsUserDataError)
 
-  if (!isSuccess) return (
+  const user = useSelector(UserSelectors.selectUserData)
+
+  if (isLoading) return (
     <CardContainer className={cn(styles.lkPage, className)}>
       <LoadingBlock />
     </CardContainer>
   )
+
+  if (isError) return <Navigate to={RouterPaths.LOGIN} replace />
 
   return (
     <CardContainer className={cn(styles.lkPage, className)}>
@@ -79,7 +75,7 @@ export const LkPage = (props: LkPageProps) => {
           className={styles.editButton}
           to={RouterPaths.LK_EDIT}
         >
-          {user?.userinfo.type ? 'Редактировать профиль' : 'Заполнить профиль'}
+          {user?.userinfo?.type ? 'Редактировать профиль' : 'Заполнить профиль'}
         </Button>
       </div>
       <Tabs>

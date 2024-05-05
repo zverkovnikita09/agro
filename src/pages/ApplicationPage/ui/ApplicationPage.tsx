@@ -36,9 +36,9 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   const { id } = useParams();
 
-  const { data: applicationInfo, isError, /* isLoading: isApplicationLoading, */ isSuccess: isApplicationSuccess } = useGetData<ApplicationModel>({ url: `/api/v1/orders/${id}`, dataFlag: true, withAuthToken: true })
+  const { data: applicationInfo, isSuccess: isApplicationSuccess } = useGetData<ApplicationModel>({ url: `/api/v1/orders/${id}`, dataFlag: true, withAuthToken: true })
 
-  const { data: userApplications, /* isLoading: isUserApplicationsLoading, */ isSuccess: isUserApplicationsSuccess } = useGetData<ApplicationModel[]>({ url: '/api/v1/user-orders', dataFlag: true, withAuthToken: true })
+  const { data: userApplications, isSuccess: isUserApplicationsSuccess } = useGetData<ApplicationModel[]>({ url: '/api/v1/user-orders', dataFlag: true, withAuthToken: true })
 
   const { disableFilters } = useContext(MainLayoutContext)
 

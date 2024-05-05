@@ -11,13 +11,12 @@ import { Title, TitleSize } from '@shared/ui/Title';
 import { UserPhoto } from '@shared/ui/UserPhoto';
 import { Text, TextColor, TextSize } from '@shared/ui/Text';
 import { StepOne } from './StepOne';
-import { Role, UserInfo } from '@entities/User';
+import { Role, UserInfo, UserSelectors, fetchUserData } from '@entities/User';
 import { StepTwo } from './StepTwo';
 import { useSendData } from '@shared/hook/useSendData';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
-import { useGetData } from '@shared/hook/useGetData';
-import { LoadingBlock } from '@shared/ui/LoadingBlock';
+import { useAppDispatch } from '@src/app/store/model/hook';
 
 interface EditProfileContextProps {
   watch: UseFormWatch<UserInfo>
@@ -32,31 +31,33 @@ export const EditProfile = () => {
   const [formStep, setFormStep] = useState(1);
   const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
-  const { state } = useLocation();
+  /*   const { state } = useLocation(); */
 
   const { openOverlay, closeOverlay } = useContext(MainLayoutContext);
 
-  const { isSuccess: isGetUserDataSuccess, data: userData } = useGetData<{
-    user: {
-      phone_number: string
-      userinfo: UserInfo, roles?: [
-        { slug: Role }
-      ]
-    }
-  }>({ url: "/api/v1/user", withAuthToken: true, dataFlag: true })
+  const userInfo = useSelector(UserSelectors.selectUserData)
 
   const { handleSubmit, watch, control, setValue, resetField } = useForm<UserInfo>({
     mode: "onBlur",
+    defaultValues: {
+      department: userInfo?.userinfo?.department ?? "",
+      department_code: userInfo?.userinfo?.department_code ?? "",
+      inn: userInfo?.userinfo?.inn ?? undefined,
+      issue_date_at: userInfo?.userinfo?.issue_date_at ?? "",
+      juridical_address: userInfo?.userinfo?.juridical_address ?? "",
+      name: userInfo?.userinfo?.name ?? "",
+      number: userInfo?.userinfo?.number,
+      office_address: userInfo?.userinfo?.office_address ?? "",
+      ogrn: userInfo?.userinfo?.ogrn,
+      okved: userInfo?.userinfo?.okved,
+      series: userInfo?.userinfo?.series,
+      snils: userInfo?.userinfo?.snils ?? "",
+      tax_system: userInfo?.userinfo?.tax_system ?? "",
+      type: userInfo?.userinfo?.type
+    }
   });
 
-  useEffect(() => {
-    if (userData?.user?.userinfo?.type) {
-      Object.entries(userData.user.userinfo)
-        .forEach(([key, value]) => setValue(key as keyof UserInfo, value))
-    }
-  }, [userData])
-
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { handleSendData, isSending } = useSendData(
     {
@@ -67,6 +68,20 @@ export const EditProfile = () => {
       onSuccess: () => {
         dispatch(addNotification({ message: 'Данные профиля успешно изменены', type: NotificationType.Success }));
         navigate(RouterPaths.LK)
+        dispatch(fetchUserData())
+      }
+    }
+  )
+
+  const { handleSendData: deleteProfile } = useSendData(
+    {
+      url: "/api/v1/userprofile/delete",
+      withAuthToken: true,
+      method: "PUT",
+      onSuccess: () => {
+        dispatch(addNotification({ message: 'Данные профиля успешно удалены', type: NotificationType.Success }));
+        navigate(RouterPaths.LK)
+        dispatch(fetchUserData())
       }
     }
   )
@@ -76,23 +91,7 @@ export const EditProfile = () => {
   }
 
   const onDeleteProfile = () => {
-    handleSendData({
-      series: null,
-      number: null,
-      issue_date: null,
-      department: null,
-      snils: null,
-      issue_date_at: null,
-      juridical_address: null,
-      office_address: null,
-      tax_system: null,
-      department_code: null,
-      type: null,
-      inn: null,
-      ogrn: null,
-      name: null,
-      okved: null,
-    })
+    deleteProfile({})
   }
 
   const FormContent = () => {
@@ -128,11 +127,6 @@ export const EditProfile = () => {
 
   return (
     <>
-      {!isGetUserDataSuccess && (
-        <div className={styles.loading}>
-          <LoadingBlock />
-        </div>
-      )}
       <div className={styles.editProfile}>
         <CardContainer className={styles.container}>
           <CloseButton onClick={closeForm} className={styles.closeBtn} />

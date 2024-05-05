@@ -2,17 +2,16 @@ import cn from 'classnames';
 import styles from './RegistrationPage.module.scss'
 import Logo from '@shared/images/logo.svg'
 import { RegistrationForm } from '@features/RegistrationForm';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocalStorage } from '@shared/hook/useLocalStorage';
 import { CodeValidationForm } from '@features/CodeValidationForm';
 import { LSKeys } from "@shared/lib/globalVariables";
-import { useDispatch, useSelector } from "react-redux";
-import { UserSelectors } from "@entities/User";
-import { useGetData } from "@shared/hook/useGetData";
-import { setUser } from "@entities/User";
+import { useSelector } from "react-redux";
+import { UserSelectors, fetchUserData } from "@entities/User";
 import { Navigate } from "react-router-dom";
 import { RouterPaths } from "@src/app/router";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
+import { useAppDispatch } from '@src/app/store/model/hook';
 
 interface RegistrationPageProps {
   className?: string;
@@ -23,17 +22,16 @@ export const RegistrationPage = (props: RegistrationPageProps) => {
   const [phoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
   const [step, setStep] = useState(phoneNumber ? 2 : 1)
 
-  const user = useSelector(UserSelectors.selectUserData);
   const token = useSelector(UserSelectors.selectToken);
-  const dispatch = useDispatch();
 
-  const { isLoading } = useGetData({
-    url: '/api/v1/user',
-    withAuthToken: true,
-    isEnabled: !!token,
-    dataFlag: true,
-    onSuccess: ({user}) => dispatch(setUser(user)),
-  });
+  const dispatch = useAppDispatch();
+
+  const isLoading = useSelector(UserSelectors.selectIsUserDataLoading)
+  const user = useSelector(UserSelectors.selectUserData)
+
+  useEffect(() => {
+    if (token) dispatch(fetchUserData())
+  }, [dispatch])
 
   if (isLoading) return <LoadingBlock />
 

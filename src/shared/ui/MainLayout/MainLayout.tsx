@@ -4,20 +4,21 @@ import { Navigate, useLocation, useNavigate, useOutlet } from "react-router-dom"
 import { Header } from "@widgets/Header";
 import { Sidebar } from "@widgets/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser, UserSelectors } from "@entities/User";
+import { UserSelectors, fetchUserData } from "@entities/User";
 import { RouterPaths } from "@src/app/router";
 import { useGetData } from "@shared/hook/useGetData";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
-import { createContext, useLayoutEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { Filters } from "@entities/Filters";
 import { YandexMap } from "@widgets/YandexMap";
 import { Notifications } from '@entities/Notifications';
 import { SortBy } from "@entities/SortBy";
 import { useWindowSize } from "@shared/hook/useWindowSize";
-import { isMobile, isMobileSmall, isTablet } from "@shared/lib/deviceSizeCheck";
+import { isMobile, isTablet } from "@shared/lib/deviceSizeCheck";
 import { HeaderButtonsState } from "@shared/ui/MainLayout/model/mainLayout.models";
 import { Input } from "@shared/ui/Input";
 import { Button, ButtonSize, ButtonTheme } from '../Button';
+import { useAppDispatch } from '@src/app/store/model/hook';
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
@@ -62,23 +63,23 @@ export const MainLayout = () => {
   }
 
   const token = useSelector(UserSelectors.selectToken);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
-  const { isLoading } = useGetData({
-    url: '/api/v1/user',
-    withAuthToken: true,
-    isEnabled: !!token,
-    dataFlag: true,
-    onSuccess: ({ user }) => {
-      dispatch(setUser(user))
-    },
-    onError: () => navigate(RouterPaths.LOGIN),
-  });
+  const isLoading = useSelector(UserSelectors.selectIsUserDataLoading)
+  const isError = useSelector(UserSelectors.selectIsUserDataError)
 
-  if (!token) return <Navigate to={RouterPaths.LOGIN} replace={true} />
+  const user = useSelector(UserSelectors.selectUserData)
 
-  if (isLoading) return <LoadingBlock />
+  useEffect(() => {
+    dispatch(fetchUserData())
+  }, [dispatch])
+
+  if (!token) return <Navigate to={RouterPaths.LOGIN} replace />
+
+  if (!user && isLoading) return <LoadingBlock />
+
+  if (isError) return <Navigate to={RouterPaths.LOGIN} replace />
 
   return (
     <MainLayoutContext.Provider value={{ openOverlay, closeOverlay, disableFilters }}>

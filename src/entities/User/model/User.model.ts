@@ -10,10 +10,9 @@ export interface MainOrganisationInfo {
 export interface PersonalData {
   series: number
   number: number
-  issue_date: string
   department: string
   snils: string
-  issue_date_at: number
+  issue_date_at: string
   //documents
   juridical_address: string
   office_address: string
@@ -33,8 +32,10 @@ export interface User {
 }
 
 export interface UserState {
-  token?: Nullable<string>;
+  token?: Nullable<string>
   user?: Nullable<User>
+  isUserDataLoading: boolean
+  isUserDataError: boolean
 }
 
 export enum Role {

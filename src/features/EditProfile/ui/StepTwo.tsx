@@ -198,7 +198,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
       {/* </div> */}
       <div className={styles.buttonsContainer}>
         <Button className={styles.additionalButton} onClick={onDeleteProfile}>
-          Удалить профиль
+          Очистить данные профиля
         </Button>
         <Button
           theme={ButtonTheme.OUTLINE}

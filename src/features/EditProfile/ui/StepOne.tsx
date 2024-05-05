@@ -5,10 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { EditProfileContext } from "./EditProfile";
 import { Input } from "@shared/ui/Input";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
-import { Calendar } from "@shared/ui/Calendar";
 import { Select } from "@shared/ui/Select";
 import { useSearchByDadata } from "@shared/hook/useSearchByDadata";
-import dayjs from "dayjs";
 
 interface StepOneProps {
   onCancel: () => void
@@ -216,7 +214,22 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
             name="issue_date_at"
             control={control}
             rules={{
-              required: "Поле обязательно к заполнению"
+              required: "Поле обязательно к заполнению",
+              pattern: {
+                value: /^[^_]*$/,
+                message: 'Поле обязательно к заполнению'
+              },
+              validate: (value) => {
+                if (new Date(value) > new Date()) return 'Дата выдачи не может быть позже текущей даты'
+                const date = value?.split(".");
+
+                const [day, month, year] = date;
+
+                if (Number(day) > 31) return 'Неверный формат даты';
+                if (Number(month) < 1 || Number(month) > 12) return 'Неверный формат даты';
+                if (Number(year) > new Date().getFullYear() || Number(year) < 1800) return 'Неверный формат даты';
+                return true
+              }
             }}
             render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
@@ -225,7 +238,8 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
                 onChange={onChange}
                 onBlur={onBlur}
                 error={errors[name]?.message as string}
-                mask="99.99.9999"
+                mask="D9.MN.Y999"
+                formatChars={{ 'D': '[0-3]', 'M': '[0-1]', 'N': '[0-2]', 'Y': '[1-2]', '9': '[0-9]' }}
                 type="tel"
               />
             )}
@@ -275,13 +289,13 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
           className={styles.additionalButton}
           withConfirm
           alertPopupProps={{
-            confirmText: 'Вы действительнохотите удалить свой профиль?',
+            confirmText: 'Вы действительно хотите удалить свой профиль?',
             additionalText: 'Внимание! В случае удаления кабинета данные удаляться безвозвратно',
             cancelButtonText: 'Вернуться',
             confirmButtonText: 'Удалить',
           }}
           onClick={onDeleteProfile}>
-          Удалить профиль
+          Очистить данные профиля
         </Button>
         <Button
           theme={ButtonTheme.OUTLINE}
