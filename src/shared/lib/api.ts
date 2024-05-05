@@ -71,6 +71,10 @@ export const sendData = async <DataType extends {}>
         })
         return
       }
+      if (value instanceof Blob){
+        formData.append(key, value);
+        return;
+      }
       formData.append(key, String(value))
     })
     dataToSend = formData;

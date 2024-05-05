@@ -2,9 +2,9 @@ import { Nullable } from "@shared/lib/globalTypes";
 
 export interface MainOrganisationInfo {
   inn: number
-  ogrn: number
+  ogrn: string
   name: string
-  okved: number
+  okved: string
 }
 
 export interface PersonalData {
@@ -22,10 +22,19 @@ export interface PersonalData {
 }
 
 export type UserInfo = MainOrganisationInfo & PersonalData
+
+export interface UserFiles {
+  fileType: {
+    title: string
+  }
+  id: string,
+  path_url: string
+}
 export interface User {
   id: string
   phone_number: string,
   userinfo?: UserInfo
+  files?: UserFiles[]
   roles?: [
     { slug: Role }
   ]

@@ -1,22 +1,23 @@
 import styles from './EditProfile.module.scss'
-import { Control, UseFormResetField, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
-import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { MainLayoutContext } from '@shared/ui/MainLayout';
-import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { RouterPaths } from '@src/app/router';
-import { CardContainer } from '@shared/ui/CardContainer';
-import { CloseButton } from '@shared/ui/CloseButton';
-import { Title, TitleSize } from '@shared/ui/Title';
-import { UserPhoto } from '@shared/ui/UserPhoto';
-import { Text, TextColor, TextSize } from '@shared/ui/Text';
-import { StepOne } from './StepOne';
-import { Role, UserInfo, UserSelectors, fetchUserData } from '@entities/User';
-import { StepTwo } from './StepTwo';
-import { useSendData } from '@shared/hook/useSendData';
-import { useDispatch, useSelector } from 'react-redux';
-import { NotificationType, addNotification } from '@entities/Notifications';
-import { useAppDispatch } from '@src/app/store/model/hook';
+import {Control, useForm, UseFormResetField, UseFormSetValue, UseFormWatch} from 'react-hook-form';
+import {createContext, useContext, useLayoutEffect, useRef, useState} from 'react';
+import {MainLayoutContext} from '@shared/ui/MainLayout';
+import {useDocumentEvent} from '@shared/hook/useDocumentEvent';
+import {useNavigate} from 'react-router-dom';
+import {RouterPaths} from '@src/app/router';
+import {CardContainer} from '@shared/ui/CardContainer';
+import {CloseButton} from '@shared/ui/CloseButton';
+import {Title, TitleSize} from '@shared/ui/Title';
+import {UserPhoto} from '@shared/ui/UserPhoto';
+import {Text, TextColor, TextSize} from '@shared/ui/Text';
+import {StepOne} from './StepOne';
+import {fetchUserData, UserInfo, UserSelectors} from '@entities/User';
+import {StepTwo} from './StepTwo';
+import {useSendData} from '@shared/hook/useSendData';
+import {useSelector} from 'react-redux';
+import {addNotification, NotificationType} from '@entities/Notifications';
+import {useAppDispatch} from '@src/app/store/model/hook';
+import {FileInputPopup} from "@shared/ui/FileInputPopup";
 
 interface EditProfileContextProps {
   watch: UseFormWatch<UserInfo>
@@ -28,7 +29,7 @@ interface EditProfileContextProps {
 export const EditProfileContext = createContext<EditProfileContextProps>({} as EditProfileContextProps)
 
 export const EditProfile = () => {
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(2);
   const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
   /*   const { state } = useLocation(); */
@@ -49,7 +50,7 @@ export const EditProfile = () => {
       number: userInfo?.userinfo?.number,
       office_address: userInfo?.userinfo?.office_address ?? "",
       ogrn: userInfo?.userinfo?.ogrn,
-      okved: userInfo?.userinfo?.okved,
+      okved: userInfo?.userinfo?.okved ?? "",
       series: userInfo?.userinfo?.series,
       snils: userInfo?.userinfo?.snils ?? "",
       tax_system: userInfo?.userinfo?.tax_system ?? "",
@@ -57,7 +58,19 @@ export const EditProfile = () => {
     }
   });
 
+  const [avatar, setAvatar] = useState<File>();
+
+  const initialAvatar = userInfo?.files?.find((file) => file.fileType.title === 'Аватар')?.path_url ?? '';
+
   const dispatch = useAppDispatch()
+
+  const { handleSendData: changeAvatar } = useSendData(
+    {
+      url: `/api/v1/userprofile/avatar/${initialAvatar ? 'update' : 'create'}`,
+      withAuthToken: true,
+    }
+  )
+
 
   const { handleSendData, isSending } = useSendData(
     {
@@ -65,7 +78,9 @@ export const EditProfile = () => {
       withAuthToken: true,
       method: "PUT",
       type: "x-www-form-urlencoded",
-      onSuccess: () => {
+      onSuccess: async () => {
+        if (avatar) await changeAvatar({avatar})
+
         dispatch(addNotification({ message: 'Данные профиля успешно изменены', type: NotificationType.Success }));
         navigate(RouterPaths.LK)
         dispatch(fetchUserData())
@@ -131,7 +146,12 @@ export const EditProfile = () => {
         <CardContainer className={styles.container}>
           <CloseButton onClick={closeForm} className={styles.closeBtn} />
           <div className={styles.heading}>
-            <UserPhoto editable />
+            <UserPhoto
+              editable
+              image={avatar || initialAvatar}
+              setImage={setAvatar}
+              setError={(message)=>dispatch(addNotification({message,type: NotificationType.Error}))}
+            />
             <div className={styles.headingInfo}>
               <Title size={TitleSize.S}>Личный кабинет</Title>
               <Text color={TextColor.GREY} size={TextSize.XL}>Заполните свои личные данные</Text>
