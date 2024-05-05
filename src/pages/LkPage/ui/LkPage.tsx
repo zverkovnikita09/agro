@@ -46,7 +46,7 @@ export const LkPage = (props: LkPageProps) => {
   return (
     <CardContainer className={cn(styles.lkPage, className)}>
       <div className={styles.heading}>
-        <UserPhoto />
+        <UserPhoto image={user?.files?.find((file) => file.fileType.title === 'Аватар')?.path_url ?? ''} />
         <div className={styles.headingInfo}>
           <Title
             as='h3'

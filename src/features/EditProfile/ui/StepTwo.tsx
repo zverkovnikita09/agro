@@ -7,6 +7,8 @@ import { Input } from "@shared/ui/Input";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { Calendar } from "@shared/ui/Calendar";
 import { Select } from "@shared/ui/Select";
+import {FileInputPopup} from "@shared/ui/FileInputPopup";
+import {UploadImageButton} from "@shared/ui/UploadImageButton";
 
 interface StepTwoProps {
   onPrev: () => void
@@ -65,6 +67,11 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           )}
         />
       </div>
+      <FileInputPopup title={'Реквизиты'}>
+        {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => {}}>
+          Реквизиты
+        </UploadImageButton>}
+      </FileInputPopup>
       {/* <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}

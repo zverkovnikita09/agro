@@ -38,8 +38,8 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
   useEffect(() => {
     if (company && companyOptions.length) {
       setValue("inn", companyOptions.find(item => item.value === company)?.data?.inn);
-      setValue("ogrn", companyOptions.find(item => item.value === company)?.data?.ogrn);
-      setValue("okved", companyOptions.find(item => item.value === company)?.data?.okved);
+      setValue("ogrn", companyOptions.find(item => item.value === company)?.data?.ogrn ?? "");
+      setValue("okved", companyOptions.find(item => item.value === company)?.data?.okved ?? "");
       setValue("type", companyOptions.find(item => item.value === company)?.data?.type === "LEGAL" ? "ООО" : "ИП");
     }
   }, [company])
@@ -238,8 +238,8 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
                 onChange={onChange}
                 onBlur={onBlur}
                 error={errors[name]?.message as string}
-                mask="D9.MN.Y999"
-                formatChars={{ 'D': '[0-3]', 'M': '[0-1]', 'N': '[0-2]', 'Y': '[1-2]', '9': '[0-9]' }}
+                mask="D9.M9.Y999"
+                formatChars={{ 'D': '[0-3]', 'M': '[0-1]', 'Y': '[1-2]', '9': '[0-9]' }}
                 type="tel"
               />
             )}
