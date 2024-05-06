@@ -37,7 +37,6 @@ export const EditProfile = () => {
   const [formStep, setFormStep] = useState(1);
   const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
-  /*   const { state } = useLocation(); */
 
   const { openOverlay, closeOverlay } = useContext(MainLayoutContext);
 

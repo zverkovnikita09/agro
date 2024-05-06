@@ -95,7 +95,7 @@ export const Filters = (props: FiltersProps) => {
     closeFilters()
     dispatch(setFilters(data))
     setLSFilters(needToSaveFilters ? data : null)
-    needToSaveFilters && filteredValues.length && dispatch(addNotification({ message: `Фильтры сохранены`, type: NotificationType.Success }));
+    needToSaveFilters && dispatch(addNotification({ message: `Фильтры сохранены`, type: NotificationType.Success }));
   }
 
   const handleFiltersReset = () => {
