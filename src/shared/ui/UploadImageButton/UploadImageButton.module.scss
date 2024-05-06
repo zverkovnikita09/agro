@@ -15,6 +15,7 @@
   position: relative;
   width: 46px;
   height: 46px;
+  flex-shrink: 0;
   background-color: var(--special-grey-color2);
   border-radius: 12px;
   overflow: hidden;

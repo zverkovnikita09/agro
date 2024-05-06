@@ -89,11 +89,20 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           Документы
         </Text>
         <div className={styles.inputsRowWithGap}>
-          {/*  <FileInputPopup title={'Реквизиты'} setFile={handleFileChange()}>
-            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
+          <FileInputPopup
+            title={'Реквизиты'}
+            setFile={handleFileChange(fileTypes?.find(item => item.title === 'Реквизиты')?.id ?? "", 'Реквизиты')}
+            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
+          >
+            {(openPopup) =>
+              <UploadImageButton
+                handleOpenPopup={openPopup}
+                handleDeleteImage={handeleFileDelete("Реквизиты")}
+                hasImage={!!(files.find(item => item.title === 'Реквизиты'))}
+              >
               Реквизиты
             </UploadImageButton>}
-          </FileInputPopup> */}
+          </FileInputPopup>
           <FileInputPopup
             title={'ПСФЛ'}
             setFile={handleFileChange(fileTypes?.find(item => item.title === 'ПСФЛ')?.id ?? "", 'ПСФЛ')}

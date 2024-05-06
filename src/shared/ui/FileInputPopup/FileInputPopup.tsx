@@ -96,11 +96,18 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
       <Popup isActive={isPopupOpen} closePopup={togglePopup}>
         <CardContainer
           className={cn(style.fileInputPopup, { [style.isDrag]: isDrag })}
-          onDragStart={onDragStart}
           onDragOver={onDragStart}
-          onDragLeave={onDragLeave}
+
           onDrop={onDrop}
         >
+          {isDrag &&
+          <div
+            className={style.drag}
+            onDragLeave={onDragLeave}
+          >
+            Отпустите файл для загрузки
+          </div>
+          }
           <div className={style.heading}>
             <Title as='h4' size={TitleSize.S}>{title}</Title>
             <Text
@@ -125,9 +132,7 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
             </Text>
             <label htmlFor={id} className={style.label}>
               <input ref={inputRef} type="file" id={id} className='hiddenInput' multiple={false} onChange={handleInputChange} />
-              {/* <Button theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT} size={ButtonSize.S}> */}
               <Text weight={TextWeight.SEMI_BOLD}>Выберите файл</Text>
-              {/* </Button> */}
             </label>
           </div>
 
