@@ -34,7 +34,7 @@ interface EditProfileContextProps {
 export const EditProfileContext = createContext<EditProfileContextProps>({} as EditProfileContextProps)
 
 export const EditProfile = () => {
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(2);
   const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
 
@@ -150,7 +150,7 @@ export const EditProfile = () => {
 
   const onSubmit = () => {
     switch (formStep) {
-      case 1: return () => setFormStep(2);
+      case 1: return () => setFormStep(1);
       default: return onFormSend
     }
   }

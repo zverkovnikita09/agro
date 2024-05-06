@@ -16,6 +16,7 @@
   align-items: center;
   position: relative;
   overflow-y: hidden;
+  padding: 24px 0;
 
   @media (max-width: $mobile) {
     @include adaptiveValue("width", 700, 359, 768, 375);
@@ -25,6 +26,7 @@
 .heading {
   display: flex;
   width: 100%;
+  padding: 0 16px;
   gap: 24px;
 }
 
@@ -44,6 +46,7 @@
 .form {
   width: 100%;
   margin-top: 32px;
+  padding: 0 16px;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -77,10 +80,10 @@
 }
 
 .inputsRowWithGap {
-  display: flex;
   gap: 16px;
-  flex-wrap: wrap;
   justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
 }
 
 .inputBlock {
