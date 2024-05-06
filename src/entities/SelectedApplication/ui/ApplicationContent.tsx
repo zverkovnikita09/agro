@@ -12,6 +12,8 @@ import { useSendData } from '@shared/hook/useSendData';
 import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
 import { Role, UserSelectors } from '@entities/User';
+import {useContext} from "react";
+import {MainLayoutContext} from "@shared/ui/MainLayout";
 
 interface ApplicationContentProps {
   application: Partial<ApplicationModel>;
@@ -19,9 +21,12 @@ interface ApplicationContentProps {
 export const ApplicationContent = ({ application }: ApplicationContentProps) => {
   const dispatch = useDispatch();
 
+  const {setApplications} = useContext(MainLayoutContext);
+
   const { handleSendData, isSending, isSuccess } = useSendData({
     url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
+      setApplications(prev => prev.filter(item => item.id !== application.id));
     }
   })
 

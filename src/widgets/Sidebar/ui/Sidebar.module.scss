@@ -83,10 +83,15 @@
 
 .close{
   position: absolute;
-  top: 26px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
   padding: 6px;
   color: var(--text-color);
+  & svg{
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }
 
 .sidebar__menu {

@@ -74,6 +74,15 @@
 .outline_alert{
   border-color: var(--special-error);
   color: var(--special-error);
+
+  &:hover,
+  &:focus {
+    background-color: var(--special-error-hover);
+  }
+  &:active {
+    background-color: var(--special-error-hover);
+    border-color: var(--special-error-hover);
+  }
 }
 
 .grey {
