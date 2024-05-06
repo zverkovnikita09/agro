@@ -19,6 +19,7 @@ import { HeaderButtonsState } from "@shared/ui/MainLayout/model/mainLayout.model
 import { Input } from "@shared/ui/Input";
 import { Button, ButtonSize, ButtonTheme } from '../Button';
 import { useAppDispatch } from '@src/app/store/model/hook';
+import { SearchOnMap } from '@features/SearchOnMap';
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
@@ -106,22 +107,9 @@ export const MainLayout = () => {
             closeSorting={() => handleButtonsStateToggle("sortBy", false)}
           />
           {isMobile(windowSize) &&
-            <div className={cn(styles.searchWrapper, { [styles.searchOpen]: headerButtonsState.search })}>
-              <Input
-                wrapperClassName={styles.search}
-                className={styles.searchInput}
-                placeholder='Введите пункт погрузки'
-                autoComplete='off'
-                withSearchIcon
-              />
-              <Button
-                size={ButtonSize.S}
-                theme={ButtonTheme.GREY}
-                className={styles.searchSubmit}
-              >
-                Найти
-              </Button>
-            </div>
+            <SearchOnMap
+              className={cn(styles.searchWrapper, { [styles.searchOpen]: headerButtonsState.search })}
+            />
           }
         </div>
 

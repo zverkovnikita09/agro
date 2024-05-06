@@ -26,6 +26,7 @@ export type UserInfo = MainOrganisationInfo & PersonalData
 export interface UserFiles {
   fileType: {
     title: string
+    id: string
   }
   id: string,
   path_url: string

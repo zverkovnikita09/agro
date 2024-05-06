@@ -3,7 +3,7 @@ import styles from './LkPage.module.scss'
 import { ApplicationIcons, ApplicationProperty } from '@shared/ui/ApplicationProperty'
 import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem'
 import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text'
-import { UserInfo } from '@entities/User'
+import { UserFiles, UserInfo } from '@entities/User'
 import { InfoBlock, InfoBlockIconColor, InfoBlockIcons } from "@shared/ui/InfoBlock";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { Link } from 'react-router-dom'
@@ -11,9 +11,10 @@ import { RouterPaths } from '@src/app/router'
 
 interface PersonalData {
   userInfo?: UserInfo
+  files?: UserFiles[]
 }
 
-export const PersonalData = ({ userInfo }: PersonalData) => {
+export const PersonalData = ({ userInfo, files }: PersonalData) => {
   if (!userInfo?.type) return (
     <InfoBlock
       icon={InfoBlockIcons.EDIT}
@@ -59,45 +60,22 @@ export const PersonalData = ({ userInfo }: PersonalData) => {
           </ApplicationInfoItem>
         </div>
       </CardContainer>
-      <CardContainer titleName='Документы'>
-        <div className={styles.documents}>
-          <a href="">
-            <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
-              Реквизиты
-            </ApplicationProperty>
-          </a>
-          <a href="">
-            <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
-              ПСФЛ
-            </ApplicationProperty>
-          </a>
-          <a href="">
-            <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
-              ЕФС
-            </ApplicationProperty>
-          </a>
-          <a href="">
-            <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
-              Налоговая тайна
-            </ApplicationProperty>
-          </a>
-          <a href="">
-            <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
-              Патент
-            </ApplicationProperty>
-          </a>
-          <a href="">
-            <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
-              УСН
-            </ApplicationProperty>
-          </a>
-          <a href="">
-            <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
-              НДС
-            </ApplicationProperty>
-          </a>
-        </div>
-      </CardContainer>
+      {
+        files?.filter((file) => file.fileType.title !== 'Аватар').length &&
+        <CardContainer titleName='Документы'>
+          <div className={styles.documents}>
+            {/* user?.files?.find((file) => file.fileType.title === 'Аватар')?.path_url ?? '' */
+              files?.filter((file) => file.fileType.title !== 'Аватар').map((file) => (
+                <a href={file.path_url} target='_blank'>
+                  <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
+                    {file.fileType.title}
+                  </ApplicationProperty>
+                </a>
+              ))
+            }
+          </div>
+        </CardContainer>
+      }
       <CardContainer titleName='Информация'>
         <div className={styles.information}>
           <ApplicationInfoItem title='Юридический адрес'>
@@ -112,6 +90,6 @@ export const PersonalData = ({ userInfo }: PersonalData) => {
           </div>
         </div>
       </CardContainer>
-    </div>
+    </div >
   )
 }

@@ -83,7 +83,7 @@ export const LkPage = (props: LkPageProps) => {
           <Tab value={0}>Личные данные</Tab>
         </div>
         <TabPanel value={0}>
-          <PersonalData userInfo={user?.userinfo} />
+          <PersonalData userInfo={user?.userinfo} files={user?.files}/>
         </TabPanel>
       </Tabs>
     </CardContainer>

@@ -1,6 +1,6 @@
 import styles from './EditProfile.module.scss'
 import { Control, useForm, UseFormResetField, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import { createContext, useContext, useLayoutEffect, useRef, useState } from 'react';
+import { createContext, Dispatch, SetStateAction, useContext, useLayoutEffect, useRef, useState } from 'react';
 import { MainLayoutContext } from '@shared/ui/MainLayout';
 import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
 import { useNavigate } from 'react-router-dom';
@@ -28,7 +28,7 @@ interface EditProfileContextProps {
   resetField: UseFormResetField<UserInfo>
   fileTypes?: FileType[]
   files: FileToSendType[]
-  setFiles: (file: FileToSendType[]) => void
+  setFiles: Dispatch<SetStateAction<FileToSendType[]>>
 }
 
 export const EditProfileContext = createContext<EditProfileContextProps>({} as EditProfileContextProps)
@@ -62,7 +62,9 @@ export const EditProfile = () => {
     }
   });
 
-  const [files, setFiles] = useState<FileToSendType[]>([])
+  const [files, setFiles] = useState<FileToSendType[]>(
+    userInfo?.files?.map((file) => ({ file_types: file.fileType.id, title: file.fileType.title })) ?? []
+  )
 
   const [avatar, setAvatar] = useState<File>();
 
@@ -83,10 +85,11 @@ export const EditProfile = () => {
   })
 
   const handleSendFiles = async (files: FileToSendType[]) => {
-    const file_types = files.map(item => item.file_types)
-    const load_files = files.map(item => item.load_files)
+    const filteredFiles = files.filter((file) => file.load_files);
+    const file_types = filteredFiles.map(item => item.file_types)
+    const load_files = filteredFiles.map(item => item.load_files)
 
-    await sendFiles({ file_types, load_files })
+    if (filteredFiles.length) await sendFiles({ file_types, load_files })
   }
 
   const { handleSendData, isSending } = useSendData(

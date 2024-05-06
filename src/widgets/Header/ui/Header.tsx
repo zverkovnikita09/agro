@@ -15,6 +15,7 @@ import { FiltersSelectors } from "@entities/Filters";
 import styles from './Header.module.scss';
 import { HeaderButtonsState } from "@shared/ui/MainLayout/model/mainLayout.models";
 import { Role, UserSelectors } from "@entities/User";
+import { SearchOnMap } from "@features/SearchOnMap";
 
 interface HeaderProps {
   className?: string;
@@ -80,21 +81,7 @@ export const Header = (props: HeaderProps) => {
         <Chevron width={18} height={18} />
       </Button>
       {!isMobile ? (
-        <form className={styles.searchWrapper}>
-          <Input
-            className={styles.search}
-            placeholder='Введите пункт погрузки'
-            autoComplete='off'
-            withSearchIcon
-          />
-          <Button
-            size={ButtonSize.S}
-            theme={ButtonTheme.GREY}
-            className={styles.searchSubmit}
-          >
-            Найти
-          </Button>
-        </form>
+        <SearchOnMap className={styles.searchWrapper} />
       )
         : (
           <Button className={searchClasses} onClick={() => handleButtonsStateToggle("search")}>

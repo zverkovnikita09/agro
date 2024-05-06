@@ -7,6 +7,9 @@ import { Input } from "@shared/ui/Input";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { FileInputPopup } from "@shared/ui/FileInputPopup";
 import { UploadImageButton } from "@shared/ui/UploadImageButton";
+import { FileToSendType } from "../model/editProfile.model";
+import { useDispatch } from "react-redux";
+import { NotificationType, addNotification } from "@entities/Notifications";
 
 interface StepTwoProps {
   onPrev: () => void
@@ -17,9 +20,16 @@ interface StepTwoProps {
 export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) => {
   const { control, fileTypes, setFiles, files } = useContext(EditProfileContext);
 
-  const handleFileChange = (id: string) => (file: File) => {
+  const dispatch = useDispatch()
 
-    setFiles([])
+  const handleFileChange = (id: string, title: string) => (file: File) => {
+    const fileObj: FileToSendType = { file_types: id, title, load_files: file };
+
+    setFiles((prev) => [...prev.filter(({ file_types }) => file_types !== id), fileObj])
+  }
+
+  const handeleFileDelete = (name: string) => () => {
+    setFiles((prev) => [...prev.filter(({ title }) => title !== name)])
   }
 
   return (
@@ -84,35 +94,95 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
               Реквизиты
             </UploadImageButton>}
           </FileInputPopup> */}
-          <FileInputPopup title={'ПСФЛ'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'ПСФЛ')?.id ?? "")}>
-            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
-              ПСФЛ
-            </UploadImageButton>}
+          <FileInputPopup
+            title={'ПСФЛ'}
+            setFile={handleFileChange(fileTypes?.find(item => item.title === 'ПСФЛ')?.id ?? "", 'ПСФЛ')}
+            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
+          >
+            {(openPopup) =>
+              <UploadImageButton
+                handleOpenPopup={openPopup}
+                handleDeleteImage={handeleFileDelete("ПСФЛ")}
+                hasImage={!!(files.find(item => item.title === 'ПСФЛ'))}
+              >
+                ПСФЛ
+              </UploadImageButton>
+            }
           </FileInputPopup>
-          <FileInputPopup title={'ЕФС'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'ЕФС')?.id ?? "")}>
-            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
-              ЕФС
-            </UploadImageButton>}
+          <FileInputPopup
+            title={'ЕФС'}
+            setFile={handleFileChange(fileTypes?.find(item => item.title === 'ЕФС')?.id ?? "", 'ЕФС')}
+            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
+          >
+            {(openPopup) =>
+              <UploadImageButton
+                handleOpenPopup={openPopup}
+                handleDeleteImage={handeleFileDelete("ЕФС")}
+                hasImage={!!(files.find(item => item.title === 'ЕФС'))}
+              >
+                ЕФС
+              </UploadImageButton>
+            }
           </FileInputPopup>
-          <FileInputPopup title={'Налоговая тайна'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'Налоговая тайна')?.id ?? "")}>
-            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
-              Налоговая тайна
-            </UploadImageButton>}
+          <FileInputPopup
+            title={'Налоговая тайна'}
+            setFile={handleFileChange(fileTypes?.find(item => item.title === 'Налоговая тайна')?.id ?? "", 'Налоговая тайна')}
+            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
+          >
+            {(openPopup) =>
+              <UploadImageButton
+                handleOpenPopup={openPopup}
+                handleDeleteImage={handeleFileDelete("Налоговая тайна")}
+                hasImage={!!(files.find(item => item.title === 'Налоговая тайна'))}
+              >
+                Налоговая тайна
+              </UploadImageButton>
+            }
           </FileInputPopup>
-          <FileInputPopup title={'Патент'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'Патент')?.id ?? "")}>
-            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
-              Патент
-            </UploadImageButton>}
+          <FileInputPopup
+            title={'Патент'}
+            setFile={handleFileChange(fileTypes?.find(item => item.title === 'Патент')?.id ?? "", 'Патент')}
+            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
+          >
+            {(openPopup) =>
+              <UploadImageButton
+                handleOpenPopup={openPopup}
+                handleDeleteImage={handeleFileDelete("Патент")}
+                hasImage={!!(files.find(item => item.title === 'Патент'))}
+              >
+                Патент
+              </UploadImageButton>
+            }
           </FileInputPopup>
-          <FileInputPopup title={'УСН'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'УСН')?.id ?? "")}>
-            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
-              УСН
-            </UploadImageButton>}
+          <FileInputPopup
+            title={'УСН'}
+            setFile={handleFileChange(fileTypes?.find(item => item.title === 'УСН')?.id ?? "", 'УСН')}
+            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
+          >
+            {(openPopup) =>
+              <UploadImageButton
+                handleOpenPopup={openPopup}
+                handleDeleteImage={handeleFileDelete("УСН")}
+                hasImage={!!(files.find(item => item.title === 'УСН'))}
+              >
+                УСН
+              </UploadImageButton>
+            }
           </FileInputPopup>
-          <FileInputPopup title={'НДС'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'НДС')?.id ?? "")}>
-            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
-              НДС
-            </UploadImageButton>}
+          <FileInputPopup
+            title={'НДС'}
+            setFile={handleFileChange(fileTypes?.find(item => item.title === 'НДС')?.id ?? "", 'НДС')}
+            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
+          >
+            {(openPopup) =>
+              <UploadImageButton
+                handleOpenPopup={openPopup}
+                handleDeleteImage={handeleFileDelete("НДС")}
+                hasImage={!!(files.find(item => item.title === 'НДС'))}
+              >
+                НДС
+              </UploadImageButton>
+            }
           </FileInputPopup>
         </div>
       </div>
@@ -125,7 +195,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
             confirmText: 'Вы действительно хотите очистить свой профиль?',
             additionalText: 'Внимание! В случае очистки кабинета данные удаляться безвозвратно',
             cancelButtonText: 'Вернуться',
-            confirmButtonText: 'Удалить',
+            confirmButtonText: 'Очистить',
           }}
         >
           Очистить данные профиля

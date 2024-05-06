@@ -61,10 +61,10 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
 
     if (!checkError([file])) {
       setFile?.(file);
+      togglePopup()
     }
 
     setDrag(false)
-    togglePopup()
   }
 
   const togglePopup = () => {
@@ -87,8 +87,8 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
 
     if (!checkError([file])) {
       setFile?.(file);
+      togglePopup()
     }
-    togglePopup()
   }
 
   return (
@@ -123,11 +123,11 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
             >
               Перетащите сюда изображение <br /> или
             </Text>
-            <label htmlFor={id}>
+            <label htmlFor={id} className={style.label}>
               <input ref={inputRef} type="file" id={id} className='hiddenInput' multiple={false} onChange={handleInputChange} />
-              <Button theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT} size={ButtonSize.S}>
-                <Text weight={TextWeight.SEMI_BOLD}>Выберите файл</Text>
-              </Button>
+              {/* <Button theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT} size={ButtonSize.S}> */}
+              <Text weight={TextWeight.SEMI_BOLD}>Выберите файл</Text>
+              {/* </Button> */}
             </label>
           </div>
 

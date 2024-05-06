@@ -227,7 +227,8 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
 
                 if (Number(day) > 31) return 'Неверный формат даты';
                 if (Number(month) < 1 || Number(month) > 12) return 'Неверный формат даты';
-                if (Number(year) > new Date().getFullYear() || Number(year) < 1800) return 'Неверный формат даты';
+                if (Number(year) > new Date().getFullYear()) return 'Год выдачи не должен быть позже текущего года';
+                if (Number(year) < 1971) return 'Год выдачи должен быть не ранее 1970'
                 return true
               }
             }}
@@ -292,7 +293,7 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
             confirmText: 'Вы действительно хотите очистить свой профиль?',
             additionalText: 'Внимание! В случае очистки кабинета данные удаляться безвозвратно',
             cancelButtonText: 'Вернуться',
-            confirmButtonText: 'Удалить',
+            confirmButtonText: 'Очистить',
           }}
           onClick={onDeleteProfile}>
           Очистить данные профиля

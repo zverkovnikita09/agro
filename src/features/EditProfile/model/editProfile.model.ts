@@ -4,6 +4,7 @@ export interface FileType {
 }
 
 export interface FileToSendType {
+  title: string
   file_types: string
-  load_files: File
+  load_files?: File
 }

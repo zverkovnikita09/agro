@@ -7,7 +7,11 @@
   gap: 8px;
 }
 
-.open{
+.hasImage .camera {
+  visibility: hidden;
+}
+
+.open {
   position: relative;
   width: 46px;
   height: 46px;
@@ -16,9 +20,9 @@
   overflow: hidden;
   color: var(--grey-text-color);
 
-  &:before{
+  &:before {
     content: '';
-    transition: background-color 0.2s ease;
+    transition: background-color 0.1s ease;
     position: absolute;
     top: 0;
     left: 0;
@@ -30,28 +34,37 @@
 
   &:hover {
     color: var(--white-color);
-    &:before{
+
+    &:before {
       background-color: rgba(91, 91, 91, 0.6);
     }
-    .camera{
+
+    .camera {
       z-index: 4;
+      visibility: visible;
     }
   }
 }
+
 .camera {
   position: absolute;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
-
 }
 
+.image {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
 
-.delete{
+.delete {
   color: var(--disabled-color);
   margin-left: auto;
 
-  &:hover{
+  &:hover {
     color: var(--special-error);
   }
 }
