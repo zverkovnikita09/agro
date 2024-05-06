@@ -29,6 +29,8 @@ interface EditProfileContextProps {
   fileTypes?: FileType[]
   files: FileToSendType[]
   setFiles: Dispatch<SetStateAction<FileToSendType[]>>
+  filesToDelete: FileToSendType[]
+  setFilesToDelete: Dispatch<SetStateAction<FileToSendType[]>>
 }
 
 export const EditProfileContext = createContext<EditProfileContextProps>({} as EditProfileContextProps)
@@ -66,6 +68,8 @@ export const EditProfile = () => {
     userInfo?.files?.map((file) => ({ file_types: file.fileType.id, title: file.fileType.title })) ?? []
   )
 
+  const [filesToDelete, setFilesToDelete] = useState<FileToSendType[]>([])
+
   const [avatar, setAvatar] = useState<File>();
 
   const initialAvatar = userInfo?.files?.find((file) => file.fileType.title === 'Аватар')?.path_url ?? '';
@@ -79,17 +83,54 @@ export const EditProfile = () => {
     }
   )
 
-  const { handleSendData: sendFiles } = useSendData({
+  const { handleSendData: createFiles } = useSendData({
     url: "/api/v1/files/load_files",
     withAuthToken: true
   })
 
+  const { handleSendData: updateFiles } = useSendData(
+    {
+      url: "/api/v1/files/update-files",
+      withAuthToken: true,
+      method: "POST",
+    }
+  )
+
+  const { handleSendData: deleteFiles } = useSendData(
+    {
+      url: "/api/v1/files/delete-files",
+      withAuthToken: true,
+      method: "DELETE",
+      params: { file_types: filesToDelete.map(item => item.file_types) }
+    }
+  )
+
   const handleSendFiles = async (files: FileToSendType[]) => {
     const filteredFiles = files.filter((file) => file.load_files);
-    const file_types = filteredFiles.map(item => item.file_types)
-    const load_files = filteredFiles.map(item => item.load_files)
 
-    if (filteredFiles.length) await sendFiles({ file_types, load_files })
+    const filesToLoad = filteredFiles.reduce((acc, item) => {
+      if (userInfo?.files?.find((file) => file.fileType.id === item.file_types)) {
+        return acc
+      }
+      return [...acc, item];
+    }, [] as FileToSendType[])
+
+    const filesToUpdate = filteredFiles.reduce((acc, item) => {
+      if (userInfo?.files?.find((file) => file.fileType.id === item.file_types)) {
+        return [...acc, item]
+      }
+      return acc;
+    }, [] as FileToSendType[])
+
+    const file_types_loading = filesToLoad.map(item => item.file_types);
+    const load_files_loading = filesToLoad.map(item => item.load_files);
+
+    const file_types_updating = filesToUpdate.map(item => item.file_types);
+    const load_files_updating = filesToUpdate.map(item => item.load_files);
+
+    if (filesToLoad.length) await createFiles({ file_types: file_types_loading, load_files: load_files_loading })
+    if (filesToUpdate.length) await updateFiles({ file_types: file_types_updating, load_files: load_files_updating })
+    if (filesToDelete.length) await deleteFiles({})
   }
 
   const { handleSendData, isSending } = useSendData(
@@ -186,7 +227,7 @@ export const EditProfile = () => {
             <Text color={TextColor.GREY} size={TextSize.XL}>Заполните свои личные данные</Text>
           </div>
         </div>
-        <EditProfileContext.Provider value={{ watch, control, setValue, resetField, fileTypes, files, setFiles }}>
+        <EditProfileContext.Provider value={{ watch, control, setValue, resetField, fileTypes, files, setFiles, filesToDelete, setFilesToDelete }}>
           <form ref={formRef} className={styles.form} onSubmit={handleSubmit(onSubmit())}>
             {FormContent()}
           </form>

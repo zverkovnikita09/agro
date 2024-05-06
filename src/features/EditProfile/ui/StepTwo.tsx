@@ -8,8 +8,9 @@ import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { FileInputPopup } from "@shared/ui/FileInputPopup";
 import { UploadImageButton } from "@shared/ui/UploadImageButton";
 import { FileToSendType } from "../model/editProfile.model";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NotificationType, addNotification } from "@entities/Notifications";
+import { UserSelectors } from "@entities/User";
 
 interface StepTwoProps {
   onPrev: () => void
@@ -18,18 +19,28 @@ interface StepTwoProps {
 }
 
 export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) => {
-  const { control, fileTypes, setFiles, files } = useContext(EditProfileContext);
+  const { control, fileTypes, setFiles, files, setFilesToDelete, filesToDelete } = useContext(EditProfileContext);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const user = useSelector(UserSelectors.selectUserData);
 
   const handleFileChange = (id: string, title: string) => (file: File) => {
     const fileObj: FileToSendType = { file_types: id, title, load_files: file };
+
+    if (filesToDelete.find(file => file.title === title)) {
+      setFilesToDelete(prev => prev.filter(item => item.title !== title))
+    }
 
     setFiles((prev) => [...prev.filter(({ file_types }) => file_types !== id), fileObj])
   }
 
   const handeleFileDelete = (name: string) => () => {
     setFiles((prev) => [...prev.filter(({ title }) => title !== name)])
+    const fileToDelete = user?.files?.find(file => file.fileType.title === name);
+    if (fileToDelete) {
+      setFilesToDelete(prev => [...prev, { file_types: fileToDelete.fileType.id, title: name }])
+    }
   }
 
   return (
@@ -100,8 +111,8 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 handleDeleteImage={handeleFileDelete("Реквизиты")}
                 hasImage={!!(files.find(item => item.title === 'Реквизиты'))}
               >
-              Реквизиты
-            </UploadImageButton>}
+                Реквизиты
+              </UploadImageButton>}
           </FileInputPopup>
           <FileInputPopup
             title={'ПСФЛ'}

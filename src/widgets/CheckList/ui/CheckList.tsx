@@ -23,7 +23,7 @@ export const CheckList = (props: CheckListProps) => {
 
   return (
     <div className={cn(styles.checkList, className)}>
-      <Tabs>
+      <Tabs saveInParams>
         <div className={styles.tabsHeading}>
           <Tab value={0}>Все</Tab>
           <Tab value={1}>С моими откликами</Tab>

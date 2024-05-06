@@ -39,13 +39,13 @@ export const getData = async <T extends {}>
 
 export interface sendDataParams<T> {
   baseUrl?: string
-  data: T,
+  data?: T,
   url: string,
   headers?: Record<string, string>
   method?: string
-  params?: Record<string, string | number | undefined>
+  params?: Record<string, string | number | undefined | string[]>
   defaultErrorMessage?: string
-  type?: 'FormData' | 'JSON' | "x-www-form-urlencoded"
+  type?: 'FormData' | 'JSON' | "x-www-form-urlencoded" | "queryParams"
 }
 
 export const sendData = async <DataType extends {}>
@@ -63,7 +63,7 @@ export const sendData = async <DataType extends {}>
 
   if (type === 'FormData') {
     const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries(data ?? {}).forEach(([key, value]) => {
       if (typeof value === "undefined" || value === null || value === "") return
       if (Array.isArray(value)) {
         formatArrayToFormData(key, value).forEach(({ name: itemKey, value: itemValue, }) => {
@@ -91,7 +91,7 @@ export const sendData = async <DataType extends {}>
   if (type === "x-www-form-urlencoded") {
     const searchParams = new URLSearchParams();
 
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries(data ?? {}).forEach(([key, value]) => {
       if (typeof value === "undefined" || value === null || value === "") return
       if (Array.isArray(value)) {
         formatArrayToFormData(key, value).forEach(({ name: itemKey, value: itemValue, }) => {
