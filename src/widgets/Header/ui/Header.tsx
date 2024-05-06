@@ -16,6 +16,7 @@ import styles from './Header.module.scss';
 import { HeaderButtonsState } from "@shared/ui/MainLayout/model/mainLayout.models";
 import { Role, UserSelectors } from "@entities/User";
 import { SearchOnMap } from "@features/SearchOnMap";
+import { ApplicationModel } from "@entities/Application";
 
 interface HeaderProps {
   className?: string;
@@ -24,6 +25,8 @@ interface HeaderProps {
   isFiltersDisabled?: boolean;
   isTablet?: boolean;
   isMobile?: boolean;
+  applications?: ApplicationModel[]
+  setPoints?: (point: [number, number]) => void
 }
 
 export const Header = (props: HeaderProps) => {
@@ -33,7 +36,9 @@ export const Header = (props: HeaderProps) => {
     handleButtonsStateToggle,
     isFiltersDisabled,
     isMobile,
-    isTablet
+    isTablet,
+    applications,
+    setPoints
   } = props;
 
   const userRole = useSelector(UserSelectors.selectUserRole);
@@ -56,6 +61,7 @@ export const Header = (props: HeaderProps) => {
     styles.toggleButton,
     styles.searchButton,
     { [styles.activeSearch]: search },
+    { [styles.disabledFilters]: isFiltersDisabled }
   )
 
   const sortByValue = useSelector(SortBySelectors.selectSortByValue);
@@ -81,7 +87,7 @@ export const Header = (props: HeaderProps) => {
         <Chevron width={18} height={18} />
       </Button>
       {!isMobile ? (
-        <SearchOnMap className={styles.searchWrapper} />
+        <SearchOnMap applications={applications} className={cn(styles.searchWrapper, { [styles.disabledFilters]: isFiltersDisabled })} setPoints={setPoints} />
       )
         : (
           <Button className={searchClasses} onClick={() => handleButtonsStateToggle("search")}>

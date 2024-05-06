@@ -18,6 +18,8 @@ import { useLocation } from "react-router-dom";
 
 interface YandexMapProps {
   className?: string;
+  applications?: ApplicationModel[]
+  mapCenter?: [number, number]
 }
 
 const defaultLibraries: string[] = [
@@ -38,7 +40,10 @@ const defaultLibraries: string[] = [
 export const YandexMap = (props: YandexMapProps) => {
   const {
     className,
+    applications,
+    mapCenter = [0, 0]
   } = props;
+
   const map = useRef<HTMLElement>(null) as any;
   const route = useRef<MultiRoute>();
   const needToUpdateBounds = useRef<boolean>(true);
@@ -50,18 +55,6 @@ export const YandexMap = (props: YandexMapProps) => {
 
   // @ts-ignore
   type MultiRoute = ymaps.multiRouter.MultiRoute;
-
-  const sortBy = useSelector(SortBySelectors.selectSortByValue);
-  const filters = useSelector(FiltersSelectors.selectAllFilters);
-
-  const { data: applications, isError, isLoading } = useGetData<ApplicationModel[]>(
-    {
-      url: '/api/v1/orders',
-      dataFlag: true,
-      params: { sort: sortBy, ...filters },
-      withAuthToken: true,
-      isEnabled: location.pathname === '/'
-    });
 
   const changeBounds = debounce(async () => {
     const bounds = route?.current?.getBounds() ?? null;
@@ -143,9 +136,15 @@ export const YandexMap = (props: YandexMapProps) => {
     else clearRoute()
   }, [selectedApplication])
 
+  useEffect(() => {
+    if (map.current) {
+      map.current.setZoom(8);
+      map.current.panTo(mapCenter);
+    }
+  }, [mapCenter])
+
   return (
     <div className={cn(styles.yandexMap, className)}>
-
       <YMaps
         query={{
           load: defaultLibraries.join(","),
@@ -153,7 +152,7 @@ export const YandexMap = (props: YandexMapProps) => {
         }}
       >
         <Map
-          defaultState={{ center: [47.13, 39.42], zoom: 5 }}
+          defaultState={{ center: mapCenter, zoom: 5 }}
           options={{ suppressMapOpenBlock: true }}
           width='100%'
           height='100%'

@@ -1,46 +1,51 @@
 import cn from 'classnames';
+import { ApplicationModel } from '@entities/Application';
+import { useEffect, useState } from 'react';
+import { Select } from '@shared/ui/Select';
+import SearchIcon from '@images/search.svg'
 import styles from './SearchOnMap.module.scss'
-import { Input } from '@shared/ui/Input';
-import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
-import { Coord } from '@entities/Application';
-import { FormEvent, useState } from 'react';
 
 interface SearchOnMapProps {
   className?: string;
-  loadPlaces?: string[]
-  setPoints?: (point: Coord) => void
+  applications?: ApplicationModel[]
+  setPoints?: (point: [number, number]) => void
 }
 
 export const SearchOnMap = (props: SearchOnMapProps) => {
-  const { className, loadPlaces = [], setPoints } = props;
+  const { className, applications = [], setPoints } = props;
 
-  const [search, setSearch] = useState("")
+  const [selectedPlace, setSelectedPlace] = useState("")
 
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setSearch("")
-    setPoints?.({} as Coord)
-  }
+  useEffect(() => {
+    if (selectedPlace) {
+      const points = applications.find(item => item.load_place_name === selectedPlace)?.load_coordinates
+      points && setPoints?.([Number(points.y), Number(points.x)])
+    }
+  }, [selectedPlace])
+
+  const options = [...new Set(applications.map(item => item.load_place_name))]
 
   return (
-    <form className={cn(styles.searchOnMap, className)} onSubmit={handleFormSubmit}>
-      <Input
-        wrapperClassName={styles.inputWrapper}
-        className={styles.input}
+    <div className={cn(styles.searchOnMap, className)}>
+      <SearchIcon width={18} height={18} className={styles.searchIcon} />
+      <Select
         placeholder='Введите пункт погрузки'
-        autoComplete='off'
-        withSearchIcon
-        value={search}
-        onChange={e => setSearch(e.target.value)}
+        withInputSearch
+        className={styles.selectWrapper}
+        togglerClassName={styles.select}
+        options={options}
+        value={selectedPlace}
+        setValue={(value) => {
+          setSelectedPlace(value as string)
+        }}
+        dropdownClassName={styles.dropdown}
+        noArrow
+        searchInputProps={{
+          className: styles.input
+        }}
+        noOptionText='Совпадений не найдено'
+        clearOnClose
       />
-      <Button
-        size={ButtonSize.S}
-        theme={ButtonTheme.GREY}
-        className={styles.submit}
-        type='submit'
-      >
-        Найти
-      </Button>
-    </form>
+    </div>
   )
 }
