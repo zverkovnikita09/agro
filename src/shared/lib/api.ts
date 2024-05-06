@@ -67,11 +67,15 @@ export const sendData = async <DataType extends {}>
       if (typeof value === "undefined" || value === null || value === "") return
       if (Array.isArray(value)) {
         formatArrayToFormData(key, value).forEach(({ name: itemKey, value: itemValue, }) => {
+          if (itemValue instanceof Blob) {
+            formData.append(itemKey, itemValue)
+            return
+          }
           formData.append(itemKey, String(itemValue))
         })
         return
       }
-      if (value instanceof Blob){
+      if (value instanceof Blob) {
         formData.append(key, value);
         return;
       }

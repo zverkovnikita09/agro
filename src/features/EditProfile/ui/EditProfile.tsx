@@ -1,29 +1,34 @@
 import styles from './EditProfile.module.scss'
-import {Control, useForm, UseFormResetField, UseFormSetValue, UseFormWatch} from 'react-hook-form';
-import {createContext, useContext, useLayoutEffect, useRef, useState} from 'react';
-import {MainLayoutContext} from '@shared/ui/MainLayout';
-import {useDocumentEvent} from '@shared/hook/useDocumentEvent';
-import {useNavigate} from 'react-router-dom';
-import {RouterPaths} from '@src/app/router';
-import {CardContainer} from '@shared/ui/CardContainer';
-import {CloseButton} from '@shared/ui/CloseButton';
-import {Title, TitleSize} from '@shared/ui/Title';
-import {UserPhoto} from '@shared/ui/UserPhoto';
-import {Text, TextColor, TextSize} from '@shared/ui/Text';
-import {StepOne} from './StepOne';
-import {fetchUserData, UserInfo, UserSelectors} from '@entities/User';
-import {StepTwo} from './StepTwo';
-import {useSendData} from '@shared/hook/useSendData';
-import {useSelector} from 'react-redux';
-import {addNotification, NotificationType} from '@entities/Notifications';
-import {useAppDispatch} from '@src/app/store/model/hook';
-import {FileInputPopup} from "@shared/ui/FileInputPopup";
+import { Control, useForm, UseFormResetField, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { createContext, useContext, useLayoutEffect, useRef, useState } from 'react';
+import { MainLayoutContext } from '@shared/ui/MainLayout';
+import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
+import { useNavigate } from 'react-router-dom';
+import { RouterPaths } from '@src/app/router';
+import { CardContainer } from '@shared/ui/CardContainer';
+import { CloseButton } from '@shared/ui/CloseButton';
+import { Title, TitleSize } from '@shared/ui/Title';
+import { UserPhoto } from '@shared/ui/UserPhoto';
+import { Text, TextColor, TextSize } from '@shared/ui/Text';
+import { StepOne } from './StepOne';
+import { fetchUserData, UserInfo, UserSelectors } from '@entities/User';
+import { StepTwo } from './StepTwo';
+import { useSendData } from '@shared/hook/useSendData';
+import { useSelector } from 'react-redux';
+import { addNotification, NotificationType } from '@entities/Notifications';
+import { useAppDispatch } from '@src/app/store/model/hook';
+import { useGetData } from '@shared/hook/useGetData';
+import { FileToSendType, FileType } from '../model/editProfile.model';
+import { LoadingBlock } from '@shared/ui/LoadingBlock';
 
 interface EditProfileContextProps {
   watch: UseFormWatch<UserInfo>
   control: Control<UserInfo, any>
   setValue: UseFormSetValue<UserInfo>
   resetField: UseFormResetField<UserInfo>
+  fileTypes?: FileType[]
+  files: FileToSendType[]
+  setFiles: (file: FileToSendType[]) => void
 }
 
 export const EditProfileContext = createContext<EditProfileContextProps>({} as EditProfileContextProps)
@@ -58,6 +63,8 @@ export const EditProfile = () => {
     }
   });
 
+  const [files, setFiles] = useState<FileToSendType[]>([])
+
   const [avatar, setAvatar] = useState<File>();
 
   const initialAvatar = userInfo?.files?.find((file) => file.fileType.title === 'Аватар')?.path_url ?? '';
@@ -71,6 +78,17 @@ export const EditProfile = () => {
     }
   )
 
+  const { handleSendData: sendFiles } = useSendData({
+    url: "/api/v1/files/load_files",
+    withAuthToken: true
+  })
+
+  const handleSendFiles = async (files: FileToSendType[]) => {
+    const file_types = files.map(item => item.file_types)
+    const load_files = files.map(item => item.load_files)
+
+    await sendFiles({ file_types, load_files })
+  }
 
   const { handleSendData, isSending } = useSendData(
     {
@@ -79,7 +97,8 @@ export const EditProfile = () => {
       method: "PUT",
       type: "x-www-form-urlencoded",
       onSuccess: async () => {
-        if (avatar) await changeAvatar({avatar})
+        if (avatar) await changeAvatar({ avatar })
+        if (files.length) await handleSendFiles(files)
 
         dispatch(addNotification({ message: 'Данные профиля успешно изменены', type: NotificationType.Success }));
         navigate(RouterPaths.LK)
@@ -100,6 +119,12 @@ export const EditProfile = () => {
       }
     }
   )
+
+  const { data: fileTypes, isSuccess: isFileTypeSuccess } = useGetData<FileType[]>({
+    url: "/api/v1/files/file_types",
+    withAuthToken: true,
+    dataFlag: true
+  })
 
   const closeForm = () => {
     navigate(RouterPaths.LK)
@@ -141,29 +166,30 @@ export const EditProfile = () => {
   useDocumentEvent('keydown', closeOnEsc);
 
   return (
-    <>
-      <div className={styles.editProfile}>
-        <CardContainer className={styles.container}>
-          <CloseButton onClick={closeForm} className={styles.closeBtn} />
-          <div className={styles.heading}>
-            <UserPhoto
-              editable
-              image={avatar || initialAvatar}
-              setImage={setAvatar}
-              setError={(message)=>dispatch(addNotification({message,type: NotificationType.Error}))}
-            />
-            <div className={styles.headingInfo}>
-              <Title size={TitleSize.S}>Личный кабинет</Title>
-              <Text color={TextColor.GREY} size={TextSize.XL}>Заполните свои личные данные</Text>
-            </div>
+    <div className={styles.editProfile}>
+      <CardContainer className={styles.container}>
+        {
+          !isFileTypeSuccess && <div className={styles.loading}><LoadingBlock /></div>
+        }
+        <CloseButton onClick={closeForm} className={styles.closeBtn} />
+        <div className={styles.heading}>
+          <UserPhoto
+            editable
+            image={avatar || initialAvatar}
+            setImage={setAvatar}
+            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
+          />
+          <div className={styles.headingInfo}>
+            <Title size={TitleSize.S}>Личный кабинет</Title>
+            <Text color={TextColor.GREY} size={TextSize.XL}>Заполните свои личные данные</Text>
           </div>
-          <EditProfileContext.Provider value={{ watch, control, setValue, resetField }}>
-            <form ref={formRef} className={styles.form} onSubmit={handleSubmit(onSubmit())}>
-              {FormContent()}
-            </form>
-          </EditProfileContext.Provider>
-        </CardContainer>
-      </div>
-    </>
+        </div>
+        <EditProfileContext.Provider value={{ watch, control, setValue, resetField, fileTypes, files, setFiles }}>
+          <form ref={formRef} className={styles.form} onSubmit={handleSubmit(onSubmit())}>
+            {FormContent()}
+          </form>
+        </EditProfileContext.Provider>
+      </CardContainer>
+    </div>
   )
 }

@@ -1,15 +1,15 @@
-import {ReactNode, useState} from 'react'
+import { ChangeEvent, ReactNode, useId, useRef, useState } from 'react'
 import style from './FileInputPopup.module.scss'
-import {FieldError} from 'react-hook-form';
-import {Popup} from "@shared/ui/Popup";
-import {CardContainer} from "@shared/ui/CardContainer";
-import {Title, TitleSize} from "@shared/ui/Title";
-import {Text, TextColor, TextSize, TextWeight} from "@shared/ui/Text";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-
+import { FieldError } from 'react-hook-form';
+import { Popup } from "@shared/ui/Popup";
+import { CardContainer } from "@shared/ui/CardContainer";
+import { Title, TitleSize } from "@shared/ui/Title";
+import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { checkFileInputError } from '@shared/lib/checkFileInputError';
+import cn from "classnames"
 export interface FileInputPopupProps {
-  // files: FileList | null
-  // setFiles: (files: FileList | null) => void
+  setFile?: (file: File) => void
   setError?: (message: string) => void
   allowedFileTypes?: string[]
   allowedFileSize?: number
@@ -22,30 +22,85 @@ export interface FileInputPopupProps {
 }
 
 export const FileInputPopup = (props: FileInputPopupProps) => {
-    const {
-    // files,
-    // setFiles,
-      setError,
-      error,
-      clearErrors,
-      allowedFileTypes = ['png', 'jpg', 'jpeg'],
-      label,
-      allowedFileCount,
-      allowedFileSize = 1,
-      title,
-      children
+  const {
+    setFile,
+    setError,
+    error,
+    clearErrors,
+    allowedFileTypes = ['png', 'jpg', 'jpeg'],
+    label,
+    allowedFileCount,
+    allowedFileSize = 1,
+    title,
+    children
   } = props;
 
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-    const togglePopup = () => {
-      setIsPopupOpen(prev => !prev);
+  const id = useId();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [isDrag, setDrag] = useState(false);
+
+  const onDragStart = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault()
+    setDrag(true)
+  }
+
+  const onDragLeave = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    setDrag(false);
+  }
+
+  const onDrop = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault()
+    const file = e.dataTransfer.files?.[0];
+
+    if (!file) return;
+
+    if (!checkError([file])) {
+      setFile?.(file);
     }
+
+    setDrag(false)
+    togglePopup()
+  }
+
+  const togglePopup = () => {
+    setIsPopupOpen(prev => !prev);
+  }
+
+  const checkError = (files: File[]) => checkFileInputError({
+    files,
+    setError,
+    allowedFileTypes: ['png', 'jpg', 'jpeg'],
+    allowedFileCount: 1,
+    allowedFileSize: 1024 * 1024
+  })
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    inputRef.current && (inputRef.current.value = '')
+
+    if (!checkError([file])) {
+      setFile?.(file);
+    }
+    togglePopup()
+  }
 
   return (
     <>
       <Popup isActive={isPopupOpen} closePopup={togglePopup}>
-        <CardContainer className={style.fileInputPopup}>
+        <CardContainer
+          className={cn(style.fileInputPopup, { [style.isDrag]: isDrag })}
+          onDragStart={onDragStart}
+          onDragOver={onDragStart}
+          onDragLeave={onDragLeave}
+          onDrop={onDrop}
+        >
           <div className={style.heading}>
             <Title as='h4' size={TitleSize.S}>{title}</Title>
             <Text
@@ -66,11 +121,14 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
               size={TextSize.L}
               weight={TextWeight.MEDIUM}
             >
-              Перетащите сюда изображение <br/> или
+              Перетащите сюда изображение <br /> или
             </Text>
-            <Button theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT} size={ButtonSize.S}>
-              <Text weight={TextWeight.SEMI_BOLD}>Выберите файл</Text>
-            </Button>
+            <label htmlFor={id}>
+              <input ref={inputRef} type="file" id={id} className='hiddenInput' multiple={false} onChange={handleInputChange} />
+              <Button theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT} size={ButtonSize.S}>
+                <Text weight={TextWeight.SEMI_BOLD}>Выберите файл</Text>
+              </Button>
+            </label>
           </div>
 
           <div className={style.footer}>
@@ -91,7 +149,7 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
       </Popup>
       {children?.(togglePopup)}
     </>
-)
+  )
 }
 
 // export const FileInputPopup = (props: FileInputPopupProps) => {

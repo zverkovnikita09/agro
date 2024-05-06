@@ -289,8 +289,8 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
           className={styles.additionalButton}
           withConfirm
           alertPopupProps={{
-            confirmText: 'Вы действительно хотите удалить свой профиль?',
-            additionalText: 'Внимание! В случае удаления кабинета данные удаляться безвозвратно',
+            confirmText: 'Вы действительно хотите очистить свой профиль?',
+            additionalText: 'Внимание! В случае очистки кабинета данные удаляться безвозвратно',
             cancelButtonText: 'Вернуться',
             confirmButtonText: 'Удалить',
           }}

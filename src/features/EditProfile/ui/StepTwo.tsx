@@ -5,10 +5,8 @@ import { useContext } from "react";
 import { EditProfileContext } from "./EditProfile";
 import { Input } from "@shared/ui/Input";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
-import { Calendar } from "@shared/ui/Calendar";
-import { Select } from "@shared/ui/Select";
-import {FileInputPopup} from "@shared/ui/FileInputPopup";
-import {UploadImageButton} from "@shared/ui/UploadImageButton";
+import { FileInputPopup } from "@shared/ui/FileInputPopup";
+import { UploadImageButton } from "@shared/ui/UploadImageButton";
 
 interface StepTwoProps {
   onPrev: () => void
@@ -17,7 +15,13 @@ interface StepTwoProps {
 }
 
 export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) => {
-  const { control, watch, setValue } = useContext(EditProfileContext);
+  const { control, fileTypes, setFiles, files } = useContext(EditProfileContext);
+
+  const handleFileChange = (id: string) => (file: File) => {
+
+    setFiles([])
+  }
+
   return (
     <>
       <div className={styles.inputBlock}>
@@ -67,144 +71,63 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           )}
         />
       </div>
-      <FileInputPopup title={'Реквизиты'}>
-        {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => {}}>
-          Реквизиты
-        </UploadImageButton>}
-      </FileInputPopup>
-      {/* <div className={styles.inputBlock}>
+      <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}
           size={TextSize.XL}
         >
           Документы
-        </Text> */}
-      {/* <div className={styles.inputsThreeRow}>
-          <Controller
-            name="series"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Серия паспорта'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="9999"
-                type="tel"
-              />
-            )}
-          />
-          <Controller
-            name="number"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Номер паспорта'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="999999"
-                type="tel"
-              />
-            )}
-          />
-          <Controller
-            name="department_code"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Код подразделения'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="999-999"
-                type="tel"
-              />
-            )}
-          />
+        </Text>
+        <div className={styles.inputsRowWithGap}>
+          {/*  <FileInputPopup title={'Реквизиты'} setFile={handleFileChange()}>
+            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
+              Реквизиты
+            </UploadImageButton>}
+          </FileInputPopup> */}
+          <FileInputPopup title={'ПСФЛ'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'ПСФЛ')?.id ?? "")}>
+            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
+              ПСФЛ
+            </UploadImageButton>}
+          </FileInputPopup>
+          <FileInputPopup title={'ЕФС'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'ЕФС')?.id ?? "")}>
+            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
+              ЕФС
+            </UploadImageButton>}
+          </FileInputPopup>
+          <FileInputPopup title={'Налоговая тайна'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'Налоговая тайна')?.id ?? "")}>
+            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
+              Налоговая тайна
+            </UploadImageButton>}
+          </FileInputPopup>
+          <FileInputPopup title={'Патент'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'Патент')?.id ?? "")}>
+            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
+              Патент
+            </UploadImageButton>}
+          </FileInputPopup>
+          <FileInputPopup title={'УСН'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'УСН')?.id ?? "")}>
+            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
+              УСН
+            </UploadImageButton>}
+          </FileInputPopup>
+          <FileInputPopup title={'НДС'} setFile={handleFileChange(fileTypes?.find(item => item.title === 'НДС')?.id ?? "")}>
+            {(openPopup) => <UploadImageButton handleOpenPopup={openPopup} handleDeleteImage={() => { }}>
+              НДС
+            </UploadImageButton>}
+          </FileInputPopup>
         </div>
-        <div className={styles.inputsThreeRow}>
-          <Controller
-            name="issue_date_at"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению"
-            }}
-            render={(props) => (
-              <Calendar
-                placeholder='Дата начала перевозки'
-                value={props.field.value}
-                onChange={props.field.onChange}
-                error={props.fieldState.error?.message}
-              />
-            )}
-          />
-          <Controller
-            name="department"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Кем выдан'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-              />
-            )}
-          />
-          <Controller
-            name="snils"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='СНИЛС'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="999-999-999 99"
-                type="tel"
-              />
-            )}
-          />
-        </div> */}
-      {/* </div> */}
+      </div>
       <div className={styles.buttonsContainer}>
-        <Button className={styles.additionalButton} onClick={onDeleteProfile}>
+        <Button
+          className={styles.additionalButton}
+          onClick={onDeleteProfile}
+          withConfirm
+          alertPopupProps={{
+            confirmText: 'Вы действительно хотите очистить свой профиль?',
+            additionalText: 'Внимание! В случае очистки кабинета данные удаляться безвозвратно',
+            cancelButtonText: 'Вернуться',
+            confirmButtonText: 'Удалить',
+          }}
+        >
           Очистить данные профиля
         </Button>
         <Button

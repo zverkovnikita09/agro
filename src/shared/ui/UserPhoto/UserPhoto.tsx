@@ -1,8 +1,8 @@
 import cn from 'classnames';
 import styles from './UserPhoto.module.scss'
-import {ChangeEvent, useId, useRef, useState} from 'react';
+import { ChangeEvent, useId, useRef, useState } from 'react';
 import Camera from '@images/camera.svg'
-import {checkFileInputError} from "@shared/lib/checkFileInputError";
+import { checkFileInputError } from "@shared/lib/checkFileInputError";
 
 interface UserPhotoProps {
   className?: string;
@@ -19,7 +19,7 @@ export const UserPhoto = (props: UserPhotoProps) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const imgSource = () =>{
+  const imgSource = () => {
     if (!image) return ""
 
     if (typeof image === "string") return image
@@ -50,8 +50,6 @@ export const UserPhoto = (props: UserPhotoProps) => {
     if (!checkError([file])) {
       setImage?.(file);
     }
-
-
   }
 
   return (
