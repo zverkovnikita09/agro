@@ -34,7 +34,7 @@ interface EditProfileContextProps {
 export const EditProfileContext = createContext<EditProfileContextProps>({} as EditProfileContextProps)
 
 export const EditProfile = () => {
-  const [formStep, setFormStep] = useState(2);
+  const [formStep, setFormStep] = useState(1);
   const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
   /*   const { state } = useLocation(); */
