@@ -42,13 +42,21 @@ export const FormStepOne = (props: FormStepOneProps) => {
 
   useEffect(() => {
     if (load_place && placeOptions.length) {
-      handleCoordsChange?.({ y: placeOptions.find(item => item.value === load_place)?.data?.geo_lat, x: placeOptions.find(item => item.value === load_place)?.data?.geo_lon }, "from");
+      handleCoordsChange?.(
+        {
+          y: placeOptions.find(item => item.value === load_place)?.data?.geo_lat,
+          x: placeOptions.find(item => item.value === load_place)?.data?.geo_lon
+        }, "from");
     }
   }, [load_place])
 
   useEffect(() => {
     if (unload_place && placeOptions.length) {
-      handleCoordsChange?.({ y: placeOptions.find(item => item.value === unload_place)?.data?.geo_lat, x: placeOptions.find(item => item.value === unload_place)?.data?.geo_lon }, "to");
+      handleCoordsChange?.(
+        {
+          y: placeOptions.find(item => item.value === unload_place)?.data?.geo_lat,
+          x: placeOptions.find(item => item.value === unload_place)?.data?.geo_lon
+        }, "to");
     }
   }, [unload_place])
 

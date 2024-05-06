@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import ArrowDown from "@images/chevron-down.svg";
 /* import { IoClose } from "react-icons/io5"; */
 import cn from 'classnames'
@@ -33,6 +33,9 @@ interface CommonSelectProps {
   hideOptions?: boolean;
   theme?: SelectTheme;
   searchInputProps?: InputProps
+  noOptionText?: string
+  dropdownClassName?: string
+  clearOnClose?: boolean
 }
 
 interface MultipleSelectProps<T = unknown> {
@@ -68,20 +71,28 @@ export const Select = (props: SelectProps) => {
     minLengthForOptions = 0,
     hideOptions,
     searchInputProps,
+    dropdownClassName,
+    noOptionText = 'Нет доступных элементов',
+    clearOnClose
   } = props
 
+
   const [, setIsFocused] = useState(false);
-  const [availableOptions, setAvailableOptions] = useState(options);
+  const [availableOptions, setAvailableOptions] = useState<(unknown | OptionType)[]>([]);
   const elementRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState("");
 
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleTogglerClick = (event: React.MouseEvent<HTMLElement>) => {
+    dropdownAnchorEl && clearOnClose && setInputValue("")
     setDropdownAnchorEl(dropdownAnchorEl ? null : event.currentTarget);
   };
 
-  const handleCloseDropdown = () => setDropdownAnchorEl(null);
+  const handleCloseDropdown = () => {
+    setDropdownAnchorEl(null)
+    clearOnClose && setInputValue("")
+  };
 
   const isDropdownOpen = Boolean(dropdownAnchorEl);
 
@@ -94,6 +105,10 @@ export const Select = (props: SelectProps) => {
 
     setValue(selectValue);
   }, [value])
+
+  useLayoutEffect(() => {
+    setAvailableOptions(options)
+  }, [options])
 
   /*  const deleteValue = useCallback((selectValue: string) => () => {
      if (multiple) {
@@ -134,7 +149,7 @@ export const Select = (props: SelectProps) => {
   useEffect(() => {
     if (!onSearchInput) {
       const stringOptions = isOptionTypeArray(options) ? options.map(option => option.value) : options;
-      const newOptions = stringOptions.filter(option => String(option).toUpperCase().includes(inputValue.toUpperCase()));
+      const newOptions = stringOptions.filter(option => String(option).toUpperCase().includes(inputValue.trim().toUpperCase()));
 
       setAvailableOptions(
         isOptionTypeArray(options)
@@ -155,10 +170,10 @@ export const Select = (props: SelectProps) => {
   }
 
   useEffect(() => {
-    if (withInputSearch) {
+    if (!clearOnClose && withInputSearch) {
       setInputValue(typeof value !== 'undefined' ? multiple ? value?.join("") : String(value) : "")
     }
-  }, [isDropdownOpen])
+  }, [isDropdownOpen, clearOnClose])
 
   return (
     <ClickAwayListener onClickAway={handleCloseDropdown}>
@@ -168,7 +183,7 @@ export const Select = (props: SelectProps) => {
       )}>
         {withInputSearch && isDropdownOpen &&
           <Input
-            className={cn(style.input, { [style.noArrow]: noArrow })}
+            className={cn(style.input, { [style.noArrow]: noArrow }, searchInputProps?.className)}
             wrapperClassName={style.inputWrapper}
             inputAutoFocus
             value={inputValue}
@@ -220,7 +235,7 @@ export const Select = (props: SelectProps) => {
           <Popper
             open={isDropdownOpen && !hideOptions && (withInputSearch ? inputValue.length >= minLengthForOptions : true)}
             anchorEl={dropdownAnchorEl}
-            className={style.dropdown}
+            className={cn(style.dropdown, dropdownClassName)}
             style={{ width: dropdownAnchorEl?.clientWidth }}
             modifiers={[
               {
@@ -254,7 +269,7 @@ export const Select = (props: SelectProps) => {
                   </div>
                 )
               })
-              : <p className={style.text}>Нет доступных элементов</p>
+              : <p className={style.text}>{noOptionText}</p>
             }
           </Popper>
         </div>
