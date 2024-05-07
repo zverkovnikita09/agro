@@ -113,7 +113,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   />
 
   const onNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange?.(e.target.value.replace(/[^+\d\.]/g, '') as unknown as ChangeEvent<HTMLInputElement>);
+    onChange?.(e.target.value.replace(/[^+\d\,]/g, '') as unknown as ChangeEvent<HTMLInputElement>);
   }
 
   const TextField = () => {
