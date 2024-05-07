@@ -221,7 +221,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             icon={ApplicationIcons.BOX_3D}
             iconColor={ApplicationIconColor.ACCENT}
           >
-            {volume}&nbsp;тонн
+            {volume?.toString().replace('.', ',')}&nbsp;тонн
           </ApplicationProperty>
           <ApplicationProperty
             className={styles.cargoInfo__item}
@@ -260,10 +260,10 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
               {is_overload ? 'Да' : 'Нет'}
             </ApplicationInfoItem>
             <ApplicationInfoItem title='Длина весов'>
-              {scale_length} м
+              {scale_length?.toString().replace('.', ',')} м
             </ApplicationInfoItem>
             <ApplicationInfoItem title='Ограничения по высоте'>
-              {height_limit} м
+              {height_limit?.toString().replace('.', ',')} м
             </ApplicationInfoItem>
             {tolerance_to_the_norm &&
               <ApplicationInfoItem title='Допуск к норме'>
