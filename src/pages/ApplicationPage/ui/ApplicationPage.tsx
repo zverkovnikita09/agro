@@ -26,6 +26,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
 import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem';
 import { Role, UserSelectors } from '@entities/User';
+import {SelectedApplicationSelectors} from "@entities/SelectedApplication/model/SelectedApplication.selectors";
+import {
+  clearSelectedApplication,
+  setSelectedApplication
+} from "@entities/SelectedApplication/model/SelectedApplication.slice";
 
 interface ApplicationPageProps {
   className?: string;
@@ -93,9 +98,17 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   const dispatch = useDispatch()
 
+  // const {setApplications} = useContext(MainLayoutContext);
+
+  const selectedApplication = useSelector(SelectedApplicationSelectors.selectSelectedApplication)
+
   const { handleSendData, isSending, isSuccess } = useSendData({
     url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
+      // setApplications(prev => prev.filter(item => item.id !== id));
+      if (selectedApplication.find(item => item.id === id)){
+        dispatch(clearSelectedApplication());
+      }
     }
   })
 

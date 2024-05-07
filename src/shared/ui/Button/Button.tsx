@@ -106,12 +106,12 @@ export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
         onClick={!withConfirm ? onClick : openConfirm}
         {...otherProps}
       >
-        {isLoading ?
+        {isLoading &&
           <div className={style.loading}>
-            {loadingText ?? 'Отправка'} <Spinner className={style.spinner} theme={SpinnerTheme.SECONDARY} />
+            <Spinner className={style.spinner} theme={SpinnerTheme.SECONDARY} />
           </div>
-          : children
         }
+        {children}
       </Component>
     </>
   )

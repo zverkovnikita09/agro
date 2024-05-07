@@ -14,6 +14,7 @@ import { NotificationType, addNotification } from '@entities/Notifications';
 import { Role, UserSelectors } from '@entities/User';
 import {useContext} from "react";
 import {MainLayoutContext} from "@shared/ui/MainLayout";
+import {clearSelectedApplication} from "@entities/SelectedApplication/model/SelectedApplication.slice";
 
 interface ApplicationContentProps {
   application: Partial<ApplicationModel>;
@@ -27,6 +28,7 @@ export const ApplicationContent = ({ application }: ApplicationContentProps) => 
     url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
       setApplications(prev => prev.filter(item => item.id !== application.id));
+      dispatch(clearSelectedApplication());
     }
   })
 

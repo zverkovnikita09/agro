@@ -38,7 +38,6 @@ export const UserPhoto = (props: UserPhotoProps) => {
     setError,
     allowedFileTypes: ['png', 'jpg', 'jpeg'],
     allowedFileCount: 1,
-    allowedFileSize: 1024 * 1024
   })
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {

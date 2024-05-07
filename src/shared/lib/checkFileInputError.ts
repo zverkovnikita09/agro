@@ -9,7 +9,7 @@ export const checkFileInputError = (args: FnArgs): boolean => {
   const {
     files,
     allowedFileCount = 10,
-    allowedFileSize = 10 * 1024 * 1024,
+    allowedFileSize = 5 * 1024 * 1024,
     allowedFileTypes = ['png', 'jpg', 'jpeg', 'svg', 'webp'],
     setError,
     clearErrors
