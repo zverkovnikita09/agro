@@ -218,7 +218,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             iconSize={26}
             icon={ApplicationIcons.ROUTING}
             iconColor={ApplicationIconColor.ACCENT}
-            additionalText='~ 21 час'
             additionalTextSize={TextSize.L}
             additionalTextColor={TextColor.GREY}
             additionalTextWeight={TextWeight.MEDIUM}

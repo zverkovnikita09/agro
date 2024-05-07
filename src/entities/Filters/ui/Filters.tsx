@@ -45,7 +45,7 @@ export const Filters = (props: FiltersProps) => {
   const [, setLSFilters] = useLocalStorage(LSKeys.FILTERS, null)
   const { control, watch, setValue, reset, handleSubmit } = useForm<FiltersType>();
   const minDistance = 0;
-  const maxDistance = 10000;
+  const maxDistance = 3000;
   const distance_from = watch('distance_from');
   const distance_to = watch('distance_to');
   const dispatch = useDispatch()
@@ -139,7 +139,7 @@ export const Filters = (props: FiltersProps) => {
               names={{ from: 'distance_from', to: 'distance_to' }}
               min={minDistance}
               max={maxDistance}
-              step={500}
+              step={100}
               units='км'
               prevValueTextFrom='от'
               prevValueTextTo='до'
