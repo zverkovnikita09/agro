@@ -17,16 +17,16 @@ interface TabsProps {
   saveInParams?: boolean
 }
 
-export const Tabs = ({ children, defaultValue, saveInParams }: PropsWithChildren<TabsProps>) => {
+export const Tabs = ({ children, defaultValue = 0, saveInParams }: PropsWithChildren<TabsProps>) => {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [value, setValue] = useState<number>(defaultValue ?? (Number(searchParams.get("tab")) || 0));
+  const [value, setValue] = useState<number>(Number(searchParams.get("tab")) || defaultValue);
 
   useEffect(() => {
     if (saveInParams) {
       setSearchParams(prev => {
-        if (value) prev.set("tab", String(value))
-        if (!value) prev.delete("tab")
+        if (value !== defaultValue) prev.set("tab", String(value))
+        if (value === defaultValue) prev.delete("tab")
         return prev;
       })
     }
