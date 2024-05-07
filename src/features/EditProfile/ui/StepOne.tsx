@@ -78,7 +78,6 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
                  * Устанавливаем результат в поле название компании, так как опции являются названием
                  */
                 setValue={(value) => {
-                  console.log(value);
                   setSearchCompany("")
                   setValue("name", value as string)
                 }}
