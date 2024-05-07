@@ -114,8 +114,18 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   const userRole = useSelector(UserSelectors.selectUserRole);
 
+  const getWorkingDays = () => {
+    switch (clarification_of_the_weekend) {
+      case 'суббота': return 'Пн-Сб'
+      case 'воскресенье': return 'Пн-Пт, Вс'
+      case 'суббота и воскресенье': return 'Пн-Вс'
+      default: return 'Пн-Пт'
+    }
+  }
+
   if (!isApplicationSuccess || !isUserApplicationsSuccess) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
 
+  console.log(clarification_of_the_weekend)
   return (
     <div className={cn(styles.applicationPage, className)}>
       <div className={styles.heading}>
@@ -310,7 +320,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
               {unload_methods?.length ? unload_methods?.map(type => (type as unknown as { title: string }).title).join(", ") : "Не указано"}
             </ApplicationInfoItem>
             <ApplicationInfoItem title='Время работы'>
-              {work_time || "Не указано"}
+              {getWorkingDays()} {work_time}
             </ApplicationInfoItem>
             <ApplicationInfoItem title='Хартия'>
               {is_full_charter !== null ? is_full_charter ? "Полная" : "Не полная" : "Не указано"}
