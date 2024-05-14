@@ -65,8 +65,8 @@ export const Sidebar = (props: SidebarProps) => {
   return (
     <div className={cn(styles.sidebar, { [styles.expandedSidebar]: isExpanded || isMobile }, className)} onClick={e => e.stopPropagation()}>
       <div className={styles.logo}>
-        <LogoIcon width={52} height={52} />
-        <LogoText width={70} height={37} />
+        <LogoIcon className={styles.logoIcon} width={52} height={52} />
+        <LogoText className={styles.logoText} width={70} height={37} />
       </div>
       {isMobile &&
         <CloseButton className={styles.close} onClick={onBurgerClose} />

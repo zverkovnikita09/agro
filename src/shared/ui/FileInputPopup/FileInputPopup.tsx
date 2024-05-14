@@ -27,7 +27,7 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
     setError,
     error,
     clearErrors,
-    allowedFileTypes = ['png', 'jpg', 'jpeg'],
+    allowedFileTypes = ['png', 'jpg', 'jpeg', 'pdf'],
     label,
     allowedFileCount,
     title,
@@ -73,7 +73,7 @@ export const FileInputPopup = (props: FileInputPopupProps) => {
   const checkError = (files: File[]) => checkFileInputError({
     files,
     setError,
-    allowedFileTypes: ['png', 'jpg', 'jpeg'],
+    allowedFileTypes: ['png', 'jpg', 'jpeg', 'pdf'],
     allowedFileCount: 1,
   })
 
