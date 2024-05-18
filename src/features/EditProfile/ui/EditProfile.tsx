@@ -92,7 +92,6 @@ export const EditProfile = () => {
     {
       url: "/api/v1/files/update-files",
       withAuthToken: true,
-      method: "POST",
     }
   )
 

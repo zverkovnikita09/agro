@@ -13,7 +13,6 @@ export interface PersonalData {
   department: string
   snils: string
   issue_date_at: string
-  //documents
   juridical_address: string
   office_address: string
   tax_system: string

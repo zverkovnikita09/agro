@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack serve --config config/webpack/webpack.config.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config config/webpack/webpack.config.ts --env mode=production",
+    "build:prod": "webpack --config config/webpack/webpack.config.ts --env mode=production",
+    "build:dev": "webpack --config config/webpack/webpack.config.ts --env mode=development",
     "crtempl": "node ./scripts/templateGenerator/index.js"
   },
   "repository": {

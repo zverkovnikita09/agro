@@ -78,6 +78,7 @@ export const CodeValidationForm = (props: CodeValidationFormProps) => {
 
   const { handleSendData: handleResendCode, isSending: isResending } = useSendData({
     url: "/api/v1/login", onSuccess: ({ data: { user: { code } } }) => {
+      if (process.env.mode === "production") return
       alert(code)
     }
   })
