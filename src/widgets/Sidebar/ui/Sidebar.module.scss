@@ -18,25 +18,27 @@
   gap: 4px;
   width: 97px;
   height: 57px;
+}
 
-  >*:first-child {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    flex-shrink: 0;
-  }
+.logoIcon{
+  position: absolute;
+  left: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  flex-shrink: 0;
+}
 
-  >*:last-child {
-    position: absolute;
-    right: -3px;
-    top: 50%;
-    transform: translateY(-50%);
-    visibility: hidden;
-    width: max-content;
-    margin-right: auto;
-    transition-delay: .08s;
-  }
+.logoText{
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  visibility: hidden;
+  width: max-content;
+  margin-right: auto;
+  transition-delay: .08s;
 }
 
 .linkText {
@@ -54,10 +56,9 @@
   position: relative;
   width: 220px;
 
-  .logo {
-    >*:last-child {
-      visibility: visible;
-    }
+  .logoText {
+    visibility: visible;
+    z-index: 5;
   }
 
   .linkText {

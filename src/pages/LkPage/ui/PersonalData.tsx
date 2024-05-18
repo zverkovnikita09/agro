@@ -61,10 +61,10 @@ export const PersonalData = ({ userInfo, files }: PersonalData) => {
         </div>
       </CardContainer>
       {
-        files?.filter((file) => file.fileType.title !== 'Аватар').length &&
+        !!(files?.filter((file) => file.fileType.title !== 'Аватар').length) &&
         <CardContainer titleName='Документы'>
           <div className={styles.documents}>
-            {/* user?.files?.find((file) => file.fileType.title === 'Аватар')?.path_url ?? '' */
+            {
               files?.filter((file) => file.fileType.title !== 'Аватар').map((file) => (
                 <a href={file.path_url} target='_blank'>
                   <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>

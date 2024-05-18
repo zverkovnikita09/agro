@@ -44,6 +44,8 @@ export const EditProfile = () => {
 
   const userInfo = useSelector(UserSelectors.selectUserData)
 
+  const [isFormSending, setIsFormSending] = useState(false);
+
   const { handleSubmit, watch, control, setValue, resetField } = useForm<UserInfo>({
     mode: "onBlur",
     defaultValues: {
@@ -132,7 +134,7 @@ export const EditProfile = () => {
     if (filesToDelete.length) await deleteFiles({})
   }
 
-  const { handleSendData, isSending } = useSendData(
+  const { handleSendData } = useSendData(
     {
       url: "/api/v1/userprofile/update",
       withAuthToken: true,
@@ -145,6 +147,10 @@ export const EditProfile = () => {
         dispatch(addNotification({ message: 'Данные профиля успешно изменены', type: NotificationType.Success }));
         navigate(RouterPaths.LK)
         dispatch(fetchUserData())
+        setIsFormSending(false)
+      },
+      onError: () => {
+        setIsFormSending(false)
       }
     }
   )
@@ -176,21 +182,29 @@ export const EditProfile = () => {
     deleteProfile({})
   }
 
+  const changeStep = (number: number) => {
+    if (formRef.current) {
+      formRef.current.scrollTo(0, 0);
+    }
+    setFormStep(number);
+  }
+
   const FormContent = () => {
     switch (formStep) {
       case 1: return <StepOne onCancel={closeForm} onDeleteProfile={onDeleteProfile} />
-      case 2: return <StepTwo onPrev={() => setFormStep(1)} isLoading={isSending} onDeleteProfile={onDeleteProfile} />
+      case 2: return <StepTwo onPrev={() => changeStep(1)} isLoading={isFormSending} onDeleteProfile={onDeleteProfile} />
       default: return null
     }
   }
 
   const onFormSend = (data: UserInfo) => {
+    setIsFormSending(true);
     handleSendData(data)
   }
 
   const onSubmit = () => {
     switch (formStep) {
-      case 1: return () => setFormStep(2);
+      case 1: return () => changeStep(2);
       default: return onFormSend
     }
   }

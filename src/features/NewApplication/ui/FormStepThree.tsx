@@ -69,7 +69,6 @@ export const FormStepThree = (props: FormStepThreeProps) => {
     }
   }, [loadTypes])
 
-  /* console.log(price); */
   return (
     <>
       {!isOptionsSuccess && (

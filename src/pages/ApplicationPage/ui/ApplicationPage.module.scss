@@ -145,6 +145,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 12px;
+  grid-template-columns: none;
 
   @media (max-width: $mobileSmall) {
     flex-direction: column;
@@ -152,7 +153,8 @@
 }
 
 .trailInfo {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 

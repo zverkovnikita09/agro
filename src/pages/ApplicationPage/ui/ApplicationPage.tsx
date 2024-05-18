@@ -26,6 +26,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
 import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem';
 import { Role, UserSelectors } from '@entities/User';
+import {SelectedApplicationSelectors} from "@entities/SelectedApplication/model/SelectedApplication.selectors";
+import {
+  clearSelectedApplication,
+  setSelectedApplication
+} from "@entities/SelectedApplication/model/SelectedApplication.slice";
 
 interface ApplicationPageProps {
   className?: string;
@@ -93,16 +98,34 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   const dispatch = useDispatch()
 
+  // const {setApplications} = useContext(MainLayoutContext);
+
+  const selectedApplication = useSelector(SelectedApplicationSelectors.selectSelectedApplication)
+
   const { handleSendData, isSending, isSuccess } = useSendData({
     url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
+      // setApplications(prev => prev.filter(item => item.id !== id));
+      if (selectedApplication.find(item => item.id === id)){
+        dispatch(clearSelectedApplication());
+      }
     }
   })
 
   const userRole = useSelector(UserSelectors.selectUserRole);
 
+  const getWorkingDays = () => {
+    switch (clarification_of_the_weekend) {
+      case 'суббота': return 'Пн-Сб'
+      case 'воскресенье': return 'Пн-Пт, Вс'
+      case 'суббота и воскресенье': return 'Пн-Вс'
+      default: return 'Пн-Пт'
+    }
+  }
+
   if (!isApplicationSuccess || !isUserApplicationsSuccess) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
 
+  console.log(clarification_of_the_weekend)
   return (
     <div className={cn(styles.applicationPage, className)}>
       <div className={styles.heading}>
@@ -198,14 +221,13 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             icon={ApplicationIcons.BOX_3D}
             iconColor={ApplicationIconColor.ACCENT}
           >
-            {volume}&nbsp;тонн
+            {volume?.toString().replace('.', ',')}&nbsp;тонн
           </ApplicationProperty>
           <ApplicationProperty
             className={styles.cargoInfo__item}
             iconSize={26}
             icon={ApplicationIcons.ROUTING}
             iconColor={ApplicationIconColor.ACCENT}
-            additionalText='~ 21 час'
             additionalTextSize={TextSize.L}
             additionalTextColor={TextColor.GREY}
             additionalTextWeight={TextWeight.MEDIUM}
@@ -238,10 +260,10 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
               {is_overload ? 'Да' : 'Нет'}
             </ApplicationInfoItem>
             <ApplicationInfoItem title='Длина весов'>
-              {scale_length} м
+              {scale_length?.toString().replace('.', ',')} м
             </ApplicationInfoItem>
             <ApplicationInfoItem title='Ограничения по высоте'>
-              {height_limit} м
+              {height_limit?.toString().replace('.', ',')} м
             </ApplicationInfoItem>
             {tolerance_to_the_norm &&
               <ApplicationInfoItem title='Допуск к норме'>
@@ -298,7 +320,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
               {unload_methods?.length ? unload_methods?.map(type => (type as unknown as { title: string }).title).join(", ") : "Не указано"}
             </ApplicationInfoItem>
             <ApplicationInfoItem title='Время работы'>
-              {work_time || "Не указано"}
+              {getWorkingDays()} {work_time}
             </ApplicationInfoItem>
             <ApplicationInfoItem title='Хартия'>
               {is_full_charter !== null ? is_full_charter ? "Полная" : "Не полная" : "Не указано"}

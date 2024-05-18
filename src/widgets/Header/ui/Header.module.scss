@@ -16,6 +16,7 @@
   box-shadow: var(--shadow-bottom);
   position: relative;
   border-radius: 12px;
+  overflow: unset;
   
   @media (max-width: $mobile) {
     padding: 12px;

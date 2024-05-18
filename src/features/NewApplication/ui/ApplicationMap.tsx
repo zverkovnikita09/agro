@@ -34,8 +34,6 @@ export const ApplicationMap = ({ setDistance }: ApplicationMapProps) => {
 
   const { from, to } = coords ?? {};
 
-  /*  console.log(from , to) */
-
   const map = useRef<HTMLElement>(null) as any;
   const route = useRef<MultiRoute>();
   const [ymaps, setYmaps] = useState<YMapsApi>();
