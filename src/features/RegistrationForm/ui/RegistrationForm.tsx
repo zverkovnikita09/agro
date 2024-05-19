@@ -17,6 +17,8 @@ interface RegistrationFormProps {
   nextStep?: () => void
 }
 
+ console.log(_MODE_);
+
 export const RegistrationForm = (props: RegistrationFormProps) => {
   const { className, nextStep } = props;
   const [, setPhoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
@@ -30,7 +32,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
     disableNotification: true,
     onSuccess: ({ data: { user: { code } } }) => {
       setPhoneNumber(getValues("phone_number"))
-      process.env.mode !== "production" && alert(code)
+      _MODE_ === "development" && alert(code)
       setTimerTime(Date.now() + 30000)
       nextStep?.()
     },

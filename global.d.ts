@@ -16,4 +16,6 @@ declare module "*.svg" {
   export default SVG;
 }
 
+declare const _MODE_: 'production' | 'development'
+
 // declare var ymaps: any;

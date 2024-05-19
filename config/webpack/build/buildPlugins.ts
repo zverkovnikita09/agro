@@ -24,7 +24,7 @@ export const buildPlugins = ({ mode, paths }: BuildOptions): Configuration['plug
     new HtmlWebpackPlugin({
       template: paths.html,
     }),
-    new webpack.DefinePlugin(envKeys),
+    new webpack.DefinePlugin({ ...envKeys, _MODE_: JSON.stringify(mode) }),
     new CopyWebpackPlugin({
       patterns: [{
         from: 'public',
