@@ -4,6 +4,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { BuildOptions } from "./types/types";
 import CopyWebpackPlugin from "copy-webpack-plugin"
 import dotenv from 'dotenv';
+import { resolveRoot } from "../utils";
 
 export const buildPlugins = ({ mode, paths }: BuildOptions): Configuration['plugins'] => {
   const isDev = mode === 'development';
@@ -20,7 +21,9 @@ export const buildPlugins = ({ mode, paths }: BuildOptions): Configuration['plug
 
 
   const plugins: Configuration['plugins'] = [
-    new HtmlWebpackPlugin({ template: paths.html }),
+    new HtmlWebpackPlugin({
+      template: paths.html,
+    }),
     new webpack.DefinePlugin(envKeys),
     new CopyWebpackPlugin({
       patterns: [{

@@ -1,6 +1,6 @@
-import {Configuration} from "webpack";
-import {resolveRoot} from "../utils";
-import {BuildOptions} from "./types/types";
+import { Configuration } from "webpack";
+import { resolveRoot } from "../utils";
+import { BuildOptions } from "./types/types";
 
 export const buildResolvers = (options: BuildOptions): Configuration['resolve'] => {
   return {

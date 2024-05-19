@@ -4,7 +4,7 @@
   "description": "Приложение для Агро логистик",
   "main": "src/index.tsx",
   "scripts": {
-    "start": "webpack serve --config config/webpack/webpack.config.ts NODE_ENV=production",
+    "start": "webpack serve --config config/webpack/webpack.config.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:prod": "webpack --config config/webpack/webpack.config.ts --env mode=production",
     "build:dev": "webpack --config config/webpack/webpack.config.ts --env mode=development",
