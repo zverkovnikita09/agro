@@ -56,7 +56,7 @@ export const Sidebar = (props: SidebarProps) => {
   const userRole = useSelector(UserSelectors.selectUserRole);
 
   const sidebarProfileText = (): string => {
-    if (userData?.userinfo?.type) return userData.userinfo.name;
+    if (userData?.userinfo?.name) return userData.userinfo.name;
     if (userRole === Role.CLIENT) return "Пользователь"
     if (userRole === Role.LOGIST) return "Логист"
     return ""
