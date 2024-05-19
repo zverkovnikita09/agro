@@ -20,7 +20,7 @@ interface RegistrationFormProps {
 export const RegistrationForm = (props: RegistrationFormProps) => {
   const { className, nextStep } = props;
   const [, setPhoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);
-  const [timerTime, setTimerTime] = useLocalStorage(LSKeys.TIMER_STATE, null);
+  const [, setTimerTime] = useLocalStorage(LSKeys.TIMER_STATE, null);
   const [formError, setFormError] = useState<string | null>(null)
 
   const { handleSubmit, getValues, control } = useForm<RegistrationFormState>({ defaultValues: { phone_number: '' } });
@@ -34,7 +34,7 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
       setTimerTime(Date.now() + 30000)
       nextStep?.()
     },
-    onError: (error) => setFormError(error),
+    onError: (error) => setFormError(error.message),
   })
 
   const sendData = (data: RegistrationFormState) => {
