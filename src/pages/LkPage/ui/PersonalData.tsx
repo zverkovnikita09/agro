@@ -56,7 +56,7 @@ export const PersonalData = ({ userInfo, files }: PersonalData) => {
             {userInfo.department}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='СНИЛС'>
-            {userInfo.snils || "Не указано"}
+            {userInfo.snils || "Не указан"}
           </ApplicationInfoItem>
         </div>
       </CardContainer>
