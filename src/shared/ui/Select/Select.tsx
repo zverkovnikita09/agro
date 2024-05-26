@@ -36,6 +36,7 @@ interface CommonSelectProps {
   noOptionText?: string
   dropdownClassName?: string
   clearOnClose?: boolean
+  disabled?: boolean
 }
 
 interface MultipleSelectProps<T = unknown> {
@@ -73,7 +74,8 @@ export const Select = (props: SelectProps) => {
     searchInputProps,
     dropdownClassName,
     noOptionText = 'Нет доступных элементов',
-    clearOnClose
+    clearOnClose,
+    disabled,
   } = props
 
 
@@ -179,7 +181,8 @@ export const Select = (props: SelectProps) => {
     <ClickAwayListener onClickAway={handleCloseDropdown}>
       <div className={cn(style.select, className,
         { [style.fullWidth]: fullWidth },
-        { [style.noArrow]: noArrow }
+        { [style.noArrow]: noArrow },
+        { [style.disabled]: disabled }
       )}>
         {withInputSearch && isDropdownOpen &&
           <Input

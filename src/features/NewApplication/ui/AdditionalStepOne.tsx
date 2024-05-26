@@ -107,13 +107,6 @@ export const AdditionalStepOne = (props: AdditionalStepOneProps) => {
                 label='Где будет осуществляться погрузка'
                 withInputSearch
               />
-              /*  <InputAutocomplete
-                 label='Где будет осуществляться погрузка'
-                 value={value}
-                 setValue={onChange}
-                 onBlur={onBlur}
-                 autocompleteItems={["Склад", "Ток", "Поле", "Элеватор"]}
-               /> */
             )}
           />
         </div>

@@ -17,8 +17,6 @@ interface RegistrationFormProps {
   nextStep?: () => void
 }
 
- console.log(_MODE_);
-
 export const RegistrationForm = (props: RegistrationFormProps) => {
   const { className, nextStep } = props;
   const [, setPhoneNumber] = useLocalStorage(LSKeys.PHONE_NUMBER_TO_CONFIRM, null);

@@ -1,9 +1,8 @@
 import { Text, TextSize, TextWeight } from "@shared/ui/Text"
 import styles from './EditProfile.module.scss'
 import { Controller } from "react-hook-form"
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { EditProfileContext } from "./EditProfile";
-import { Input } from "@shared/ui/Input";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { FileInputPopup } from "@shared/ui/FileInputPopup";
 import { UploadImageButton } from "@shared/ui/UploadImageButton";
@@ -11,6 +10,12 @@ import { FileToSendType } from "../model/editProfile.model";
 import { useDispatch, useSelector } from "react-redux";
 import { NotificationType, addNotification } from "@entities/Notifications";
 import { UserSelectors } from "@entities/User";
+import { Checkbox } from "@shared/ui/Checkbox";
+import { useToggleValue } from "@shared/hook/useToggleValue";
+import { Select } from "@shared/ui/Select";
+import { useSearchByDadata } from "@shared/hook/useSearchByDadata";
+import { LoadingBlock } from "@shared/ui/LoadingBlock";
+import { useGetData } from "@shared/hook/useGetData";
 
 interface StepTwoProps {
   onPrev: () => void
@@ -19,9 +24,20 @@ interface StepTwoProps {
 }
 
 export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) => {
-  const { control, fileTypes, setFiles, files, setFilesToDelete, filesToDelete } = useContext(EditProfileContext);
+  const {
+    control,
+    fileTypes,
+    setFiles,
+    files,
+    setFilesToDelete,
+    filesToDelete,
+    watch,
+    setValue
+  } = useContext(EditProfileContext);
 
   const dispatch = useDispatch();
+
+  const [addressCheckbox, toggleAddressCheckbox] = useToggleValue(true)
 
   const user = useSelector(UserSelectors.selectUserData);
 
@@ -43,8 +59,44 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
     }
   }
 
+  const [searchPlace, setSearchPlace] = useState('');
+  const [placeOptions, setPlaceOptions] = useState<any[]>([]);
+  const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
+  const minPlaceQueryLength = 3;
+
+  useSearchByDadata<{ suggestions: any[] }>({
+    query: searchPlace,
+    target: 'address',
+    debounceTime: 700,
+    minQueryLength: minPlaceQueryLength,
+    onSuccess: (data) => {
+      setPlaceOptions(data?.suggestions ?? []);
+      setIsPlaceOptionsLoading(false);
+    },
+  });
+
+  const juridical_address = watch("juridical_address");
+
+  useEffect(() => {
+    if (addressCheckbox) {
+      setValue("office_address", juridical_address)
+    }
+  }, [addressCheckbox, juridical_address])
+
+  const { data: options, isSuccess: isOptionsSuccess } = useGetData<string[]>(
+    {
+      url: '/api/v1/userprofile/tax-systems',
+      dataFlag: true,
+      withAuthToken: true,
+    })
+
   return (
     <>
+      {!isOptionsSuccess && (
+        <div className={styles.loading}>
+          <LoadingBlock />
+        </div>
+      )}
       <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}
@@ -55,12 +107,27 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
         <Controller
           name="juridical_address"
           control={control}
-          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-            <Input
+          render={({ field: { value, name, onChange }, formState: { errors } }) => (
+            <Select
               label='Юридический адрес'
+              withInputSearch
+              onSearchInput={(value) => {
+                if (value.length < minPlaceQueryLength) {
+                  setPlaceOptions([]);
+                  return;
+                }
+                setIsPlaceOptionsLoading(true);
+                setSearchPlace(value);
+              }}
+              hideOptions={isPlaceOptionsLoading}
+              options={placeOptions.map(item => item.value as string)}
+              minLengthForOptions={minPlaceQueryLength}
               value={value}
-              onChange={onChange}
-              onBlur={onBlur}
+              setValue={(value) => {
+                setSearchPlace("")
+                onChange(value)
+              }}
+              noArrow
               error={errors[name]?.message as string}
             />
           )}
@@ -68,26 +135,49 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
         <Controller
           name="office_address"
           control={control}
-          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-            <Input
+          render={({ field: { value, name, onChange }, formState: { errors } }) => (
+            <Select
               label='Фактический адрес'
+              withInputSearch
+              onSearchInput={(value) => {
+                if (value.length < minPlaceQueryLength) {
+                  setPlaceOptions([]);
+                  return;
+                }
+                setIsPlaceOptionsLoading(true);
+                setSearchPlace(value);
+              }}
+              hideOptions={isPlaceOptionsLoading}
+              options={placeOptions.map(item => item.value as string)}
+              minLengthForOptions={minPlaceQueryLength}
               value={value}
-              onChange={onChange}
-              onBlur={onBlur}
+              setValue={(value) => {
+                setSearchPlace("")
+                onChange(value)
+              }}
+              noArrow
+              disabled={addressCheckbox}
               error={errors[name]?.message as string}
             />
           )}
         />
+        <Checkbox
+          checked={addressCheckbox}
+          name="addressToggler"
+          setChecked={toggleAddressCheckbox}
+        >
+          Фактический адрес совпадает с юридическим
+        </Checkbox>
         <Controller
           name="tax_system"
           control={control}
-          render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-            <Input
-              label='Система налогооблажения'
+          render={({ field: { value, onChange } }) => (
+            <Select
+              options={options ?? []}
+              setValue={onChange}
               value={value}
-              onChange={onChange}
-              onBlur={onBlur}
-              error={errors[name]?.message as string}
+              label='Система налогооблажения'
+              withInputSearch
             />
           )}
         />

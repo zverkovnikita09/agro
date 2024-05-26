@@ -18,7 +18,7 @@ export interface DataResponse<T> {
 
 export const getData = async <T extends {}>
   ({
-    baseUrl = process.env.BASE_URL,
+    baseUrl = _MODE_ === "development" ? process.env.DEV_URL : process.env.PROD_URL,
     dataFlag,
     url,
     headers = {},
@@ -50,7 +50,7 @@ export interface sendDataParams<T> {
 
 export const sendData = async <DataType extends {}>
   ({
-    baseUrl = process.env.BASE_URL,
+    baseUrl = _MODE_ === "development" ? process.env.DEV_URL : process.env.PROD_URL,
     data,
     url,
     headers = {},

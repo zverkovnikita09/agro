@@ -6,6 +6,15 @@
 
   --select-height: 53px;
   --select-filters-height: 44px;
+
+  &.disabled {
+    color: var(--disabled-color);
+    pointer-events: none;
+
+    .toggler {
+      border-color: var(--disabled-color);
+    }
+  }
 }
 
 .toggler {

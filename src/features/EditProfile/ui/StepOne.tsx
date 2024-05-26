@@ -19,8 +19,12 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
   const [searchCompany, setSearchCompany] = useState('');
   const [companyOptions, setCompanyOptions] = useState<any[]>([]);
   const [isCompanyOptionsLoading, setIsCompanyOptionsLoading] = useState(false);
-
   const minCompanyQueryLength = 2;
+
+  const [searchFms, setSearchFms] = useState('');
+  const [fmsOptions, setFmsOptions] = useState<any[]>([]);
+  const [isFmsOptionsLoading, setIsFmsOptionsLoading] = useState(false);
+  const minFmsQueryLength = 2;
 
   useSearchByDadata<{ suggestions: any[] }>({
     query: searchCompany,
@@ -33,7 +37,19 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
     },
   });
 
+  useSearchByDadata<{ suggestions: any[] }>({
+    query: searchFms,
+    target: 'fms_unit',
+    debounceTime: 700,
+    minQueryLength: minFmsQueryLength,
+    onSuccess: (data) => {
+      setFmsOptions(data?.suggestions ?? []);
+      setIsFmsOptionsLoading(false);
+    },
+  });
+
   const company = watch("name")
+  const department = watch("department")
 
   useEffect(() => {
     if (company && companyOptions.length) {
@@ -41,8 +57,15 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
       setValue("ogrn", companyOptions.find(item => item.value === company)?.data?.ogrn ?? "");
       setValue("okved", companyOptions.find(item => item.value === company)?.data?.okved ?? "");
       setValue("type", companyOptions.find(item => item.value === company)?.data?.type === "LEGAL" ? "ООО" : "ИП");
+      setValue("juridical_address", companyOptions.find(item => item.value === company)?.data?.address?.value ?? "")
     }
   }, [company])
+
+  useEffect(() => {
+    if (department && fmsOptions.length) {
+      setValue("department_code", fmsOptions.find(item => item.value === department)?.data?.code);
+    }
+  }, [department])
 
   return (
     <>
@@ -188,6 +211,39 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
           <Controller
             name="department_code"
             control={control}
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name }, formState: { errors } }) => (
+              <Select
+                label='Код подразделения'
+                withInputSearch
+                onSearchInput={(value) => {
+                  if (value.length < minFmsQueryLength) {
+                    setFmsOptions([]);
+                    return;
+                  }
+                  setIsFmsOptionsLoading(true);
+                  setSearchFms(value);
+                }}
+                hideOptions={isFmsOptionsLoading}
+                options={fmsOptions.map(item => item?.value as string)}
+                minLengthForOptions={minFmsQueryLength}
+                value={value}
+                /**
+                 * Устанавливаем результат в поле кем выдан, так как опции являются названием подразделения
+                 */
+                setValue={(value) => {
+                  setSearchFms("")
+                  setValue("department", value as string)
+                }}
+                noArrow
+                error={errors[name]?.message as string}
+                searchInputProps={{ type: "number" }}
+              />
+            )}
+          />
+          {/* <Controller
+            name="department_code"
+            control={control}
             rules={{
               required: "Поле обязательно к заполнению",
               pattern: {
@@ -206,7 +262,7 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
                 type="tel"
               />
             )}
-          />
+          /> */}
         </div>
         <div className={styles.inputsThreeRow}>
           <Controller
@@ -264,10 +320,10 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
             name="snils"
             control={control}
             rules={{
-              required: "Поле обязательно к заполнению",
+              required: false,
               pattern: {
                 value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
+                message: 'Некорректное значение поля снилс'
               }
             }}
             render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (

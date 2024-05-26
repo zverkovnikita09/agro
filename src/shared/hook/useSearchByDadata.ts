@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useSendData } from "./useSendData"
 import { useDebounce } from "./useDebounce"
 
 interface useSearchByDadataProps<T> {
   query: string //запрос
-  target: 'address' | 'party' //address - поиск адреса по строке, party - поиск компании по инн или названию
+  target: 'address' | 'party' | 'fms_unit' //address - поиск адреса по строке, party - поиск компании по инн или названию, fms_unit - кем выдан паспорт
   queryParams?: Record<string, string>
   debounceTime?: number
   minQueryLength?: number
