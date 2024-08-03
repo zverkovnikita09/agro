@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux';
 import { addNotification, NotificationType } from '@entities/Notifications';
 import { useAppDispatch } from '@src/app/store/model/hook';
 import { useGetData } from '@shared/hook/useGetData';
-import { FileToSendType, FileType } from '../model/editProfile.model';
+import { FileToSendType,  } from '../model/editProfile.model';
 import { LoadingBlock } from '@shared/ui/LoadingBlock';
 
 interface EditProfileContextProps {
@@ -26,7 +26,6 @@ interface EditProfileContextProps {
   control: Control<UserInfo, any>
   setValue: UseFormSetValue<UserInfo>
   resetField: UseFormResetField<UserInfo>
-  fileTypes?: FileType[]
   files: FileToSendType[]
   setFiles: Dispatch<SetStateAction<FileToSendType[]>>
   filesToDelete: FileToSendType[]
@@ -49,32 +48,32 @@ export const EditProfile = () => {
   const { handleSubmit, watch, control, setValue, resetField } = useForm<UserInfo>({
     mode: "onBlur",
     defaultValues: {
-      department: userInfo?.userinfo?.department ?? "",
-      department_code: userInfo?.userinfo?.department_code ?? "",
-      inn: userInfo?.userinfo?.inn ?? undefined,
-      issue_date_at: userInfo?.userinfo?.issue_date_at ?? "",
-      juridical_address: userInfo?.userinfo?.juridical_address ?? "",
-      name: userInfo?.userinfo?.name ?? "",
-      number: userInfo?.userinfo?.number,
-      office_address: userInfo?.userinfo?.office_address ?? "",
-      ogrn: userInfo?.userinfo?.ogrn,
-      okved: userInfo?.userinfo?.okved ?? "",
-      series: userInfo?.userinfo?.series,
-      snils: userInfo?.userinfo?.snils ?? "",
-      tax_system: userInfo?.userinfo?.tax_system ?? "",
-      type: userInfo?.userinfo?.type
+      department: userInfo?.department ?? "",
+      department_code: userInfo?.department_code ?? "",
+      inn: userInfo?.inn ?? undefined,
+      issue_date_at: userInfo?.issue_date_at ?? "",
+      juridical_address: userInfo?.juridical_address ?? "",
+      name: userInfo?.name ?? "",
+      number: userInfo?.number,
+      office_address: userInfo?.office_address ?? "",
+      ogrn: userInfo?.ogrn,
+      okved: userInfo?.okved ?? "",
+      series: userInfo?.series,
+      snils: userInfo?.snils ?? "",
+      tax_system: userInfo?.tax_system ?? "",
+      type: userInfo?.type
     }
   });
 
   const [files, setFiles] = useState<FileToSendType[]>(
-    userInfo?.files?.map((file) => ({ file_types: file.fileType.id, title: file.fileType.title })) ?? []
+    userInfo?.files?.map((file) => ({ file_type: file.type })) ?? []
   )
 
   const [filesToDelete, setFilesToDelete] = useState<FileToSendType[]>([])
 
   const [avatar, setAvatar] = useState<File>();
 
-  const initialAvatar = userInfo?.files?.find((file) => file.fileType.title === 'Аватар')?.path_url ?? '';
+  const initialAvatar = userInfo?.files?.find((file) => file.type === 'Аватар')?.path_url ?? '';
 
   const dispatch = useAppDispatch()
 
@@ -86,7 +85,7 @@ export const EditProfile = () => {
   )
 
   const { handleSendData: createFiles } = useSendData({
-    url: "/api/v1/files/load_files",
+    url: "/api/v1/files/load-files",
     withAuthToken: true
   })
 
@@ -102,47 +101,43 @@ export const EditProfile = () => {
       url: "/api/v1/files/delete-files",
       withAuthToken: true,
       method: "DELETE",
-      params: { file_types: filesToDelete.map(item => item.file_types) }
+      params: { file_types: filesToDelete.map(item => item.file_type) }
     }
   )
 
   const handleSendFiles = async (files: FileToSendType[]) => {
-    const filteredFiles = files.filter((file) => file.load_files);
+    const filteredFiles = files.filter((file) => file.file_type);
 
     const filesToLoad = filteredFiles.reduce((acc, item) => {
-      if (userInfo?.files?.find((file) => file.fileType.id === item.file_types)) {
+      if (userInfo?.files?.find((file) => file.type === item.file_type)) {
         return acc
       }
       return [...acc, item];
     }, [] as FileToSendType[])
 
     const filesToUpdate = filteredFiles.reduce((acc, item) => {
-      if (userInfo?.files?.find((file) => file.fileType.id === item.file_types)) {
+      if (userInfo?.files?.find((file) => file.type === item.file_type)) {
         return [...acc, item]
       }
       return acc;
     }, [] as FileToSendType[])
 
-    const file_types_loading = filesToLoad.map(item => item.file_types);
-    const load_files_loading = filesToLoad.map(item => item.load_files);
 
-    const file_types_updating = filesToUpdate.map(item => item.file_types);
-    const load_files_updating = filesToUpdate.map(item => item.load_files);
-
-    if (filesToLoad.length) await createFiles({ file_types: file_types_loading, load_files: load_files_loading })
-    if (filesToUpdate.length) await updateFiles({ file_types: file_types_updating, load_files: load_files_updating })
-    if (filesToDelete.length) await deleteFiles({})
+    if (filesToLoad.length) await createFiles({ documents: filesToLoad })
+    if (filesToUpdate.length) await updateFiles({ documents: filesToUpdate })
   }
 
   const { handleSendData } = useSendData(
     {
-      url: "/api/v1/userprofile/update",
+      url: `/api/v1/counteragents/${userInfo?.id}`,
       withAuthToken: true,
       method: "PUT",
       type: "x-www-form-urlencoded",
       onSuccess: async () => {
         if (avatar) await changeAvatar({ avatar })
+        console.log(filesToDelete, filesToDelete.length)
         if (files.length) await handleSendFiles(files)
+        if (filesToDelete.length) await deleteFiles({})
 
         dispatch(addNotification({ message: 'Данные профиля успешно изменены', type: NotificationType.Success }));
         navigate(RouterPaths.LK)
@@ -167,12 +162,6 @@ export const EditProfile = () => {
       }
     }
   )
-
-  const { data: fileTypes, isSuccess: isFileTypeSuccess } = useGetData<FileType[]>({
-    url: "/api/v1/files/file_types",
-    withAuthToken: true,
-    dataFlag: true
-  })
 
   const closeForm = () => {
     navigate(RouterPaths.LK)
@@ -224,9 +213,6 @@ export const EditProfile = () => {
   return (
     <div className={styles.editProfile}>
       <CardContainer className={styles.container}>
-        {
-          !isFileTypeSuccess && <div className={styles.loading}><LoadingBlock /></div>
-        }
         <CloseButton onClick={closeForm} className={styles.closeBtn} />
         <div className={styles.heading}>
           <UserPhoto
@@ -240,7 +226,7 @@ export const EditProfile = () => {
             <Text color={TextColor.GREY} size={TextSize.XL}>Заполните свои личные данные</Text>
           </div>
         </div>
-        <EditProfileContext.Provider value={{ watch, control, setValue, resetField, fileTypes, files, setFiles, filesToDelete, setFilesToDelete }}>
+        <EditProfileContext.Provider value={{ watch, control, setValue, resetField, files, setFiles, filesToDelete, setFilesToDelete }}>
           <form ref={formRef} className={styles.form} onSubmit={handleSubmit(onSubmit())}>
             {FormContent()}
           </form>

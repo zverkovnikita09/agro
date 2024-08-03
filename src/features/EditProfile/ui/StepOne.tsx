@@ -320,7 +320,7 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
             name="snils"
             control={control}
             rules={{
-              required: false,
+              required: "Поле обязательно к заполнению",
               pattern: {
                 value: /^[^_]*$/,
                 message: 'Некорректное значение поля снилс'

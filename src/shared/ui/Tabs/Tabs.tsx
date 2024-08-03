@@ -15,18 +15,22 @@ export const TabsContext = createContext<TabsContext>({
 interface TabsProps {
   defaultValue?: number
   saveInParams?: boolean
+  paramKey?: string;
 }
 
-export const Tabs = ({ children, defaultValue = 0, saveInParams }: PropsWithChildren<TabsProps>) => {
+export const Tabs = ({ children, defaultValue = 0, saveInParams, paramKey = 'tab' }: PropsWithChildren<TabsProps>) => {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [value, setValue] = useState<number>(Number(searchParams.get("tab")) || defaultValue);
+  const [value, setValue] = useState<number>(
+    saveInParams ?
+      (Number(searchParams.get(paramKey)) || defaultValue) :
+      defaultValue);
 
   useEffect(() => {
     if (saveInParams) {
       setSearchParams(prev => {
-        if (value !== defaultValue) prev.set("tab", String(value))
-        if (value === defaultValue) prev.delete("tab")
+        if (value !== defaultValue) prev.set(paramKey, String(value))
+        if (value === defaultValue) prev.delete(paramKey)
         return prev;
       })
     }

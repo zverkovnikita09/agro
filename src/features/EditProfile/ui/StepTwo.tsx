@@ -26,7 +26,6 @@ interface StepTwoProps {
 export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) => {
   const {
     control,
-    fileTypes,
     setFiles,
     files,
     setFilesToDelete,
@@ -41,21 +40,21 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
 
   const user = useSelector(UserSelectors.selectUserData);
 
-  const handleFileChange = (id: string, title: string) => (file: File) => {
-    const fileObj: FileToSendType = { file_types: id, title, load_files: file };
+  const handleFileChange = (title: string) => (file: File) => {
+    const fileObj: FileToSendType = { file_type: title, file: file };
 
-    if (filesToDelete.find(file => file.title === title)) {
-      setFilesToDelete(prev => prev.filter(item => item.title !== title))
+    if (filesToDelete.find(file => file.file_type === title)) {
+      setFilesToDelete(prev => prev.filter(item => item.file_type !== title))
     }
 
-    setFiles((prev) => [...prev.filter(({ file_types }) => file_types !== id), fileObj])
+    setFiles((prev) => [...prev.filter(({ file_type }) => file_type !== title), fileObj])
   }
 
-  const handeleFileDelete = (name: string) => () => {
-    setFiles((prev) => [...prev.filter(({ title }) => title !== name)])
-    const fileToDelete = user?.files?.find(file => file.fileType.title === name);
+  const handleFileDelete = (title: string) => () => {
+    setFiles((prev) => [...prev.filter(({ file_type }) => file_type !== title)])
+    const fileToDelete = user?.files?.find(file => file.type === title);
     if (fileToDelete) {
-      setFilesToDelete(prev => [...prev, { file_types: fileToDelete.fileType.id, title: name }])
+      setFilesToDelete(prev => [...prev, { file_type: fileToDelete.type }])
     }
   }
 
@@ -192,28 +191,28 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
         <div className={styles.inputsRowWithGap}>
           <FileInputPopup
             title={'Реквизиты'}
-            setFile={handleFileChange(fileTypes?.find(item => item.title === 'Реквизиты')?.id ?? "", 'Реквизиты')}
+            setFile={handleFileChange('Реквизиты')}
             setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
           >
             {(openPopup) =>
               <UploadImageButton
                 handleOpenPopup={openPopup}
-                handleDeleteImage={handeleFileDelete("Реквизиты")}
-                hasImage={!!(files.find(item => item.title === 'Реквизиты'))}
+                handleDeleteImage={handleFileDelete("Реквизиты")}
+                hasImage={!!(files.find(item => item.file_type === 'Реквизиты'))}
               >
                 Реквизиты
               </UploadImageButton>}
           </FileInputPopup>
           <FileInputPopup
             title={'ПСФЛ'}
-            setFile={handleFileChange(fileTypes?.find(item => item.title === 'ПСФЛ')?.id ?? "", 'ПСФЛ')}
+            setFile={handleFileChange('ПСФЛ')}
             setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
           >
             {(openPopup) =>
               <UploadImageButton
                 handleOpenPopup={openPopup}
-                handleDeleteImage={handeleFileDelete("ПСФЛ")}
-                hasImage={!!(files.find(item => item.title === 'ПСФЛ'))}
+                handleDeleteImage={handleFileDelete("ПСФЛ")}
+                hasImage={!!(files.find(item => item.file_type === 'ПСФЛ'))}
               >
                 ПСФЛ
               </UploadImageButton>
@@ -221,14 +220,14 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           </FileInputPopup>
           <FileInputPopup
             title={'ЕФС'}
-            setFile={handleFileChange(fileTypes?.find(item => item.title === 'ЕФС')?.id ?? "", 'ЕФС')}
+            setFile={handleFileChange('ЕФС')}
             setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
           >
             {(openPopup) =>
               <UploadImageButton
                 handleOpenPopup={openPopup}
-                handleDeleteImage={handeleFileDelete("ЕФС")}
-                hasImage={!!(files.find(item => item.title === 'ЕФС'))}
+                handleDeleteImage={handleFileDelete("ЕФС")}
+                hasImage={!!(files.find(item => item.file_type === 'ЕФС'))}
               >
                 ЕФС
               </UploadImageButton>
@@ -236,14 +235,14 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           </FileInputPopup>
           <FileInputPopup
             title={'Налоговая тайна'}
-            setFile={handleFileChange(fileTypes?.find(item => item.title === 'Налоговая тайна')?.id ?? "", 'Налоговая тайна')}
+            setFile={handleFileChange('Налоговая тайна')}
             setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
           >
             {(openPopup) =>
               <UploadImageButton
                 handleOpenPopup={openPopup}
-                handleDeleteImage={handeleFileDelete("Налоговая тайна")}
-                hasImage={!!(files.find(item => item.title === 'Налоговая тайна'))}
+                handleDeleteImage={handleFileDelete("Налоговая тайна")}
+                hasImage={!!(files.find(item => item.file_type === 'Налоговая тайна'))}
               >
                 Налоговая тайна
               </UploadImageButton>
@@ -251,14 +250,14 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           </FileInputPopup>
           <FileInputPopup
             title={'Патент'}
-            setFile={handleFileChange(fileTypes?.find(item => item.title === 'Патент')?.id ?? "", 'Патент')}
+            setFile={handleFileChange('Патент')}
             setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
           >
             {(openPopup) =>
               <UploadImageButton
                 handleOpenPopup={openPopup}
-                handleDeleteImage={handeleFileDelete("Патент")}
-                hasImage={!!(files.find(item => item.title === 'Патент'))}
+                handleDeleteImage={handleFileDelete("Патент")}
+                hasImage={!!(files.find(item => item.file_type === 'Патент'))}
               >
                 Патент
               </UploadImageButton>
@@ -266,14 +265,14 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           </FileInputPopup>
           <FileInputPopup
             title={'УСН'}
-            setFile={handleFileChange(fileTypes?.find(item => item.title === 'УСН')?.id ?? "", 'УСН')}
+            setFile={handleFileChange('УСН')}
             setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
           >
             {(openPopup) =>
               <UploadImageButton
                 handleOpenPopup={openPopup}
-                handleDeleteImage={handeleFileDelete("УСН")}
-                hasImage={!!(files.find(item => item.title === 'УСН'))}
+                handleDeleteImage={handleFileDelete("УСН")}
+                hasImage={!!(files.find(item => item.file_type === 'УСН'))}
               >
                 УСН
               </UploadImageButton>
@@ -281,14 +280,14 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           </FileInputPopup>
           <FileInputPopup
             title={'НДС'}
-            setFile={handleFileChange(fileTypes?.find(item => item.title === 'НДС')?.id ?? "", 'НДС')}
+            setFile={handleFileChange('НДС')}
             setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
           >
             {(openPopup) =>
               <UploadImageButton
                 handleOpenPopup={openPopup}
-                handleDeleteImage={handeleFileDelete("НДС")}
-                hasImage={!!(files.find(item => item.title === 'НДС'))}
+                handleDeleteImage={handleFileDelete("НДС")}
+                hasImage={!!(files.find(item => item.file_type === 'НДС'))}
               >
                 НДС
               </UploadImageButton>

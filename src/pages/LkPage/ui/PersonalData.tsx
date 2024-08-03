@@ -3,19 +3,19 @@ import styles from './LkPage.module.scss'
 import { ApplicationIcons, ApplicationProperty } from '@shared/ui/ApplicationProperty'
 import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem'
 import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text'
-import { UserFiles, UserInfo } from '@entities/User'
+import {User, UserFiles, UserInfo} from '@entities/User'
 import { InfoBlock, InfoBlockIconColor, InfoBlockIcons } from "@shared/ui/InfoBlock";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
 import { Link } from 'react-router-dom'
 import { RouterPaths } from '@src/app/router'
 
 interface PersonalData {
-  userInfo?: UserInfo
+  user?: User
   files?: UserFiles[]
 }
 
-export const PersonalData = ({ userInfo, files }: PersonalData) => {
-  if (!userInfo?.type) return (
+export const PersonalData = ({ user, files }: PersonalData) => {
+  if (!user?.type) return (
     <InfoBlock
       icon={InfoBlockIcons.EDIT}
       iconSize={46}
@@ -41,34 +41,34 @@ export const PersonalData = ({ userInfo, files }: PersonalData) => {
       <CardContainer titleName='Личные данные'>
         <div className={styles.passportData}>
           {<ApplicationInfoItem title='Серия паспорта'>
-            {userInfo.series}
+            {user.series}
           </ApplicationInfoItem>}
           <ApplicationInfoItem title='Номер паспорта'>
-            {userInfo.number}
+            {user.number}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='Код подразделения'>
-            {userInfo.department_code}
+            {user.department_code}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='Дата выдачи'>
-            {userInfo.issue_date_at}
+            {user.issue_date_at}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='Кем выдан'>
-            {userInfo.department}
+            {user.department}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='СНИЛС'>
-            {userInfo.snils || "Не указан"}
+            {user.snils}
           </ApplicationInfoItem>
         </div>
       </CardContainer>
       {
-        !!(files?.filter((file) => file.fileType.title !== 'Аватар').length) &&
+        !!(files?.filter((file) => file.type !== 'Аватар').length) &&
         <CardContainer titleName='Документы'>
           <div className={styles.documents}>
             {
-              files?.filter((file) => file.fileType.title !== 'Аватар').map((file) => (
+              files?.filter((file) => file.type !== 'Аватар').map((file) => (
                 <a href={file.path_url} target='_blank'>
                   <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
-                    {file.fileType.title}
+                    {file.type}
                   </ApplicationProperty>
                 </a>
               ))
@@ -79,14 +79,14 @@ export const PersonalData = ({ userInfo, files }: PersonalData) => {
       <CardContainer titleName='Информация'>
         <div className={styles.information}>
           <ApplicationInfoItem title='Юридический адрес'>
-            {userInfo.juridical_address}
+            {user.juridical_address}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='Фактический адрес'>
-            {userInfo.office_address}
+            {user.office_address}
           </ApplicationInfoItem>
           <div className={styles.note}>
             <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Система налогооблажения</Text>
-            <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{userInfo.tax_system}</Text>
+            <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{user.tax_system}</Text>
           </div>
         </div>
       </CardContainer>

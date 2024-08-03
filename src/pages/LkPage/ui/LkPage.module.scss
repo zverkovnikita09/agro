@@ -65,6 +65,16 @@
   }
 }
 
+.documentsSort{
+  margin-left: auto;
+  max-width: 271px;
+  --select-height: 40px;
+}
+
+.selectToggler{
+  padding: 10px 42px 10px 12px;
+}
+
 .personalData {
   display: grid;
   gap: 32px;

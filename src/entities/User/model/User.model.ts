@@ -23,17 +23,13 @@ export interface PersonalData {
 export type UserInfo = MainOrganisationInfo & PersonalData
 
 export interface UserFiles {
-  fileType: {
-    title: string
-    id: string
-  }
-  id: string,
+  type: string
+  id: string
   path_url: string
 }
-export interface User {
+export interface User extends UserInfo {
   id: string
   phone_number: string,
-  userinfo?: UserInfo
   files?: UserFiles[]
   roles?: [
     { slug: Role }
