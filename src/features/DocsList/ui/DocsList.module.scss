@@ -1,0 +1,33 @@
+@import "@src/app/styles/mediaQueries";
+
+.docsList {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height: 100%;
+}
+.documentsWrapper{
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 18px 24px 18px;
+  height: 100%;
+}
+
+.tabsHeading {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+
+  @media (max-width: $mobile) {
+    padding: 0 12px 12px;
+    overflow-x: auto;
+  }
+}
+
+.documentsSort{
+  margin-left: auto;
+  max-width: 271px;
+  --select-height: 40px;
+}

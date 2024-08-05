@@ -16,6 +16,7 @@ import { Select } from "@shared/ui/Select";
 import { useSearchByDadata } from "@shared/hook/useSearchByDadata";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
 import { useGetData } from "@shared/hook/useGetData";
+import {Input} from "@shared/ui/Input";
 
 interface StepTwoProps {
   onPrev: () => void
@@ -34,265 +35,308 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
     setValue
   } = useContext(EditProfileContext);
 
-  const dispatch = useDispatch();
+  const [searchFms, setSearchFms] = useState('');
+  const [fmsOptions, setFmsOptions] = useState<any[]>([]);
+  const [isFmsOptionsLoading, setIsFmsOptionsLoading] = useState(false);
+  const minFmsQueryLength = 2;
 
-  const [addressCheckbox, toggleAddressCheckbox] = useToggleValue(true)
-
-  const user = useSelector(UserSelectors.selectUserData);
-
-  const handleFileChange = (title: string) => (file: File) => {
-    const fileObj: FileToSendType = { file_type: title, file: file };
-
-    if (filesToDelete.find(file => file.file_type === title)) {
-      setFilesToDelete(prev => prev.filter(item => item.file_type !== title))
-    }
-
-    setFiles((prev) => [...prev.filter(({ file_type }) => file_type !== title), fileObj])
-  }
-
-  const handleFileDelete = (title: string) => () => {
-    setFiles((prev) => [...prev.filter(({ file_type }) => file_type !== title)])
-    const fileToDelete = user?.files?.find(file => file.type === title);
-    if (fileToDelete) {
-      setFilesToDelete(prev => [...prev, { file_type: fileToDelete.type }])
-    }
-  }
-
-  const [searchPlace, setSearchPlace] = useState('');
-  const [placeOptions, setPlaceOptions] = useState<any[]>([]);
-  const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
-  const minPlaceQueryLength = 3;
+  const department = watch("department")
 
   useSearchByDadata<{ suggestions: any[] }>({
-    query: searchPlace,
-    target: 'address',
+    query: searchFms,
+    target: 'fms_unit',
     debounceTime: 700,
-    minQueryLength: minPlaceQueryLength,
+    minQueryLength: minFmsQueryLength,
     onSuccess: (data) => {
-      setPlaceOptions(data?.suggestions ?? []);
-      setIsPlaceOptionsLoading(false);
+      setFmsOptions(data?.suggestions ?? []);
+      setIsFmsOptionsLoading(false);
     },
   });
 
-  const juridical_address = watch("juridical_address");
-
   useEffect(() => {
-    if (addressCheckbox) {
-      setValue("office_address", juridical_address)
+    if (department && fmsOptions.length) {
+      setValue("department_code", fmsOptions.find(item => item.value === department)?.data?.code);
     }
-  }, [addressCheckbox, juridical_address])
-
-  const { data: options, isSuccess: isOptionsSuccess } = useGetData<string[]>(
-    {
-      url: '/api/v1/userprofile/tax-systems',
-      dataFlag: true,
-      withAuthToken: true,
-    })
+  }, [department])
 
   return (
     <>
-      {!isOptionsSuccess && (
-        <div className={styles.loading}>
-          <LoadingBlock />
+      <div className={styles.inputBlock}>
+        <Text
+          weight={TextWeight.BOLD}
+          size={TextSize.XL}
+        >
+          Личные данные
+        </Text>
+        <div className={styles.inputsThreeRow}>
+          <Controller
+            name="series"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+              pattern: {
+                value: /^[^_]*$/,
+                message: 'Поле обязательно к заполнению'
+              }
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Серия паспорта'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+                mask="9999"
+                type="tel"
+              />
+            )}
+          />
+          <Controller
+            name="number"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+              pattern: {
+                value: /^[^_]*$/,
+                message: 'Поле обязательно к заполнению'
+              }
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Номер паспорта'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+                mask="999999"
+                type="tel"
+              />
+            )}
+          />
+          <Controller
+            name="department_code"
+            control={control}
+            rules={{required: "Поле обязательно к заполнению"}}
+            render={({field: {value, name}, formState: {errors}}) => (
+              <Select
+                label='Код подразделения'
+                withInputSearch
+                onSearchInput={(value) => {
+                  if (value.length < minFmsQueryLength) {
+                    setFmsOptions([]);
+                    return;
+                  }
+                  setIsFmsOptionsLoading(true);
+                  setSearchFms(value);
+                }}
+                hideOptions={isFmsOptionsLoading}
+                options={fmsOptions.map(item => item?.value as string)}
+                minLengthForOptions={minFmsQueryLength}
+                value={value}
+                /**
+                 * Устанавливаем результат в поле кем выдан, так как опции являются названием подразделения
+                 */
+                setValue={(value) => {
+                  setSearchFms("")
+                  setValue("department", value as string)
+                }}
+                noArrow
+                error={errors[name]?.message as string}
+                searchInputProps={{type: "number"}}
+              />
+            )}
+          />
         </div>
-      )}
-      <div className={styles.inputBlock}>
-        <Text
-          weight={TextWeight.BOLD}
-          size={TextSize.XL}
-        >
-          Введите ИНН
-        </Text>
-        <Controller
-          name="juridical_address"
-          control={control}
-          render={({ field: { value, name, onChange }, formState: { errors } }) => (
-            <Select
-              label='Юридический адрес'
-              withInputSearch
-              onSearchInput={(value) => {
-                if (value.length < minPlaceQueryLength) {
-                  setPlaceOptions([]);
-                  return;
-                }
-                setIsPlaceOptionsLoading(true);
-                setSearchPlace(value);
-              }}
-              hideOptions={isPlaceOptionsLoading}
-              options={placeOptions.map(item => item.value as string)}
-              minLengthForOptions={minPlaceQueryLength}
-              value={value}
-              setValue={(value) => {
-                setSearchPlace("")
-                onChange(value)
-              }}
-              noArrow
-              error={errors[name]?.message as string}
-            />
-          )}
-        />
-        <Controller
-          name="office_address"
-          control={control}
-          render={({ field: { value, name, onChange }, formState: { errors } }) => (
-            <Select
-              label='Фактический адрес'
-              withInputSearch
-              onSearchInput={(value) => {
-                if (value.length < minPlaceQueryLength) {
-                  setPlaceOptions([]);
-                  return;
-                }
-                setIsPlaceOptionsLoading(true);
-                setSearchPlace(value);
-              }}
-              hideOptions={isPlaceOptionsLoading}
-              options={placeOptions.map(item => item.value as string)}
-              minLengthForOptions={minPlaceQueryLength}
-              value={value}
-              setValue={(value) => {
-                setSearchPlace("")
-                onChange(value)
-              }}
-              noArrow
-              disabled={addressCheckbox}
-              error={errors[name]?.message as string}
-            />
-          )}
-        />
-        <Checkbox
-          checked={addressCheckbox}
-          name="addressToggler"
-          setChecked={toggleAddressCheckbox}
-        >
-          Фактический адрес совпадает с юридическим
-        </Checkbox>
-        <Controller
-          name="tax_system"
-          control={control}
-          render={({ field: { value, onChange } }) => (
-            <Select
-              options={options ?? []}
-              setValue={onChange}
-              value={value}
-              label='Система налогооблажения'
-              withInputSearch
-            />
-          )}
-        />
-      </div>
-      <div className={styles.inputBlock}>
-        <Text
-          weight={TextWeight.BOLD}
-          size={TextSize.XL}
-        >
-          Документы
-        </Text>
-        <div className={styles.inputsRowWithGap}>
-          <FileInputPopup
-            title={'Реквизиты'}
-            setFile={handleFileChange('Реквизиты')}
-            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
-          >
-            {(openPopup) =>
-              <UploadImageButton
-                handleOpenPopup={openPopup}
-                handleDeleteImage={handleFileDelete("Реквизиты")}
-                hasImage={!!(files.find(item => item.file_type === 'Реквизиты'))}
-              >
-                Реквизиты
-              </UploadImageButton>}
-          </FileInputPopup>
-          <FileInputPopup
-            title={'ПСФЛ'}
-            setFile={handleFileChange('ПСФЛ')}
-            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
-          >
-            {(openPopup) =>
-              <UploadImageButton
-                handleOpenPopup={openPopup}
-                handleDeleteImage={handleFileDelete("ПСФЛ")}
-                hasImage={!!(files.find(item => item.file_type === 'ПСФЛ'))}
-              >
-                ПСФЛ
-              </UploadImageButton>
-            }
-          </FileInputPopup>
-          <FileInputPopup
-            title={'ЕФС'}
-            setFile={handleFileChange('ЕФС')}
-            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
-          >
-            {(openPopup) =>
-              <UploadImageButton
-                handleOpenPopup={openPopup}
-                handleDeleteImage={handleFileDelete("ЕФС")}
-                hasImage={!!(files.find(item => item.file_type === 'ЕФС'))}
-              >
-                ЕФС
-              </UploadImageButton>
-            }
-          </FileInputPopup>
-          <FileInputPopup
-            title={'Налоговая тайна'}
-            setFile={handleFileChange('Налоговая тайна')}
-            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
-          >
-            {(openPopup) =>
-              <UploadImageButton
-                handleOpenPopup={openPopup}
-                handleDeleteImage={handleFileDelete("Налоговая тайна")}
-                hasImage={!!(files.find(item => item.file_type === 'Налоговая тайна'))}
-              >
-                Налоговая тайна
-              </UploadImageButton>
-            }
-          </FileInputPopup>
-          <FileInputPopup
-            title={'Патент'}
-            setFile={handleFileChange('Патент')}
-            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
-          >
-            {(openPopup) =>
-              <UploadImageButton
-                handleOpenPopup={openPopup}
-                handleDeleteImage={handleFileDelete("Патент")}
-                hasImage={!!(files.find(item => item.file_type === 'Патент'))}
-              >
-                Патент
-              </UploadImageButton>
-            }
-          </FileInputPopup>
-          <FileInputPopup
-            title={'УСН'}
-            setFile={handleFileChange('УСН')}
-            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
-          >
-            {(openPopup) =>
-              <UploadImageButton
-                handleOpenPopup={openPopup}
-                handleDeleteImage={handleFileDelete("УСН")}
-                hasImage={!!(files.find(item => item.file_type === 'УСН'))}
-              >
-                УСН
-              </UploadImageButton>
-            }
-          </FileInputPopup>
-          <FileInputPopup
-            title={'НДС'}
-            setFile={handleFileChange('НДС')}
-            setError={(message) => dispatch(addNotification({ message, type: NotificationType.Error }))}
-          >
-            {(openPopup) =>
-              <UploadImageButton
-                handleOpenPopup={openPopup}
-                handleDeleteImage={handleFileDelete("НДС")}
-                hasImage={!!(files.find(item => item.file_type === 'НДС'))}
-              >
-                НДС
-              </UploadImageButton>
-            }
-          </FileInputPopup>
+        <div className={styles.inputsThreeRow}>
+          <Controller
+            name="issue_date_at"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+              pattern: {
+                value: /^[^_]*$/,
+                message: 'Поле обязательно к заполнению'
+              },
+              validate: (value) => {
+                if (new Date(value) > new Date()) return 'Дата выдачи не может быть позже текущей даты'
+                const date = value?.split(".");
+
+                const [day, month, year] = date;
+
+                if (Number(day) > 31) return 'Неверный формат даты';
+                if (Number(month) < 1 || Number(month) > 12) return 'Неверный формат даты';
+                if (Number(year) > new Date().getFullYear()) return 'Год выдачи не должен быть позже текущего года';
+                if (Number(year) < 1971) return 'Год выдачи должен быть не ранее 1970'
+                return true
+              }
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Дата выдачи'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+                mask="D9.M9.Y999"
+                formatChars={{'D': '[0-3]', 'M': '[0-1]', 'Y': '[1-2]', '9': '[0-9]'}}
+                type="tel"
+              />
+            )}
+          />
+          <Controller
+            name="department"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Кем выдан'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="snils"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+              pattern: {
+                value: /^[^_]*$/,
+                message: 'Некорректное значение поля снилс'
+              }
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='СНИЛС'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+                mask="999-999-999 99"
+                type="tel"
+              />
+            )}
+          />
+        </div>
+        <div className={styles.inputsThreeRow}>
+          <Controller
+            name="name"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Имя'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="surname"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Фамилия'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="patronymic"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Отчество'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+          <Controller
+            name="bdate"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+              pattern: {
+                value: /^[^_]*$/,
+                message: 'Поле обязательно к заполнению'
+              },
+              validate: (value) => {
+                if (new Date(value) > new Date()) return 'Дата рождения не может быть позже текущей даты'
+                const date = value?.split(".");
+
+                const [day, month, year] = date;
+
+                if (Number(day) > 31) return 'Неверный формат даты';
+                if (Number(month) < 1 || Number(month) > 12) return 'Неверный формат даты';
+                if (Number(year) > new Date().getFullYear()) return 'Дата рождения не должна быть позже текущего года';
+                return true
+              }
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Дата рождения'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+                mask="D9.M9.Y999"
+                formatChars={{'D': '[0-3]', 'M': '[0-1]', 'Y': '[1-2]', '9': '[0-9]'}}
+                type="tel"
+              />
+            )}
+          />
+          <Controller
+            name="gender"
+            control={control}
+            render={({field: {value, onChange}}) => (
+              <Select
+                options={[{name: 'Мужской', value: 'M'}, {name: 'Женский', value: 'F'}]}
+                setValue={onChange}
+                value={value}
+                label='Пол'
+              />
+            )}
+          />
+          <Controller
+            name="email"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: 'Значение поля не является правильным email адресом.'
+              }
+            }}
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+              <Input
+                label='Email'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
         </div>
       </div>
       <div className={styles.buttonsContainer}>
@@ -324,7 +368,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           type='submit'
           isLoading={isLoading}
         >
-          Сохранить
+          Далее
         </Button>
       </div>
     </>

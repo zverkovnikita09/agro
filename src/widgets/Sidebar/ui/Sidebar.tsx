@@ -36,6 +36,8 @@ export const Sidebar = (props: SidebarProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const userId = useSelector(UserSelectors.selectUserId);
+
   const handleExpandClick = () => {
     setIsExpanded(!Boolean(isExpanded));
   }
@@ -75,7 +77,7 @@ export const Sidebar = (props: SidebarProps) => {
         {userRole === Role.CLIENT &&
           <NavLink
             className={({ isActive }) => cn(styles.menu__link, { [styles.active]: isActive })}
-            to={RouterPaths.LK}
+            to={`${RouterPaths.PROFILE}/${userId}`}
           >
             <UserSquare width={20} height={20} />
             <Text className={styles.linkText} weight={TextWeight.MEDIUM}>Личный кабинет</Text>
@@ -119,7 +121,7 @@ export const Sidebar = (props: SidebarProps) => {
           noBorder
         >
           {userRole === Role.CLIENT &&
-            <Button as={Link} className={styles.profileItem} to={RouterPaths.LK} onClick={toggleDropdown}>
+            <Button as={Link} className={styles.profileItem} to={`${RouterPaths.PROFILE}/${userId}`} onClick={toggleDropdown}>
               <UserCircle width={24} height={24} /> <Text className={styles.sidebarProfileText}>{sidebarProfileText()}</Text>
             </Button>
           }

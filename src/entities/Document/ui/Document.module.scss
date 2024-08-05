@@ -1,0 +1,17 @@
+.documentLink{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mainInfo{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statusBlock{
+  display: flex;
+  align-items: center;
+  gap: 33px;
+}

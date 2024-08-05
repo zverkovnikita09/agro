@@ -4,6 +4,7 @@ import { ReactNode, RefObject } from 'react'
 
 export enum TitleSize {
   APPLICATION_TITLE = 'application_title',
+  DOCUMENT_TITLE = 'document_title',
   XS = 'size_xs',
   S = 'size_s',
   M = 'size_m',

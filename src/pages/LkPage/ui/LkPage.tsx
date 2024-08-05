@@ -1,30 +1,40 @@
 import cn from 'classnames';
-import styles from './LkPage.module.scss'
 import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button';
-import {Link, Navigate} from 'react-router-dom';
+import {StatusBadge, StatusType} from "@shared/ui/StatusBadge";
+import {Link, Navigate, useParams} from 'react-router-dom';
 import {Title, TitleSize} from '@shared/ui/Title';
 import {Text, TextColor, TextSize, TextWeight} from '@shared/ui/Text';
 import {CardContainer} from '@shared/ui/CardContainer';
+import Hourglass from '@images/hourglass.svg';
+import Check from '@images/check-broken.svg';
+import Info from '@images/info-circle.svg';
 import {Tab, TabPanel, Tabs} from '@shared/ui/Tabs';
 import {PersonalData} from './PersonalData';
 import {UserPhoto} from '@shared/ui/UserPhoto';
 import {RouterPaths} from '@src/app/router';
 import {LoadingBlock} from '@shared/ui/LoadingBlock';
-import {UserSelectors} from '@entities/User';
-import {useContext, useLayoutEffect} from 'react';
+import {ModerationStatuses, Role, User, UserInfo, UserSelectors} from '@entities/User';
+import {useContext, useLayoutEffect, useMemo} from 'react';
 import {MainLayoutContext} from '@shared/ui/MainLayout';
 import {useSelector} from 'react-redux';
-import {Select} from "@shared/ui/Select";
-import {StatusBadge, StatusType} from "@shared/ui/StatusBadge";
+import styles from './LkPage.module.scss'
+import {DocsList} from "@features/DocsList";
+import {useGetData} from "@shared/hook/useGetData";
+import {ApplicationModel} from "@entities/Application";
 
 interface LkPageProps {
   className?: string;
 }
 
+const userModerationStatus: Record<ModerationStatuses, StatusType> = {
+  [ModerationStatuses.REJECTED]: StatusType.ACTIVE,
+  [ModerationStatuses.PENDING]: StatusType.INACTIVE,
+  [ModerationStatuses.APPROVED]: StatusType.COMPLETE,
+}
 export const LkPage = (props: LkPageProps) => {
-  const { className } = props;
+  const {className} = props;
 
-  const { disableFilters } = useContext(MainLayoutContext)
+  const {disableFilters} = useContext(MainLayoutContext)
 
   useLayoutEffect(() => {
     disableFilters(true)
@@ -36,97 +46,116 @@ export const LkPage = (props: LkPageProps) => {
   const isError = useSelector(UserSelectors.selectIsUserDataError)
 
   const user = useSelector(UserSelectors.selectUserData)
+  const userRole = useSelector(UserSelectors.selectUserRole);
+  const userId = useSelector(UserSelectors.selectUserId);
 
-  if (isLoading) return (
+  const {id: userParamId} = useParams();
+
+  const isCurrentUser = userParamId === userId;
+
+  const { data: counteragent, isLoading: isCounteragentLoading, isError: isCounteragentError } = useGetData<User>(
+    { url: `/api/v1/counteragent/${userParamId}`,
+      isEnabled: !!userId && !isCurrentUser,
+      dataFlag: true,
+      withAuthToken: true
+    })
+
+  const userData = useMemo(() => {
+    return isCurrentUser ? user : counteragent;
+  }, [counteragent, user, isCurrentUser])
+
+  /**
+   * TODO поправить для логиста
+   */
+  const isEditingAllowed = useMemo(() => {
+    if (isCurrentUser) return true;
+    if (userRole === Role.LOGIST) return true;
+    return false;
+  }, [])
+
+  if (isLoading || isCounteragentLoading || isCounteragentError) return (
     <CardContainer className={cn(styles.lkPage, className)}>
-      <LoadingBlock />
+      <LoadingBlock/>
     </CardContainer>
   )
 
-  if (isError) return <Navigate to={RouterPaths.LOGIN} replace />
+  if (isError) return <Navigate to={RouterPaths.LOGIN} replace/>
 
   return (
     <CardContainer className={cn(styles.lkPage, className)}>
       <div className={styles.heading}>
-        <UserPhoto image={user?.files?.find((file) => file.type === 'Аватар')?.path_url ?? ''} />
+        <UserPhoto image={userData?.files?.find((file) => file.type === 'Аватар')?.path_url ?? ''}/>
         <div className={styles.headingInfo}>
-          <Title
-            as='h3'
-            size={TitleSize.S}
-            className={styles.headingInfoTitle}
-          >
-            {user?.name || user?.phone_number}
-          </Title>
+          <div className={styles.headingInfoTitle}>
+            <Title
+              as='h3'
+              size={TitleSize.S}
+            >
+              {userData?.short_name || userData?.phone_number}
+            </Title>
+            {userData?.moderation_status &&
+              <StatusBadge status={userModerationStatus[userData.moderation_status]} className={styles.moderationStatus}>
+                {userData.moderation_status === ModerationStatuses.APPROVED && (
+                  <>
+                    <Check width={14} height={14}/>
+                    Профиль подтвержден
+                  </>
+                )}
+                {userData.moderation_status === ModerationStatuses.PENDING && (
+                  <>
+                    <Info width={14} height={14}/>
+                    Профиль на модерации
+                  </>
+                )}
+                {userData.moderation_status === ModerationStatuses.REJECTED && (
+                  <>
+                    <Hourglass width={14} height={14}/>
+                    Профиль не подтвержден
+                  </>
+                )}
+              </StatusBadge>
+            }
+          </div>
           <div className={styles.headingInfoItem}>
             <Text weight={TextWeight.BOLD} size={TextSize.L}>ИНН</Text>
-            <Text color={TextColor.GREY} size={TextSize.L}>{user?.inn || "Не указано"}</Text>
+            <Text color={TextColor.GREY} size={TextSize.L}>{userData?.inn || "Не указано"}</Text>
           </div>
           <div className={styles.headingInfoItem}>
             <Text weight={TextWeight.BOLD} size={TextSize.L}>ОГРН</Text>
-            <Text color={TextColor.GREY} size={TextSize.L}>{user?.ogrn || "Не указано"}</Text>
+            <Text color={TextColor.GREY} size={TextSize.L}>{userData?.ogrn || "Не указано"}</Text>
           </div>
           <div className={styles.headingInfoItem}>
             <Text weight={TextWeight.BOLD} size={TextSize.L}>Основной ОКВЭД</Text>
-            <Text color={TextColor.GREY} size={TextSize.L}>{user?.okved || "Не указано"}</Text>
+            <Text color={TextColor.GREY} size={TextSize.L}>{userData?.okved || "Не указано"}</Text>
           </div>
         </div>
-        <Button
-          as={Link}
-          theme={ButtonTheme.OUTLINE}
-          size={ButtonSize.S}
-          className={styles.editButton}
-          to={RouterPaths.LK_EDIT}
-        >
-          {user?.type ? 'Редактировать профиль' : 'Заполнить профиль'}
-        </Button>
+        {isEditingAllowed &&
+          <Button
+            as={Link}
+            theme={ButtonTheme.OUTLINE}
+            size={ButtonSize.S}
+            className={styles.editButton}
+            to={`${RouterPaths.PROFILE_EDIT}/${userId}`}
+          >
+            {userData?.type ? 'Редактировать профиль' : 'Заполнить профиль'}
+          </Button>
+        }
       </div>
       <Tabs saveInParams>
         <div className={styles.tabsHeading}>
           <Tab value={0}>Личные данные</Tab>
-          <Tab value={1}>Документы</Tab>
+          {isCurrentUser && <Tab value={1}>Документы</Tab>}
         </div>
         <TabPanel value={0}>
-          {user &&
-            <PersonalData user={user} files={user?.files}/>
+          {userData &&
+            <PersonalData user={userData} files={userData?.files}/>
           }
         </TabPanel>
-        <TabPanel value={1}>
-          <Tabs>
-            <div className={styles.tabsHeading}>
-              <Tab value={0}>Все</Tab>
-              <Tab value={1}>Договора</Tab>
-              <Tab value={2}>Заявки</Tab>
-              <Tab value={3}>Акты</Tab>
-              <Select
-                className={styles.documentsSort}
-                togglerClassName={styles.selectToggler}
-                options={['ba']}
-                value={'ba'}
-                setValue={()=>{}}
-              />
-
-            </div>
-            <TabPanel value={0}>
-              <CardContainer>
-                <div>
-                  <Text>Договор №9</Text>
-                  <Text>На перевозку пшеницы 4-класса. Ростов-на-Дону - Адыгея</Text>
-                </div>
-                <div className={styles.right}>
-                  <StatusBadge status={StatusType.INACTIVE}>
-                    Не подписан
-                  </StatusBadge>
-                  <Button
-                    theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
-                    size={ButtonSize.S}
-                  >
-                    Подписать
-                  </Button>
-                </div>
-              </CardContainer>
-            </TabPanel>
-          </Tabs>
-        </TabPanel>
+        {isCurrentUser &&
+          <TabPanel value={1}>
+            <DocsList/>
+          </TabPanel>
+        }
       </Tabs>
     </CardContainer>
   )

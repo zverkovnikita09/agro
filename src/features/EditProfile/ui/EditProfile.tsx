@@ -20,6 +20,7 @@ import { useAppDispatch } from '@src/app/store/model/hook';
 import { useGetData } from '@shared/hook/useGetData';
 import { FileToSendType,  } from '../model/editProfile.model';
 import { LoadingBlock } from '@shared/ui/LoadingBlock';
+import {StepThree} from "@features/EditProfile/ui/StepThree";
 
 interface EditProfileContextProps {
   watch: UseFormWatch<UserInfo>
@@ -42,7 +43,7 @@ export const EditProfile = () => {
   const { openOverlay, closeOverlay } = useContext(MainLayoutContext);
 
   const userInfo = useSelector(UserSelectors.selectUserData)
-
+  const userId = useSelector(UserSelectors.selectUserId);
   const [isFormSending, setIsFormSending] = useState(false);
 
   const { handleSubmit, watch, control, setValue, resetField } = useForm<UserInfo>({
@@ -54,6 +55,17 @@ export const EditProfile = () => {
       issue_date_at: userInfo?.issue_date_at ?? "",
       juridical_address: userInfo?.juridical_address ?? "",
       name: userInfo?.name ?? "",
+      patronymic: userInfo?.patronymic ?? "",
+      surname: userInfo?.surname ?? "",
+      accountant_phone: userInfo?.accountant_phone ?? "",
+      bdate: userInfo?.bdate ?? "",
+      director_name: userInfo?.director_name ?? "",
+      director_surname: userInfo?.director_surname ?? "",
+      email: userInfo?.email ?? "",
+      full_name: userInfo?.full_name ?? "",
+      gender: userInfo?.gender ?? "",
+      region: userInfo?.region ?? "",
+      short_name: userInfo?.short_name ?? "",
       number: userInfo?.number,
       office_address: userInfo?.office_address ?? "",
       ogrn: userInfo?.ogrn,
@@ -135,12 +147,11 @@ export const EditProfile = () => {
       type: "x-www-form-urlencoded",
       onSuccess: async () => {
         if (avatar) await changeAvatar({ avatar })
-        console.log(filesToDelete, filesToDelete.length)
         if (files.length) await handleSendFiles(files)
         if (filesToDelete.length) await deleteFiles({})
 
         dispatch(addNotification({ message: 'Данные профиля успешно изменены', type: NotificationType.Success }));
-        navigate(RouterPaths.LK)
+        navigate(`${RouterPaths.PROFILE}/${userId}`)
         dispatch(fetchUserData())
         setIsFormSending(false)
       },
@@ -157,14 +168,14 @@ export const EditProfile = () => {
       method: "PUT",
       onSuccess: () => {
         dispatch(addNotification({ message: 'Данные профиля успешно удалены', type: NotificationType.Success }));
-        navigate(RouterPaths.LK)
+        navigate(`${RouterPaths.PROFILE}/${userId}`)
         dispatch(fetchUserData())
       }
     }
   )
 
   const closeForm = () => {
-    navigate(RouterPaths.LK)
+    navigate(`${RouterPaths.PROFILE}/${userId}`)
   }
 
   const onDeleteProfile = () => {
@@ -182,6 +193,7 @@ export const EditProfile = () => {
     switch (formStep) {
       case 1: return <StepOne onCancel={closeForm} onDeleteProfile={onDeleteProfile} />
       case 2: return <StepTwo onPrev={() => changeStep(1)} isLoading={isFormSending} onDeleteProfile={onDeleteProfile} />
+      case 3: return <StepThree onPrev={() => changeStep(2)} isLoading={isFormSending} onDeleteProfile={onDeleteProfile} />
       default: return null
     }
   }
@@ -194,6 +206,7 @@ export const EditProfile = () => {
   const onSubmit = () => {
     switch (formStep) {
       case 1: return () => changeStep(2);
+      case 2: return () => changeStep(3);
       default: return onFormSend
     }
   }

@@ -1,30 +1,29 @@
-import { Text, TextSize, TextWeight } from "@shared/ui/Text"
+import {Text, TextSize, TextWeight} from "@shared/ui/Text"
 import styles from './EditProfile.module.scss'
-import { Controller } from "react-hook-form"
-import { useContext, useEffect, useState } from "react";
-import { EditProfileContext } from "./EditProfile";
-import { Input } from "@shared/ui/Input";
-import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
-import { Select } from "@shared/ui/Select";
-import { useSearchByDadata } from "@shared/hook/useSearchByDadata";
+import {Controller} from "react-hook-form"
+import {useContext, useEffect, useState} from "react";
+import {EditProfileContext} from "./EditProfile";
+import {Input} from "@shared/ui/Input";
+import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
+import {Select} from "@shared/ui/Select";
+import {useSearchByDadata} from "@shared/hook/useSearchByDadata";
+import {Checkbox} from "@shared/ui/Checkbox";
+import {useGetData} from "@shared/hook/useGetData";
+import {LoadingBlock} from "@shared/ui/LoadingBlock";
+import {useToggleValue} from "@shared/hook/useToggleValue";
 
 interface StepOneProps {
   onCancel: () => void
   onDeleteProfile: () => void
 }
 
-export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
-  const { control, watch, setValue } = useContext(EditProfileContext);
+export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
+  const {control, watch, setValue} = useContext(EditProfileContext);
 
   const [searchCompany, setSearchCompany] = useState('');
   const [companyOptions, setCompanyOptions] = useState<any[]>([]);
   const [isCompanyOptionsLoading, setIsCompanyOptionsLoading] = useState(false);
   const minCompanyQueryLength = 2;
-
-  const [searchFms, setSearchFms] = useState('');
-  const [fmsOptions, setFmsOptions] = useState<any[]>([]);
-  const [isFmsOptionsLoading, setIsFmsOptionsLoading] = useState(false);
-  const minFmsQueryLength = 2;
 
   useSearchByDadata<{ suggestions: any[] }>({
     query: searchCompany,
@@ -37,51 +36,98 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
     },
   });
 
-  useSearchByDadata<{ suggestions: any[] }>({
-    query: searchFms,
-    target: 'fms_unit',
-    debounceTime: 700,
-    minQueryLength: minFmsQueryLength,
-    onSuccess: (data) => {
-      setFmsOptions(data?.suggestions ?? []);
-      setIsFmsOptionsLoading(false);
-    },
-  });
-
-  const company = watch("name")
-  const department = watch("department")
+  const company = watch("short_name");
+  const companyType = watch("type");
 
   useEffect(() => {
     if (company && companyOptions.length) {
-      setValue("inn", companyOptions.find(item => item.value === company)?.data?.inn);
-      setValue("ogrn", companyOptions.find(item => item.value === company)?.data?.ogrn ?? "");
-      setValue("okved", companyOptions.find(item => item.value === company)?.data?.okved ?? "");
-      setValue("type", companyOptions.find(item => item.value === company)?.data?.type === "LEGAL" ? "ООО" : "ИП");
-      setValue("juridical_address", companyOptions.find(item => item.value === company)?.data?.address?.value ?? "")
+      const targetCompany: any = companyOptions.find(item => item.value === company);
+      const companyType = targetCompany?.data?.type === "LEGAL" ? "ООО" : "ИП";
+      const companyRegion = targetCompany?.data?.address?.data?.region_type_full.toLowerCase() === 'город'
+        ? targetCompany?.data?.address?.data?.region
+        : targetCompany?.data?.address?.data?.region + " " + targetCompany?.data?.address?.data?.region_type_full.charAt(0).toUpperCase() +
+      targetCompany?.data?.address?.data?.region_type_full.slice(1).toLowerCase();
+
+      setValue("inn", targetCompany?.data?.inn);
+      setValue("ogrn", targetCompany?.data?.ogrn ?? "");
+      setValue("okved", targetCompany?.data?.okved ?? "");
+      setValue("type", companyType);
+      setValue("juridical_address", targetCompany?.data?.address?.value ?? "");
+      setValue("full_name", targetCompany?.data?.name?.full_with_opf ?? "");
+      setValue("region", companyRegion);
+
+      if (companyType === "ИП") {
+        setValue("name", targetCompany?.data?.fio?.name ?? "");
+        setValue("patronymic", targetCompany?.data?.fio?.patronymic ?? "");
+        setValue("surname", targetCompany?.data?.fio?.surname ?? "");
+        setValue("director_name", targetCompany?.data?.fio?.name ?? "");
+        setValue("director_surname", targetCompany?.data?.fio?.surname ?? "");
+      }
+      if (companyType === "ООО") {
+        const [name, surname, patronymic] = targetCompany.data?.management?.name?.split(' ') ?? [];
+
+        setValue("name", name ?? "");
+        setValue("patronymic", patronymic ?? "");
+        setValue("surname", surname ?? "");
+        setValue("director_name", name ?? "");
+        setValue("director_surname", surname ?? "");
+      }
     }
   }, [company])
 
+  const [searchPlace, setSearchPlace] = useState('');
+  const [placeOptions, setPlaceOptions] = useState<any[]>([]);
+  const [isPlaceOptionsLoading, setIsPlaceOptionsLoading] = useState(false);
+  const minPlaceQueryLength = 3;
+
+  const [addressCheckbox, toggleAddressCheckbox] = useToggleValue(true)
+
+  useSearchByDadata<{ suggestions: any[] }>({
+    query: searchPlace,
+    target: 'address',
+    debounceTime: 700,
+    minQueryLength: minPlaceQueryLength,
+    onSuccess: (data) => {
+      setPlaceOptions(data?.suggestions ?? []);
+      setIsPlaceOptionsLoading(false);
+    },
+  });
+
+  const juridical_address = watch("juridical_address");
+
   useEffect(() => {
-    if (department && fmsOptions.length) {
-      setValue("department_code", fmsOptions.find(item => item.value === department)?.data?.code);
+    if (addressCheckbox) {
+      setValue("office_address", juridical_address)
     }
-  }, [department])
+  }, [addressCheckbox, juridical_address])
+
+  const {data: options, isSuccess: isOptionsSuccess} = useGetData<string[]>(
+    {
+      url: '/api/v1/userprofile/tax-systems',
+      dataFlag: true,
+      withAuthToken: true,
+    })
 
   return (
     <>
+      {!isOptionsSuccess && (
+        <div className={styles.loading}>
+          <LoadingBlock/>
+        </div>
+      )}
       <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}
           size={TextSize.XL}
         >
-          Введите ИНН
+          Информация о компании
         </Text>
         <div className={styles.inputsRow}>
           <Controller
             name="inn"
             control={control}
-            rules={{ required: "Поле обязательно к заполнению" }}
-            render={({ field: { value, name }, formState: { errors } }) => (
+            rules={{required: "Поле обязательно к заполнению"}}
+            render={({field: {value, name}, formState: {errors}}) => (
               <Select
                 label='ИНН'
                 withInputSearch
@@ -102,18 +148,18 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
                  */
                 setValue={(value) => {
                   setSearchCompany("")
-                  setValue("name", value as string)
+                  setValue("short_name", value as string)
                 }}
                 noArrow
                 error={errors[name]?.message as string}
-                searchInputProps={{ type: "number" }}
+                searchInputProps={{type: "number"}}
               />
             )}
           />
           <Controller
-            name="name"
+            name="short_name"
             control={control}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
               <Input
                 label='Название организации'
                 value={value}
@@ -129,7 +175,7 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
           <Controller
             name="ogrn"
             control={control}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
               <Input
                 label='ОГРН'
                 value={value}
@@ -143,7 +189,7 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
           <Controller
             name="okved"
             control={control}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
               <Input
                 label='Основной ОКВЭД'
                 value={value}
@@ -155,191 +201,152 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
             )}
           />
         </div>
-      </div>
-      <div className={styles.inputBlock}>
-        <Text
-          weight={TextWeight.BOLD}
-          size={TextSize.XL}
-        >
-          Личные данные
-        </Text>
-        <div className={styles.inputsThreeRow}>
+        <div className={styles.inputsRow}>
           <Controller
-            name="series"
+            name="tax_system"
             control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Серия паспорта'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="9999"
-                type="tel"
-              />
-            )}
-          />
-          <Controller
-            name="number"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Номер паспорта'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="999999"
-                type="tel"
-              />
-            )}
-          />
-          <Controller
-            name="department_code"
-            control={control}
-            rules={{ required: "Поле обязательно к заполнению" }}
-            render={({ field: { value, name }, formState: { errors } }) => (
+            render={({field: {value, onChange}}) => (
               <Select
-                label='Код подразделения'
+                options={options ?? []}
+                setValue={onChange}
+                value={value}
+                label='Система налогооблажения'
+                withInputSearch
+              />
+            )}
+          />
+          <Controller
+            name="accountant_phone"
+            control={control}
+            rules={{
+              required: 'Необходимо заполнить номер телефона.', pattern: {
+                value: /^[^_]*$/,
+                message: 'Необходимо заполнить номер телефона.'
+              }
+            }}
+            render={({formState: {errors}, field: {value, onChange, name}}) => (
+              <Input
+                label='Номер телефона бухгалтера'
+                mask="+79999999999"
+                type='tel'
+                value={value}
+                onChange={onChange}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+        </div>
+        <div className={styles.inputBlock}>
+          <Controller
+            name="juridical_address"
+            control={control}
+            render={({field: {value, name, onChange}, formState: {errors}}) => (
+              <Select
+                label='Юридический адрес'
                 withInputSearch
                 onSearchInput={(value) => {
-                  if (value.length < minFmsQueryLength) {
-                    setFmsOptions([]);
+                  if (value.length < minPlaceQueryLength) {
+                    setPlaceOptions([]);
                     return;
                   }
-                  setIsFmsOptionsLoading(true);
-                  setSearchFms(value);
+                  setIsPlaceOptionsLoading(true);
+                  setSearchPlace(value);
                 }}
-                hideOptions={isFmsOptionsLoading}
-                options={fmsOptions.map(item => item?.value as string)}
-                minLengthForOptions={minFmsQueryLength}
+                hideOptions={isPlaceOptionsLoading}
+                options={placeOptions.map(item => item.value as string)}
+                minLengthForOptions={minPlaceQueryLength}
                 value={value}
-                /**
-                 * Устанавливаем результат в поле кем выдан, так как опции являются названием подразделения
-                 */
                 setValue={(value) => {
-                  setSearchFms("")
-                  setValue("department", value as string)
+                  setSearchPlace("")
+                  onChange(value)
                 }}
                 noArrow
                 error={errors[name]?.message as string}
-                searchInputProps={{ type: "number" }}
-              />
-            )}
-          />
-          {/* <Controller
-            name="department_code"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Код подразделения'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="999-999"
-                type="tel"
-              />
-            )}
-          /> */}
-        </div>
-        <div className={styles.inputsThreeRow}>
-          <Controller
-            name="issue_date_at"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Поле обязательно к заполнению'
-              },
-              validate: (value) => {
-                if (new Date(value) > new Date()) return 'Дата выдачи не может быть позже текущей даты'
-                const date = value?.split(".");
-
-                const [day, month, year] = date;
-
-                if (Number(day) > 31) return 'Неверный формат даты';
-                if (Number(month) < 1 || Number(month) > 12) return 'Неверный формат даты';
-                if (Number(year) > new Date().getFullYear()) return 'Год выдачи не должен быть позже текущего года';
-                if (Number(year) < 1971) return 'Год выдачи должен быть не ранее 1970'
-                return true
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Дата выдачи'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="D9.M9.Y999"
-                formatChars={{ 'D': '[0-3]', 'M': '[0-1]', 'Y': '[1-2]', '9': '[0-9]' }}
-                type="tel"
               />
             )}
           />
           <Controller
-            name="department"
+            name="office_address"
             control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='Кем выдан'
+            render={({field: {value, name, onChange}, formState: {errors}}) => (
+              <Select
+                label='Фактический адрес'
+                withInputSearch
+                onSearchInput={(value) => {
+                  if (value.length < minPlaceQueryLength) {
+                    setPlaceOptions([]);
+                    return;
+                  }
+                  setIsPlaceOptionsLoading(true);
+                  setSearchPlace(value);
+                }}
+                hideOptions={isPlaceOptionsLoading}
+                options={placeOptions.map(item => item.value as string)}
+                minLengthForOptions={minPlaceQueryLength}
                 value={value}
-                onChange={onChange}
-                onBlur={onBlur}
+                setValue={(value) => {
+                  setSearchPlace("")
+                  onChange(value)
+                }}
+                noArrow
+                disabled={addressCheckbox}
                 error={errors[name]?.message as string}
               />
             )}
           />
-          <Controller
-            name="snils"
-            control={control}
-            rules={{
-              required: "Поле обязательно к заполнению",
-              pattern: {
-                value: /^[^_]*$/,
-                message: 'Некорректное значение поля снилс'
-              }
-            }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
-              <Input
-                label='СНИЛС'
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                error={errors[name]?.message as string}
-                mask="999-999-999 99"
-                type="tel"
-              />
-            )}
-          />
+          <Checkbox
+            checked={addressCheckbox}
+            name="addressToggler"
+            setChecked={toggleAddressCheckbox}
+          >
+            Фактический адрес совпадает с юридическим
+          </Checkbox>
         </div>
       </div>
+      {companyType === "ООО" &&
+        <div className={styles.inputBlock}>
+          <Text
+            weight={TextWeight.BOLD}
+            size={TextSize.XL}
+          >
+            Директор
+          </Text>
+          <div className={styles.inputsRow}>
+            <Controller
+              name="director_name"
+              control={control}
+              rules={{
+                required: "Поле обязательно к заполнению",
+              }}
+              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+                <Input
+                  label='Имя директора'
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={errors[name]?.message as string}
+                />
+              )}
+            />
+            <Controller
+              name="director_surname"
+              control={control}
+              rules={{
+                required: "Поле обязательно к заполнению",
+              }}
+              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+                <Input
+                  label='Фамилия директора'
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={errors[name]?.message as string}
+                />
+              )}
+            />
+          </div>
+        </div>
+      }
       <div className={styles.buttonsContainer}>
         <Button
           className={styles.additionalButton}

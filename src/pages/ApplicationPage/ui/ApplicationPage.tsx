@@ -125,7 +125,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   if (!isApplicationSuccess || !isUserApplicationsSuccess) return <CardContainer className={styles.loadBlock}><LoadingBlock /></CardContainer>
 
-  console.log(clarification_of_the_weekend)
   return (
     <div className={cn(styles.applicationPage, className)}>
       <div className={styles.heading}>

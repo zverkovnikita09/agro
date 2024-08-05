@@ -14,6 +14,8 @@ interface PersonalData {
   files?: UserFiles[]
 }
 
+const invalidDocuments = ['Акт', 'Заявка', 'Договор', 'Аватар'];
+
 export const PersonalData = ({ user, files }: PersonalData) => {
   if (!user?.type) return (
     <InfoBlock
@@ -29,7 +31,7 @@ export const PersonalData = ({ user, files }: PersonalData) => {
         size={ButtonSize.SM}
         theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
         as={Link}
-        to={RouterPaths.LK_EDIT}
+        to={`${RouterPaths.PROFILE_EDIT}/${user?.id}`}
       >
         Заполнить профиль
       </Button>
@@ -61,11 +63,11 @@ export const PersonalData = ({ user, files }: PersonalData) => {
         </div>
       </CardContainer>
       {
-        !!(files?.filter((file) => file.type !== 'Аватар').length) &&
+        !!(files?.filter((file) => !invalidDocuments.includes(file.type)).length) &&
         <CardContainer titleName='Документы'>
           <div className={styles.documents}>
             {
-              files?.filter((file) => file.type !== 'Аватар').map((file) => (
+              files?.filter((file) => !invalidDocuments.includes(file.type)).map((file) => (
                 <a href={file.path_url} target='_blank'>
                   <ApplicationProperty icon={ApplicationIcons.GALLERY} className={styles.documentItem}>
                     {file.type}

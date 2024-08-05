@@ -17,23 +17,19 @@ export enum RouterPaths {
   CHECKLIST = '/check-list',
   NEW_APPLICATION = '/new-application',
   APPLICATION = '/application',
-  LK = '/lk',
-  LK_EDIT = '/lk/edit'
+  PROFILE = '/profile',
+  PROFILE_EDIT = '/profile/edit'
 }
 
 export const Router = () => (
   <Routes>
     <Route path={RouterPaths.MAIN} element={<MainLayout />}>
       <Route index element={<SelectedApplication />} />
-      <Route path={RouterPaths.LK} element={
-        <ProtectedRoute targetRole={Role.CLIENT}>
-          <LkPage />
-        </ProtectedRoute>
+      <Route path={`${RouterPaths.PROFILE}/:id`} element={
+        <LkPage />
       } />
-      <Route path={RouterPaths.LK_EDIT} element={
-        <ProtectedRoute targetRole={Role.CLIENT}>
-          <EditProfile />
-        </ProtectedRoute>
+      <Route path={`${RouterPaths.PROFILE_EDIT}/:id`} element={
+        <EditProfile />
       } />
       <Route path={RouterPaths.CHECKLIST} element={<CheckList />} />
       <Route path={RouterPaths.NEW_APPLICATION} element={

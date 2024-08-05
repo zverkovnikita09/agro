@@ -3,7 +3,6 @@ import styles from './Application.module.scss'
 import { Title, TitleSize } from "@shared/ui/Title";
 import { Text, TextColor, TextSize, TextWeight } from "@shared/ui/Text";
 import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
-import { StatusBadge, StatusType } from "@shared/ui/StatusBadge";
 import Eye from '@images/eye.svg'
 import { ApplicationIcons, ApplicationProperty } from "@shared/ui/ApplicationProperty";
 import { CardContainer } from '@shared/ui/CardContainer';
@@ -123,7 +122,6 @@ export const Application = (props: ApplicationProps) => {
             <Eye width={18} height={18} />
             {view_counter}
           </div>
-          {/* <StatusBadge status={StatusType.ACTIVE} /> */}
         </div>
         <div className={styles.buttons}>
           <Button

@@ -1,6 +1,6 @@
 import cn from 'classnames';
-import styles from './StatusBadge.module.scss'
 import {PropsWithChildren} from "react";
+import styles from './StatusBadge.module.scss'
 
 export enum StatusType {
   ACTIVE = 'active',
