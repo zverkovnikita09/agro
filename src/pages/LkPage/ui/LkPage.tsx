@@ -70,7 +70,6 @@ export const LkPage = (props: LkPageProps) => {
   const isEditingAllowed = useMemo(() => {
     if (isCurrentUser) return true;
     if (userRole === Role.LOGIST) return true;
-    if (userData?.moderation_status === ModerationStatuses.PENDING) return false;
     return false;
   }, [])
 
@@ -130,7 +129,7 @@ export const LkPage = (props: LkPageProps) => {
             <Text color={TextColor.GREY} size={TextSize.L}>{userData?.okved || "Не указано"}</Text>
           </div>
         </div>
-        {isEditingAllowed &&
+        {isEditingAllowed && userData?.moderation_status === ModerationStatuses.PENDING &&
           <Button
             as={Link}
             theme={ButtonTheme.OUTLINE}
@@ -142,7 +141,7 @@ export const LkPage = (props: LkPageProps) => {
           </Button>
         }
       </div>
-      {isEditingAllowed ?
+      {userData?.moderation_status !== ModerationStatuses.PENDING ?
         <Tabs saveInParams>
         <div className={styles.tabsHeading}>
           <Tab value={0}>Личные данные</Tab>
