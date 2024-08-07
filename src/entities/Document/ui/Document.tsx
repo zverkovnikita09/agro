@@ -41,7 +41,7 @@ export const Document = (props: DocumentProps) => {
   )
 
   return (
-    <div  className={cn(styles.document, className)}>
+    <a href={path_url} target="_blank" className={cn(styles.document, className)}>
       <CardContainer className={styles.documentLink}>
         <div className={styles.mainInfo}>
           <Title as={"h5"} size={TitleSize.DOCUMENT_TITLE}>{name ?? 'Безымянный документ'}</Title>
@@ -56,6 +56,8 @@ export const Document = (props: DocumentProps) => {
               theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
               size={ButtonSize.S}
               onClick={(e: any) => {
+                e.stopPropagation();
+                e.preventDefault();
                 handleSendData({path: path});
               }}
               isLoading={isSending}
@@ -65,6 +67,6 @@ export const Document = (props: DocumentProps) => {
           }
         </div>
       </CardContainer>
-    </div>
+    </a>
   )
 }
