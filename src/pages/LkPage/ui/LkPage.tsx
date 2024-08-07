@@ -129,7 +129,7 @@ export const LkPage = (props: LkPageProps) => {
             <Text color={TextColor.GREY} size={TextSize.L}>{userData?.okved || "Не указано"}</Text>
           </div>
         </div>
-        {isEditingAllowed && userData?.moderation_status === ModerationStatuses.PENDING &&
+        {isEditingAllowed && userData?.moderation_status !== ModerationStatuses.PENDING &&
           <Button
             as={Link}
             theme={ButtonTheme.OUTLINE}
