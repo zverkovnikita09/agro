@@ -216,7 +216,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 onChange={onChange}
                 onBlur={onBlur}
                 error={errors[name]?.message as string}
-                mask="999-999-999 99"
+                mask="99999999999"
                 type="tel"
               />
             )}

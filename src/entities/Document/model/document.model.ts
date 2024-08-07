@@ -5,4 +5,5 @@ export interface DocumentOnSign {
   type: string
   is_signed: boolean
   name: string
+  created_at: string
 }

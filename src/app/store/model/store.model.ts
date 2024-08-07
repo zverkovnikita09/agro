@@ -3,6 +3,7 @@ import { NotificationsState } from "@entities/Notifications";
 import { UserState } from "@entities/User/model/User.model";
 import { SortByState } from "@entities/SortBy/model/SortBy.model";
 import { SelectedApplicationState } from "@entities/SelectedApplication/model/SelectedApplication.model";
+import {DocsListState} from "@features/DocsList/model/DocsList.model";
 
 export interface RootState {
     user: UserState
@@ -10,4 +11,5 @@ export interface RootState {
     filters: FiltersState
     sortBy: SortByState
     selectedApplication: SelectedApplicationState
+    documents: DocsListState
 }

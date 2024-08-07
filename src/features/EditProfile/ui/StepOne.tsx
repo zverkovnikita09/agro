@@ -64,7 +64,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
         setValue("director_surname", targetCompany?.data?.fio?.surname ?? "");
       }
       if (companyType === "ООО") {
-        const [name, surname, patronymic] = targetCompany.data?.management?.name?.split(' ') ?? [];
+        const [surname, name, patronymic] = targetCompany.data?.management?.name?.split(' ') ?? [];
 
         setValue("name", name ?? "");
         setValue("patronymic", patronymic ?? "");

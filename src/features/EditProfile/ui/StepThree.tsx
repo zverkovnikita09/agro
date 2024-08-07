@@ -40,6 +40,9 @@ export const StepThree = ({ onPrev, isLoading, onDeleteProfile }: StepThreeProps
 
   const handleFileChange = (title: string) => (file: File) => {
     const fileObj: FileToSendType = { file_type: title, file: file };
+    const findFileId = files.find(item => item.file_type === title)?.file_id;
+
+    if (findFileId) fileObj.file_id = findFileId;
 
     if (filesToDelete.find(file => file.file_type === title)) {
       setFilesToDelete(prev => prev.filter(item => item.file_type !== title))
@@ -52,99 +55,12 @@ export const StepThree = ({ onPrev, isLoading, onDeleteProfile }: StepThreeProps
     setFiles((prev) => [...prev.filter(({ file_type }) => file_type !== title)])
     const fileToDelete = user?.files?.find(file => file.type === title);
     if (fileToDelete) {
-      setFilesToDelete(prev => [...prev, { file_type: fileToDelete.type }])
+      setFilesToDelete(prev => [...prev, { file_type: fileToDelete.type, file_id: fileToDelete.id }])
     }
   }
 
-
-
   return (
     <>
-      {/*<div className={styles.inputBlock}>*/}
-      {/*  <Text*/}
-      {/*    weight={TextWeight.BOLD}*/}
-      {/*    size={TextSize.XL}*/}
-      {/*  >*/}
-      {/*    Информация*/}
-      {/*  </Text>*/}
-      {/*  <Controller*/}
-      {/*    name="juridical_address"*/}
-      {/*    control={control}*/}
-      {/*    render={({ field: { value, name, onChange }, formState: { errors } }) => (*/}
-      {/*      <Select*/}
-      {/*        label='Юридический адрес'*/}
-      {/*        withInputSearch*/}
-      {/*        onSearchInput={(value) => {*/}
-      {/*          if (value.length < minPlaceQueryLength) {*/}
-      {/*            setPlaceOptions([]);*/}
-      {/*            return;*/}
-      {/*          }*/}
-      {/*          setIsPlaceOptionsLoading(true);*/}
-      {/*          setSearchPlace(value);*/}
-      {/*        }}*/}
-      {/*        hideOptions={isPlaceOptionsLoading}*/}
-      {/*        options={placeOptions.map(item => item.value as string)}*/}
-      {/*        minLengthForOptions={minPlaceQueryLength}*/}
-      {/*        value={value}*/}
-      {/*        setValue={(value) => {*/}
-      {/*          setSearchPlace("")*/}
-      {/*          onChange(value)*/}
-      {/*        }}*/}
-      {/*        noArrow*/}
-      {/*        error={errors[name]?.message as string}*/}
-      {/*      />*/}
-      {/*    )}*/}
-      {/*  />*/}
-      {/*  <Controller*/}
-      {/*    name="office_address"*/}
-      {/*    control={control}*/}
-      {/*    render={({ field: { value, name, onChange }, formState: { errors } }) => (*/}
-      {/*      <Select*/}
-      {/*        label='Фактический адрес'*/}
-      {/*        withInputSearch*/}
-      {/*        onSearchInput={(value) => {*/}
-      {/*          if (value.length < minPlaceQueryLength) {*/}
-      {/*            setPlaceOptions([]);*/}
-      {/*            return;*/}
-      {/*          }*/}
-      {/*          setIsPlaceOptionsLoading(true);*/}
-      {/*          setSearchPlace(value);*/}
-      {/*        }}*/}
-      {/*        hideOptions={isPlaceOptionsLoading}*/}
-      {/*        options={placeOptions.map(item => item.value as string)}*/}
-      {/*        minLengthForOptions={minPlaceQueryLength}*/}
-      {/*        value={value}*/}
-      {/*        setValue={(value) => {*/}
-      {/*          setSearchPlace("")*/}
-      {/*          onChange(value)*/}
-      {/*        }}*/}
-      {/*        noArrow*/}
-      {/*        disabled={addressCheckbox}*/}
-      {/*        error={errors[name]?.message as string}*/}
-      {/*      />*/}
-      {/*    )}*/}
-      {/*  />*/}
-      {/*  <Checkbox*/}
-      {/*    checked={addressCheckbox}*/}
-      {/*    name="addressToggler"*/}
-      {/*    setChecked={toggleAddressCheckbox}*/}
-      {/*  >*/}
-      {/*    Фактический адрес совпадает с юридическим*/}
-      {/*  </Checkbox>*/}
-      {/*  <Controller*/}
-      {/*    name="tax_system"*/}
-      {/*    control={control}*/}
-      {/*    render={({ field: { value, onChange } }) => (*/}
-      {/*      <Select*/}
-      {/*        options={options ?? []}*/}
-      {/*        setValue={onChange}*/}
-      {/*        value={value}*/}
-      {/*        label='Система налогооблажения'*/}
-      {/*        withInputSearch*/}
-      {/*      />*/}
-      {/*    )}*/}
-      {/*  />*/}
-      {/*</div>*/}
       <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}

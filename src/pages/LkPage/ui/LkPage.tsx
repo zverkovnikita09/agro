@@ -20,7 +20,7 @@ import {useSelector} from 'react-redux';
 import styles from './LkPage.module.scss'
 import {DocsList} from "@features/DocsList";
 import {useGetData} from "@shared/hook/useGetData";
-import {ApplicationModel} from "@entities/Application";
+import {NotFoundBlock} from "@shared/ui/NotFoundBlock";
 
 interface LkPageProps {
   className?: string;
@@ -70,6 +70,7 @@ export const LkPage = (props: LkPageProps) => {
   const isEditingAllowed = useMemo(() => {
     if (isCurrentUser) return true;
     if (userRole === Role.LOGIST) return true;
+    if (userData?.moderation_status === ModerationStatuses.PENDING) return false;
     return false;
   }, [])
 
@@ -103,13 +104,13 @@ export const LkPage = (props: LkPageProps) => {
                 )}
                 {userData.moderation_status === ModerationStatuses.PENDING && (
                   <>
-                    <Info width={14} height={14}/>
+                    <Hourglass width={14} height={14}/>
                     Профиль на модерации
                   </>
                 )}
                 {userData.moderation_status === ModerationStatuses.REJECTED && (
                   <>
-                    <Hourglass width={14} height={14}/>
+                    <Info width={14} height={14}/>
                     Профиль не подтвержден
                   </>
                 )}
@@ -141,7 +142,8 @@ export const LkPage = (props: LkPageProps) => {
           </Button>
         }
       </div>
-      <Tabs saveInParams>
+      {isEditingAllowed ?
+        <Tabs saveInParams>
         <div className={styles.tabsHeading}>
           <Tab value={0}>Личные данные</Tab>
           {isCurrentUser && <Tab value={1}>Документы</Tab>}
@@ -156,7 +158,13 @@ export const LkPage = (props: LkPageProps) => {
             <DocsList/>
           </TabPanel>
         }
-      </Tabs>
+      </Tabs> :
+        <NotFoundBlock
+          Icon={Hourglass}
+          title='Ваш профиль проходит модерацию'
+          additionalText='Данные скоро появятся в личном кабинете'
+        />
+      }
     </CardContainer>
   )
 }

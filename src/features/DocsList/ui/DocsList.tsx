@@ -1,15 +1,17 @@
 import cn from 'classnames';
 import styles from './DocsList.module.scss'
-import {useGetData} from "@shared/hook/useGetData";
 import {LoadingBlock} from "@shared/ui/LoadingBlock";
 import {Document} from "@entities/Document";
-import {DocumentOnSign} from "@entities/Document/model/document.model";
 import {Tab, TabPanel, Tabs} from "@shared/ui/Tabs";
 import DocumentIcon from "@images/file.svg"
 import {Select, SelectTheme} from "@shared/ui/Select";
 import {NotFoundBlock} from "@shared/ui/NotFoundBlock";
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {useSearchParams} from "react-router-dom";
+import {useAppDispatch} from "@src/app/store/model/hook";
+import {fetchDocuments} from "@features/DocsList/model/DocsList.slice";
+import {DocsListSelectors} from "@features/DocsList/model/DocsList.selectors";
+import {useSelector} from "react-redux";
 
 interface DocsListProps {
   className?: string;
@@ -46,13 +48,17 @@ export const DocsList = (props: DocsListProps) => {
   const { className } = props;
   const [docsFilter, setDocsFilter] = useState('');
   const [docsSort, setDocsSort] = useState('new');
+  const functionRef = useRef<() => void>();
 
-  const {data: documents, isLoading, isSuccess} = useGetData<DocumentOnSign[]>(
-    {
-      url: '/api/v1/files/on-signing',
-      dataFlag: true,
-      withAuthToken: true,
-    });
+  const dispatch = useAppDispatch();
+
+  const documents = useSelector(DocsListSelectors.selectDocumentsData);
+  const isLoading = useSelector(DocsListSelectors.selectIsDocumentsDataLoading);
+  // const isError = useSelector(DocsListSelectors.selectIsDocumentsDataError);
+
+  useEffect(() => {
+    dispatch(fetchDocuments());
+  }, [dispatch]);
 
   const [searchParams] = useSearchParams();
 
@@ -63,7 +69,6 @@ export const DocsList = (props: DocsListProps) => {
     } else {
       setDocsFilter('');
     }
-
   }, [searchParams.get(FILTER_PARAM_NAME)]);
 
   const filteredDocuments = useMemo(()=> {
@@ -82,16 +87,31 @@ export const DocsList = (props: DocsListProps) => {
         result = [...result].sort((a, b) =>  (a.is_signed === b.is_signed) ? 0 : a.is_signed ? 1 : -1);
         break;
       }
-      case 'new':
-      case 'old':
+      case 'new': {
+        result = [...result].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         break;
+      }
+      case 'old': {
+        result = [...result].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        break;
+      }
       default: break
     }
 
     return result;
   },[documents, docsSort, docsFilter])
 
-  if (!isSuccess){
+
+  useEffect(() => {
+    functionRef.current = () => {
+      if (document.visibilityState === "visible") dispatch(fetchDocuments());
+    }
+    window.addEventListener('visibilitychange', functionRef.current);
+
+    return () => window.removeEventListener('visibilitychange', functionRef.current!);
+  }, [dispatch]);
+
+  if (isLoading){
     return <LoadingBlock />
   }
 
@@ -116,9 +136,9 @@ export const DocsList = (props: DocsListProps) => {
         {[...new Array(4)].map((_, index) => (
           <TabPanel key={index} value={index}>
             <div className={styles.documentsWrapper}>
-              {filteredDocuments.length ? filteredDocuments.map(({id, ...props}) => (
+              {filteredDocuments.length ? filteredDocuments.map(({id, ...props}, index) => (
                 <Document
-                  key={id}
+                  key={`${id}+${index}`}
                   id={id}
                   {...props}
                 />

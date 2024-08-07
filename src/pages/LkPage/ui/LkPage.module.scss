@@ -65,6 +65,7 @@
 
 .editButton {
   height: max-content;
+  min-width: max-content;
   margin-left: auto;
   white-space: nowrap;
   @media (max-width: $mobile) {

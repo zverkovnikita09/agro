@@ -45,7 +45,7 @@ const userSlice = createSlice({
         return { ...state, isUserDataError: false, isUserDataLoading: true }
       })
       .addCase(fetchUserData.fulfilled, (state, { payload }) => {
-        return { ...state, user: payload, isUserDataLoading: false }
+        return { ...state, user: payload, isUserDataLoading: false, isUserDataError: false }
       })
       .addCase(fetchUserData.rejected, (state) => {
         return { ...state, isUserDataError: true, isUserDataLoading: false }

@@ -1,13 +1,14 @@
-import { CardContainer } from '@shared/ui/CardContainer'
+import {CardContainer} from '@shared/ui/CardContainer'
 import styles from './LkPage.module.scss'
-import { ApplicationIcons, ApplicationProperty } from '@shared/ui/ApplicationProperty'
-import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem'
-import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text'
+import {ApplicationIcons, ApplicationProperty} from '@shared/ui/ApplicationProperty'
+import {ApplicationInfoItem} from '@shared/ui/ApplicationInfoItem'
+import {Text, TextColor, TextSize, TextWeight} from '@shared/ui/Text'
 import {User, UserFiles, UserInfo} from '@entities/User'
-import { InfoBlock, InfoBlockIconColor, InfoBlockIcons } from "@shared/ui/InfoBlock";
-import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
-import { Link } from 'react-router-dom'
-import { RouterPaths } from '@src/app/router'
+import {InfoBlock, InfoBlockIconColor, InfoBlockIcons} from "@shared/ui/InfoBlock";
+import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
+import {Link} from 'react-router-dom'
+import {RouterPaths} from '@src/app/router'
+import {formatSnils} from "@shared/lib/formatingSnils";
 
 interface PersonalData {
   user?: User
@@ -16,7 +17,7 @@ interface PersonalData {
 
 const invalidDocuments = ['Акт', 'Заявка', 'Договор', 'Аватар'];
 
-export const PersonalData = ({ user, files }: PersonalData) => {
+export const PersonalData = ({user, files}: PersonalData) => {
   if (!user?.type) return (
     <InfoBlock
       icon={InfoBlockIcons.EDIT}
@@ -58,7 +59,7 @@ export const PersonalData = ({ user, files }: PersonalData) => {
             {user.department}
           </ApplicationInfoItem>
           <ApplicationInfoItem title='СНИЛС'>
-            {user.snils}
+            {formatSnils(user.snils)}
           </ApplicationInfoItem>
         </div>
       </CardContainer>
@@ -87,11 +88,19 @@ export const PersonalData = ({ user, files }: PersonalData) => {
             {user.office_address}
           </ApplicationInfoItem>
           <div className={styles.note}>
-            <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Система налогооблажения</Text>
+            <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Система
+              налогооблажения</Text>
             <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM}>{user.tax_system}</Text>
           </div>
+          {user.type === "ООО" &&
+            <div className={styles.note}>
+              <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Директор</Text>
+              <Text as="p" size={TextSize.L}
+                    weight={TextWeight.MEDIUM}>{user.director_surname + ` ${user.director_name}`}</Text>
+            </div>
+          }
         </div>
       </CardContainer>
-    </div >
+    </div>
   )
 }

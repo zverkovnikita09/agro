@@ -78,7 +78,7 @@ export const EditProfile = () => {
   });
 
   const [files, setFiles] = useState<FileToSendType[]>(
-    userInfo?.files?.map((file) => ({ file_type: file.type })) ?? []
+    userInfo?.files?.map((file) => ({ file_type: file.type, file_id: file.id })) ?? []
   )
 
   const [filesToDelete, setFilesToDelete] = useState<FileToSendType[]>([])
@@ -113,27 +113,17 @@ export const EditProfile = () => {
       url: "/api/v1/files/delete-files",
       withAuthToken: true,
       method: "DELETE",
-      params: { file_types: filesToDelete.map(item => item.file_type) }
+      //@ts-ignore
+      params: { file_id: filesToDelete.map(item => item.file_id).filter(Boolean) }
     }
   )
 
   const handleSendFiles = async (files: FileToSendType[]) => {
     const filteredFiles = files.filter((file) => file.file_type);
 
-    const filesToLoad = filteredFiles.reduce((acc, item) => {
-      if (userInfo?.files?.find((file) => file.type === item.file_type)) {
-        return acc
-      }
-      return [...acc, item];
-    }, [] as FileToSendType[])
+    const filesToLoad = filteredFiles.filter(item => !item?.file_id)
 
-    const filesToUpdate = filteredFiles.reduce((acc, item) => {
-      if (userInfo?.files?.find((file) => file.type === item.file_type)) {
-        return [...acc, item]
-      }
-      return acc;
-    }, [] as FileToSendType[])
-
+    const filesToUpdate = filteredFiles.filter(item => item?.file_id && item.file)
 
     if (filesToLoad.length) await createFiles({ documents: filesToLoad })
     if (filesToUpdate.length) await updateFiles({ documents: filesToUpdate })
