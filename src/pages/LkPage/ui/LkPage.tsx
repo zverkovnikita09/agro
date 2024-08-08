@@ -13,7 +13,7 @@ import {PersonalData} from './PersonalData';
 import {UserPhoto} from '@shared/ui/UserPhoto';
 import {RouterPaths} from '@src/app/router';
 import {LoadingBlock} from '@shared/ui/LoadingBlock';
-import {ModerationStatuses, Role, User, UserInfo, UserSelectors} from '@entities/User';
+import {ModerationStatuses, Role, User, UserSelectors} from '@entities/User';
 import {useContext, useLayoutEffect, useMemo} from 'react';
 import {MainLayoutContext} from '@shared/ui/MainLayout';
 import {useSelector} from 'react-redux';
@@ -145,14 +145,14 @@ export const LkPage = (props: LkPageProps) => {
         <Tabs saveInParams>
         <div className={styles.tabsHeading}>
           <Tab value={0}>Личные данные</Tab>
-          {isCurrentUser && <Tab value={1}>Документы</Tab>}
+          {isCurrentUser && userData?.moderation_status === ModerationStatuses.APPROVED && <Tab value={1}>Документы</Tab>}
         </div>
         <TabPanel value={0}>
           {userData &&
             <PersonalData user={userData} files={userData?.files}/>
           }
         </TabPanel>
-        {isCurrentUser &&
+        {isCurrentUser && userData?.moderation_status === ModerationStatuses.APPROVED &&
           <TabPanel value={1}>
             <DocsList/>
           </TabPanel>
