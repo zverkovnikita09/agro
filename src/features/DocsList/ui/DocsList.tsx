@@ -12,6 +12,9 @@ import {useAppDispatch} from "@src/app/store/model/hook";
 import {fetchDocuments} from "@features/DocsList/model/DocsList.slice";
 import {DocsListSelectors} from "@features/DocsList/model/DocsList.selectors";
 import {useSelector} from "react-redux";
+import {useWindowSize} from "@shared/hook/useWindowSize";
+import {isMobile} from "@shared/lib/deviceSizeCheck";
+import {SortByDocsList} from "@features/SortByDocsList";
 
 interface DocsListProps {
   className?: string;
@@ -51,6 +54,8 @@ export const DocsList = (props: DocsListProps) => {
   const functionRef = useRef<() => void>();
 
   const dispatch = useAppDispatch();
+
+  const windowSize = useWindowSize();
 
   const documents = useSelector(DocsListSelectors.selectDocumentsData);
   const isLoading = useSelector(DocsListSelectors.selectIsDocumentsDataLoading);
@@ -120,17 +125,27 @@ export const DocsList = (props: DocsListProps) => {
       <Tabs saveInParams paramKey={FILTER_PARAM_NAME}>
         <div className={styles.tabsHeading}>
           <Tab value={0}>Все</Tab>
-          <Tab value={1}>Договора</Tab>
+          <Tab value={1}>Договоры</Tab>
           <Tab value={2}>Заявки</Tab>
           <Tab value={3}>Акты</Tab>
-          <Select
-            className={styles.documentsSort}
-            togglerClassName={styles.selectToggler}
-            options={documentsSortOptions}
-            value={docsSort}
-            setValue={(value)=>setDocsSort(value as string)}
-            theme={SelectTheme.FILTERS}
-          />
+
+          {!isMobile(windowSize) &&
+            <Select
+              className={styles.documentsSort}
+              togglerClassName={styles.selectToggler}
+              options={documentsSortOptions}
+              value={docsSort}
+              setValue={(value)=>setDocsSort(value as string)}
+              theme={SelectTheme.FILTERS}
+            />
+          }
+
+          {isMobile(windowSize) &&
+            <SortByDocsList
+              setDocsSort={(value)=>setDocsSort(value as string)}
+              value={docsSort}
+            />
+          }
 
         </div>
         {[...new Array(4)].map((_, index) => (

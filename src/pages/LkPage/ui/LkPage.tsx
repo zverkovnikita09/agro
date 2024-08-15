@@ -93,7 +93,7 @@ export const LkPage = (props: LkPageProps) => {
             >
               {userData?.short_name || userData?.phone_number}
             </Title>
-            {userData?.moderation_status &&
+            {user?.type && userData?.moderation_status &&
               <StatusBadge status={userModerationStatus[userData.moderation_status]} className={styles.moderationStatus}>
                 {userData.moderation_status === ModerationStatuses.APPROVED && (
                   <>

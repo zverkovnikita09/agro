@@ -1,0 +1,42 @@
+@import "@src/app/styles/mediaQueries";
+
+.sortByDocsList {
+  position: absolute;
+  /*TO FIX*/
+  top: 75px;
+  left: 140px;
+  width: 261px;
+  max-height: calc(100dvh - 90px);
+  overflow: hidden;
+  z-index: 5;
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+
+  @media (max-width: $tablet) {
+    left: 125px;
+  }
+
+  @media (max-width: $mobile) {
+    left: 9px;
+    width: calc(100% - 9px * 2);
+  }
+}
+
+.button {
+  text-align: start;
+  padding: 12px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover {
+    background-color: var(--special-yellow);
+  }
+}
+
+.active {
+  background-color: var(--special-yellow);
+}

@@ -9,6 +9,11 @@
   overflow: auto;
   display: flex;
   flex-direction: column;
+  padding: 24px 0;
+
+  & > * {
+    padding: 0 16px;
+  }
   @media (max-width: $mobile) {
     gap: 24px;
   }

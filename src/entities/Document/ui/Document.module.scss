@@ -1,17 +1,41 @@
+@import "@src/app/styles/mediaQueries";
+
 .documentLink{
   display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   align-items: center;
   justify-content: space-between;
+}
+
+.title{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  max-width: 400px;
+
+  @media (max-width: $tablet) {
+    max-width: 250px;
+  }
+
+  @media (max-width: $mobile) {
+    max-width: 140px;
+  }
 }
 
 .mainInfo{
   display: flex;
   flex-direction: column;
+  gap: 33px;
   gap: 4px;
 }
 
-.statusBlock{
-  display: flex;
-  align-items: center;
-  gap: 33px;
+.statusBadge{
+  margin-left: auto;
+}
+
+.btn{
+  @media (max-width: $mobileSmall) {
+    width: 100%;
+  }
 }

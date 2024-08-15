@@ -44,15 +44,16 @@ export const Document = (props: DocumentProps) => {
     <a href={path_url} target="_blank" className={cn(styles.document, className)}>
       <CardContainer className={styles.documentLink}>
         <div className={styles.mainInfo}>
-          <Title as={"h5"} size={TitleSize.DOCUMENT_TITLE}>{name ?? 'Безымянный документ'}</Title>
+          <Title as={"h5"} size={TitleSize.DOCUMENT_TITLE} className={styles.title}>{name ?? 'Безымянный документ'}</Title>
           {/*<Text color={TextColor.GREY}>На перевозку пшеницы 4-класса. Ростов-на-Дону - Адыгея</Text>*/}
         </div>
-        <div className={styles.statusBlock}>
-          <StatusBadge status={is_signed ? StatusType.COMPLETE : StatusType.INACTIVE}>
+        {/*<div className={styles.statusBlock}>*/}
+          <StatusBadge className={styles.statusBadge} status={is_signed ? StatusType.COMPLETE : StatusType.INACTIVE}>
             {is_signed ? 'Подписан' : 'Не подписан'}
           </StatusBadge>
           {!is_signed &&
             <Button
+              className={styles.btn}
               theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
               size={ButtonSize.S}
               onClick={(e: any) => {
@@ -65,7 +66,7 @@ export const Document = (props: DocumentProps) => {
               Подписать
             </Button>
           }
-        </div>
+        {/*</div>*/}
       </CardContainer>
     </a>
   )

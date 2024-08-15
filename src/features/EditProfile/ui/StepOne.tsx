@@ -219,9 +219,10 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
             name="accountant_phone"
             control={control}
             rules={{
-              required: 'Необходимо заполнить номер телефона.', pattern: {
+              required: false,
+              pattern: {
                 value: /^[^_]*$/,
-                message: 'Необходимо заполнить номер телефона.'
+                message: 'Некорректный номер телефона.'
               }
             }}
             render={({formState: {errors}, field: {value, onChange, name}}) => (
