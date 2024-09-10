@@ -1,24 +1,24 @@
-import {Text, TextSize, TextWeight} from "@shared/ui/Text"
+import { Text, TextSize, TextWeight } from "@shared/ui/Text"
 import styles from './EditProfile.module.scss'
-import {Controller} from "react-hook-form"
-import {useContext, useEffect, useState} from "react";
-import {EditProfileContext} from "./EditProfile";
-import {Input} from "@shared/ui/Input";
-import {Button, ButtonSize, ButtonTheme} from "@shared/ui/Button";
-import {Select} from "@shared/ui/Select";
-import {useSearchByDadata} from "@shared/hook/useSearchByDadata";
-import {Checkbox} from "@shared/ui/Checkbox";
-import {useGetData} from "@shared/hook/useGetData";
-import {LoadingBlock} from "@shared/ui/LoadingBlock";
-import {useToggleValue} from "@shared/hook/useToggleValue";
+import { Controller } from "react-hook-form"
+import { useContext, useEffect, useState } from "react";
+import { EditProfileContext } from "./EditProfile";
+import { Input } from "@shared/ui/Input";
+import { Button, ButtonSize, ButtonTheme } from "@shared/ui/Button";
+import { Select } from "@shared/ui/Select";
+import { useSearchByDadata } from "@shared/hook/useSearchByDadata";
+import { Checkbox } from "@shared/ui/Checkbox";
+import { useGetData } from "@shared/hook/useGetData";
+import { LoadingBlock } from "@shared/ui/LoadingBlock";
+import { useToggleValue } from "@shared/hook/useToggleValue";
 
 interface StepOneProps {
   onCancel: () => void
   onDeleteProfile: () => void
 }
 
-export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
-  const {control, watch, setValue} = useContext(EditProfileContext);
+export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
+  const { control, watch, setValue } = useContext(EditProfileContext);
 
   const [searchCompany, setSearchCompany] = useState('');
   const [companyOptions, setCompanyOptions] = useState<any[]>([]);
@@ -37,7 +37,6 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
   });
 
   const company = watch("short_name");
-  const companyType = watch("type");
 
   useEffect(() => {
     if (company && companyOptions.length) {
@@ -46,22 +45,22 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
       const companyRegion = targetCompany?.data?.address?.data?.region_type_full.toLowerCase() === 'город'
         ? targetCompany?.data?.address?.data?.region
         : targetCompany?.data?.address?.data?.region + " " + targetCompany?.data?.address?.data?.region_type_full.charAt(0).toUpperCase() +
-      targetCompany?.data?.address?.data?.region_type_full.slice(1).toLowerCase();
+        targetCompany?.data?.address?.data?.region_type_full.slice(1).toLowerCase();
 
       setValue("inn", targetCompany?.data?.inn);
+      setValue("cinn", targetCompany?.data?.inn);
       setValue("ogrn", targetCompany?.data?.ogrn ?? "");
       setValue("okved", targetCompany?.data?.okved ?? "");
       setValue("type", companyType);
       setValue("juridical_address", targetCompany?.data?.address?.value ?? "");
       setValue("full_name", targetCompany?.data?.name?.full_with_opf ?? "");
       setValue("region", companyRegion);
+      setValue("cregion", companyRegion.split(" ")[0]);
 
       if (companyType === "ИП") {
         setValue("name", targetCompany?.data?.fio?.name ?? "");
         setValue("patronymic", targetCompany?.data?.fio?.patronymic ?? "");
         setValue("surname", targetCompany?.data?.fio?.surname ?? "");
-        setValue("director_name", targetCompany?.data?.fio?.name ?? "");
-        setValue("director_surname", targetCompany?.data?.fio?.surname ?? "");
       }
       if (companyType === "ООО") {
         const [surname, name, patronymic] = targetCompany.data?.management?.name?.split(' ') ?? [];
@@ -69,8 +68,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
         setValue("name", name ?? "");
         setValue("patronymic", patronymic ?? "");
         setValue("surname", surname ?? "");
-        setValue("director_name", name ?? "");
-        setValue("director_surname", surname ?? "");
+        setValue("ckpp", targetCompany?.data?.kpp ?? "")
       }
     }
   }, [company])
@@ -101,7 +99,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
     }
   }, [addressCheckbox, juridical_address])
 
-  const {data: options, isSuccess: isOptionsSuccess} = useGetData<string[]>(
+  const { data: options, isSuccess: isOptionsSuccess } = useGetData<string[]>(
     {
       url: '/api/v1/userprofile/tax-systems',
       dataFlag: true,
@@ -112,7 +110,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
     <>
       {!isOptionsSuccess && (
         <div className={styles.loading}>
-          <LoadingBlock/>
+          <LoadingBlock />
         </div>
       )}
       <div className={styles.inputBlock}>
@@ -126,8 +124,8 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
           <Controller
             name="inn"
             control={control}
-            rules={{required: "Поле обязательно к заполнению"}}
-            render={({field: {value, name}, formState: {errors}}) => (
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name }, formState: { errors } }) => (
               <Select
                 label='ИНН'
                 withInputSearch
@@ -152,14 +150,14 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
                 }}
                 noArrow
                 error={errors[name]?.message as string}
-                searchInputProps={{type: "number"}}
+                searchInputProps={{ type: "number" }}
               />
             )}
           />
           <Controller
             name="short_name"
             control={control}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Название организации'
                 value={value}
@@ -175,7 +173,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
           <Controller
             name="ogrn"
             control={control}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='ОГРН'
                 value={value}
@@ -189,7 +187,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
           <Controller
             name="okved"
             control={control}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Основной ОКВЭД'
                 value={value}
@@ -205,7 +203,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
           <Controller
             name="tax_system"
             control={control}
-            render={({field: {value, onChange}}) => (
+            render={({ field: { value, onChange } }) => (
               <Select
                 options={options ?? []}
                 setValue={onChange}
@@ -225,7 +223,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
                 message: 'Некорректный номер телефона.'
               }
             }}
-            render={({formState: {errors}, field: {value, onChange, name}}) => (
+            render={({ formState: { errors }, field: { value, onChange, name } }) => (
               <Input
                 label='Номер телефона бухгалтера'
                 mask="+79999999999"
@@ -241,7 +239,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
           <Controller
             name="juridical_address"
             control={control}
-            render={({field: {value, name, onChange}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
               <Select
                 label='Юридический адрес'
                 withInputSearch
@@ -269,7 +267,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
           <Controller
             name="office_address"
             control={control}
-            render={({field: {value, name, onChange}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
               <Select
                 label='Фактический адрес'
                 withInputSearch
@@ -303,51 +301,7 @@ export const StepOne = ({onCancel, onDeleteProfile}: StepOneProps) => {
             Фактический адрес совпадает с юридическим
           </Checkbox>
         </div>
-      </div>
-      {companyType === "ООО" &&
-        <div className={styles.inputBlock}>
-          <Text
-            weight={TextWeight.BOLD}
-            size={TextSize.XL}
-          >
-            Директор
-          </Text>
-          <div className={styles.inputsRow}>
-            <Controller
-              name="director_name"
-              control={control}
-              rules={{
-                required: "Поле обязательно к заполнению",
-              }}
-              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
-                <Input
-                  label='Имя директора'
-                  value={value}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  error={errors[name]?.message as string}
-                />
-              )}
-            />
-            <Controller
-              name="director_surname"
-              control={control}
-              rules={{
-                required: "Поле обязательно к заполнению",
-              }}
-              render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
-                <Input
-                  label='Фамилия директора'
-                  value={value}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  error={errors[name]?.message as string}
-                />
-              )}
-            />
-          </div>
-        </div>
-      }
+      </div >
       <div className={styles.buttonsContainer}>
         <Button
           className={styles.additionalButton}

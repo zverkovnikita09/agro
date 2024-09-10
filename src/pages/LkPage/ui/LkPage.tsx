@@ -64,6 +64,9 @@ export const LkPage = (props: LkPageProps) => {
     return isCurrentUser ? user : counteragent;
   }, [counteragent, user, isCurrentUser])
 
+  /** Проверка на type, потому что при незаполненном профиле приходит статус approved */
+  const isShowDocumentsTab = isCurrentUser && user?.type && userData?.moderation_status === ModerationStatuses.APPROVED;
+
   /**
    * TODO поправить для логиста
    */
@@ -145,14 +148,14 @@ export const LkPage = (props: LkPageProps) => {
         <Tabs saveInParams>
         <div className={styles.tabsHeading}>
           <Tab value={0}>Личные данные</Tab>
-          {isCurrentUser && userData?.moderation_status === ModerationStatuses.APPROVED && <Tab value={1}>Документы</Tab>}
+          {isShowDocumentsTab && <Tab value={1}>Документы</Tab>}
         </div>
         <TabPanel value={0}>
           {userData &&
             <PersonalData user={userData} files={userData?.files}/>
           }
         </TabPanel>
-        {isCurrentUser && userData?.moderation_status === ModerationStatuses.APPROVED &&
+        {isShowDocumentsTab &&
           <TabPanel value={1}>
             <DocsList/>
           </TabPanel>

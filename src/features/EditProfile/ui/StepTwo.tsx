@@ -16,7 +16,7 @@ import { Select } from "@shared/ui/Select";
 import { useSearchByDadata } from "@shared/hook/useSearchByDadata";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
 import { useGetData } from "@shared/hook/useGetData";
-import {Input} from "@shared/ui/Input";
+import { Input } from "@shared/ui/Input";
 
 interface StepTwoProps {
   onPrev: () => void
@@ -27,10 +27,6 @@ interface StepTwoProps {
 export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) => {
   const {
     control,
-    setFiles,
-    files,
-    setFilesToDelete,
-    filesToDelete,
     watch,
     setValue
   } = useContext(EditProfileContext);
@@ -57,7 +53,9 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
     if (department && fmsOptions.length) {
       setValue("department_code", fmsOptions.find(item => item.value === department)?.data?.code);
     }
-  }, [department])
+  }, [department]);
+
+  const companyType = watch("type")
 
   return (
     <>
@@ -66,7 +64,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           weight={TextWeight.BOLD}
           size={TextSize.XL}
         >
-          Личные данные
+          Личные данные {companyType === "ООО" ? "директора" : ""}
         </Text>
         <div className={styles.inputsThreeRow}>
           <Controller
@@ -79,7 +77,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 message: 'Поле обязательно к заполнению'
               }
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Серия паспорта'
                 value={value}
@@ -101,7 +99,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 message: 'Поле обязательно к заполнению'
               }
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Номер паспорта'
                 value={value}
@@ -116,8 +114,8 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           <Controller
             name="department_code"
             control={control}
-            rules={{required: "Поле обязательно к заполнению"}}
-            render={({field: {value, name}, formState: {errors}}) => (
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name }, formState: { errors } }) => (
               <Select
                 label='Код подразделения'
                 withInputSearch
@@ -142,7 +140,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 }}
                 noArrow
                 error={errors[name]?.message as string}
-                searchInputProps={{type: "number"}}
+                searchInputProps={{ type: "number" }}
               />
             )}
           />
@@ -170,7 +168,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 return true
               }
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Дата выдачи'
                 value={value}
@@ -178,7 +176,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 onBlur={onBlur}
                 error={errors[name]?.message as string}
                 mask="D9.M9.Y999"
-                formatChars={{'D': '[0-3]', 'M': '[0-1]', 'Y': '[1-2]', '9': '[0-9]'}}
+                formatChars={{ 'D': '[0-3]', 'M': '[0-1]', 'Y': '[1-2]', '9': '[0-9]' }}
                 type="tel"
               />
             )}
@@ -189,7 +187,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
             rules={{
               required: "Поле обязательно к заполнению",
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Кем выдан'
                 value={value}
@@ -209,7 +207,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 message: 'Некорректное значение поля снилс'
               }
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='СНИЛС'
                 value={value}
@@ -229,7 +227,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
             rules={{
               required: "Поле обязательно к заполнению",
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Имя'
                 value={value}
@@ -245,7 +243,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
             rules={{
               required: "Поле обязательно к заполнению",
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Фамилия'
                 value={value}
@@ -261,7 +259,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
             rules={{
               required: "Поле обязательно к заполнению",
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Отчество'
                 value={value}
@@ -292,7 +290,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 return true
               }
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Дата рождения'
                 value={value}
@@ -300,7 +298,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 onBlur={onBlur}
                 error={errors[name]?.message as string}
                 mask="D9.M9.Y999"
-                formatChars={{'D': '[0-3]', 'M': '[0-1]', 'Y': '[1-2]', '9': '[0-9]'}}
+                formatChars={{ 'D': '[0-3]', 'M': '[0-1]', 'Y': '[1-2]', '9': '[0-9]' }}
                 type="tel"
               />
             )}
@@ -308,9 +306,9 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           <Controller
             name="gender"
             control={control}
-            render={({field: {value, onChange}}) => (
+            render={({ field: { value, onChange } }) => (
               <Select
-                options={[{name: 'Мужской', value: 'M'}, {name: 'Женский', value: 'F'}]}
+                options={[{ name: 'Мужской', value: 'M' }, { name: 'Женский', value: 'F' }]}
                 setValue={onChange}
                 value={value}
                 label='Пол'
@@ -327,7 +325,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
                 message: 'Значение поля не является правильным email адресом.'
               }
             }}
-            render={({field: {value, name, onChange, onBlur}, formState: {errors}}) => (
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
               <Input
                 label='Email'
                 value={value}

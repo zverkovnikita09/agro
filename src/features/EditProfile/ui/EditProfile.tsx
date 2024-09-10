@@ -17,10 +17,8 @@ import { useSendData } from '@shared/hook/useSendData';
 import { useSelector } from 'react-redux';
 import { addNotification, NotificationType } from '@entities/Notifications';
 import { useAppDispatch } from '@src/app/store/model/hook';
-import { useGetData } from '@shared/hook/useGetData';
-import { FileToSendType,  } from '../model/editProfile.model';
-import { LoadingBlock } from '@shared/ui/LoadingBlock';
-import {StepThree} from "@features/EditProfile/ui/StepThree";
+import { FileToSendType, } from '../model/editProfile.model';
+import { StepThree } from "@features/EditProfile/ui/StepThree";
 
 interface EditProfileContextProps {
   watch: UseFormWatch<UserInfo>
@@ -73,7 +71,12 @@ export const EditProfile = () => {
       series: userInfo?.series,
       snils: userInfo?.snils ?? "",
       tax_system: userInfo?.tax_system ?? "",
-      type: userInfo?.type
+      type: userInfo?.type,
+      ckpp: userInfo?.ckpp,
+      cfull_name: userInfo?.cfull_name,
+      cinn: userInfo?.cinn,
+      cregion: userInfo?.cregion,
+      cshort_name: userInfo?.cshort_name
     }
   });
 
@@ -190,7 +193,12 @@ export const EditProfile = () => {
 
   const onFormSend = (data: UserInfo) => {
     setIsFormSending(true);
-    handleSendData(data)
+    handleSendData({
+      ...data,
+      director_name: data.name,
+      director_surname: data.surname,
+      director_lastname: data.patronymic,
+    })
   }
 
   const onSubmit = () => {

@@ -20,6 +20,11 @@ export interface MainOrganisationInfo {
   juridical_address: string
   office_address: string
   tax_system: string
+  cinn: number
+  cshort_name: string
+  cfull_name: string
+  cregion: string
+  ckpp: string
 }
 
 export interface PersonalData {
