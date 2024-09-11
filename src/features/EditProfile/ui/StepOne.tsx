@@ -47,7 +47,6 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
         : targetCompany?.data?.address?.data?.region + " " + targetCompany?.data?.address?.data?.region_type_full.charAt(0).toUpperCase() +
         targetCompany?.data?.address?.data?.region_type_full.slice(1).toLowerCase();
 
-      setValue("inn", targetCompany?.data?.inn);
       setValue("cinn", targetCompany?.data?.inn);
       setValue("ogrn", targetCompany?.data?.ogrn ?? "");
       setValue("okved", targetCompany?.data?.okved ?? "");
@@ -61,14 +60,15 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
         setValue("name", targetCompany?.data?.fio?.name ?? "");
         setValue("patronymic", targetCompany?.data?.fio?.patronymic ?? "");
         setValue("surname", targetCompany?.data?.fio?.surname ?? "");
+        setValue("inn", targetCompany?.data?.inn);
       }
       if (companyType === "ООО") {
         const [surname, name, patronymic] = targetCompany.data?.management?.name?.split(' ') ?? [];
-
+        setValue("inn", "" as unknown as number);
         setValue("name", name ?? "");
         setValue("patronymic", patronymic ?? "");
         setValue("surname", surname ?? "");
-        setValue("ckpp", targetCompany?.data?.kpp ?? "")
+        setValue("kpp", targetCompany?.data?.kpp ?? "")
       }
     }
   }, [company])
@@ -122,7 +122,7 @@ export const StepOne = ({ onCancel, onDeleteProfile }: StepOneProps) => {
         </Text>
         <div className={styles.inputsRow}>
           <Controller
-            name="inn"
+            name="cinn"
             control={control}
             rules={{ required: "Поле обязательно к заполнению" }}
             render={({ field: { value, name }, formState: { errors } }) => (

@@ -34,7 +34,7 @@ interface EditProfileContextProps {
 export const EditProfileContext = createContext<EditProfileContextProps>({} as EditProfileContextProps)
 
 export const EditProfile = () => {
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(2);
   const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
 
@@ -72,7 +72,7 @@ export const EditProfile = () => {
       snils: userInfo?.snils ?? "",
       tax_system: userInfo?.tax_system ?? "",
       type: userInfo?.type,
-      ckpp: userInfo?.ckpp,
+      kpp: userInfo?.kpp,
       cfull_name: userInfo?.cfull_name,
       cinn: userInfo?.cinn,
       cregion: userInfo?.cregion,

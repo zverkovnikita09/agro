@@ -24,7 +24,7 @@ export interface MainOrganisationInfo {
   cshort_name: string
   cfull_name: string
   cregion: string
-  ckpp: string
+  kpp: string
 }
 
 export interface PersonalData {

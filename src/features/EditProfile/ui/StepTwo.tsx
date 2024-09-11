@@ -55,7 +55,8 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
     }
   }, [department]);
 
-  const companyType = watch("type")
+  const companyType = watch("type");
+  const isOOO = companyType === "ООО";
 
   return (
     <>
@@ -64,7 +65,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
           weight={TextWeight.BOLD}
           size={TextSize.XL}
         >
-          Личные данные {companyType === "ООО" ? "директора" : ""}
+          Личные данные {isOOO ? "директора" : ""}
         </Text>
         <div className={styles.inputsThreeRow}>
           <Controller
@@ -336,6 +337,24 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
             )}
           />
         </div>
+        {isOOO && <div className={styles.inputsThreeRow}>
+          <Controller
+            name="inn"
+            control={control}
+            rules={{
+              required: "Поле обязательно к заполнению",
+            }}
+            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+              <Input
+                label='ИНН'
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={errors[name]?.message as string}
+              />
+            )}
+          />
+        </div>}
       </div>
       <div className={styles.buttonsContainer}>
         <Button
