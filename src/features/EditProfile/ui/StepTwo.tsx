@@ -343,13 +343,18 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
             control={control}
             rules={{
               required: "Поле обязательно к заполнению",
+              pattern: {
+                value: /^[^_]*$/,
+                message: 'Некорректный ИНН.'
+              }
             }}
-            render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
+            render={({ formState: { errors }, field: { value, onChange, name } }) => (
               <Input
-                label='ИНН'
+                label='Номер телефона бухгалтера'
+                mask="9999999999"
+                type='tel'
                 value={value}
                 onChange={onChange}
-                onBlur={onBlur}
                 error={errors[name]?.message as string}
               />
             )}
