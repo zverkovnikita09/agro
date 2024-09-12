@@ -350,7 +350,7 @@ export const StepTwo = ({ onPrev, isLoading, onDeleteProfile }: StepTwoProps) =>
             }}
             render={({ formState: { errors }, field: { value, onChange, name } }) => (
               <Input
-                label='Номер телефона бухгалтера'
+                label='ИНН'
                 mask="9999999999"
                 type='tel'
                 value={value}
