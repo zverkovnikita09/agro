@@ -24,7 +24,7 @@ export const Document = (props: DocumentProps) => {
       withAuthToken: true,
       onSuccess: (response) => {
         if (!response.message.includes('https')) {
-          return dispatch(addNotification({ message: response.message, type: NotificationType.Success }))
+          return dispatch(addNotification({ message: response.message, type: NotificationType.Error }))
         }
 
         const link = document.createElement('a');
