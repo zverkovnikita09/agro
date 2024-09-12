@@ -135,8 +135,8 @@ export const LkPage = (props: LkPageProps) => {
           {
             userData?.type === "ООО" &&
             <div className={styles.headingInfoItem}>
-              <Text weight={TextWeight.BOLD} size={TextSize.L}>Основной ОКВЭД</Text>
-              <Text color={TextColor.GREY} size={TextSize.L}>{userData?.okved || "Не указано"}</Text>
+              <Text weight={TextWeight.BOLD} size={TextSize.L}>КПП</Text>
+              <Text color={TextColor.GREY} size={TextSize.L}>{userData?.kpp || "Не указано"}</Text>
             </div>
           }
         </div>
