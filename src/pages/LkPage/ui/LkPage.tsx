@@ -1,26 +1,26 @@
 import cn from 'classnames';
-import {Button, ButtonSize, ButtonTheme} from '@shared/ui/Button';
-import {StatusBadge, StatusType} from "@shared/ui/StatusBadge";
-import {Link, Navigate, useParams} from 'react-router-dom';
-import {Title, TitleSize} from '@shared/ui/Title';
-import {Text, TextColor, TextSize, TextWeight} from '@shared/ui/Text';
-import {CardContainer} from '@shared/ui/CardContainer';
+import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button';
+import { StatusBadge, StatusType } from "@shared/ui/StatusBadge";
+import { Link, Navigate, useParams } from 'react-router-dom';
+import { Title, TitleSize } from '@shared/ui/Title';
+import { Text, TextColor, TextSize, TextWeight } from '@shared/ui/Text';
+import { CardContainer } from '@shared/ui/CardContainer';
 import Hourglass from '@images/hourglass.svg';
 import Check from '@images/check-broken.svg';
 import Info from '@images/info-circle.svg';
-import {Tab, TabPanel, Tabs} from '@shared/ui/Tabs';
-import {PersonalData} from './PersonalData';
-import {UserPhoto} from '@shared/ui/UserPhoto';
-import {RouterPaths} from '@src/app/router';
-import {LoadingBlock} from '@shared/ui/LoadingBlock';
-import {ModerationStatuses, Role, User, UserSelectors} from '@entities/User';
-import {useContext, useLayoutEffect, useMemo} from 'react';
-import {MainLayoutContext} from '@shared/ui/MainLayout';
-import {useSelector} from 'react-redux';
+import { Tab, TabPanel, Tabs } from '@shared/ui/Tabs';
+import { PersonalData } from './PersonalData';
+import { UserPhoto } from '@shared/ui/UserPhoto';
+import { RouterPaths } from '@src/app/router';
+import { LoadingBlock } from '@shared/ui/LoadingBlock';
+import { ModerationStatuses, Role, User, UserSelectors } from '@entities/User';
+import { useContext, useLayoutEffect, useMemo } from 'react';
+import { MainLayoutContext } from '@shared/ui/MainLayout';
+import { useSelector } from 'react-redux';
 import styles from './LkPage.module.scss'
-import {DocsList} from "@features/DocsList";
-import {useGetData} from "@shared/hook/useGetData";
-import {NotFoundBlock} from "@shared/ui/NotFoundBlock";
+import { DocsList } from "@features/DocsList";
+import { useGetData } from "@shared/hook/useGetData";
+import { NotFoundBlock } from "@shared/ui/NotFoundBlock";
 
 interface LkPageProps {
   className?: string;
@@ -32,9 +32,9 @@ const userModerationStatus: Record<ModerationStatuses, StatusType> = {
   [ModerationStatuses.APPROVED]: StatusType.COMPLETE,
 }
 export const LkPage = (props: LkPageProps) => {
-  const {className} = props;
+  const { className } = props;
 
-  const {disableFilters} = useContext(MainLayoutContext)
+  const { disableFilters } = useContext(MainLayoutContext)
 
   useLayoutEffect(() => {
     disableFilters(true)
@@ -49,12 +49,13 @@ export const LkPage = (props: LkPageProps) => {
   const userRole = useSelector(UserSelectors.selectUserRole);
   const userId = useSelector(UserSelectors.selectUserId);
 
-  const {id: userParamId} = useParams();
+  const { id: userParamId } = useParams();
 
   const isCurrentUser = userParamId === userId;
 
   const { data: counteragent, isLoading: isCounteragentLoading, isError: isCounteragentError } = useGetData<User>(
-    { url: `/api/v1/counteragent/${userParamId}`,
+    {
+      url: `/api/v1/counteragent/${userParamId}`,
       isEnabled: !!userId && !isCurrentUser,
       dataFlag: true,
       withAuthToken: true
@@ -78,16 +79,16 @@ export const LkPage = (props: LkPageProps) => {
 
   if (isLoading || isCounteragentLoading || isCounteragentError) return (
     <CardContainer className={cn(styles.lkPage, className)}>
-      <LoadingBlock/>
+      <LoadingBlock />
     </CardContainer>
   )
 
-  if (isError) return <Navigate to={RouterPaths.LOGIN} replace/>
+  if (isError) return <Navigate to={RouterPaths.LOGIN} replace />
 
   return (
     <CardContainer className={cn(styles.lkPage, className)}>
       <div className={styles.heading}>
-        <UserPhoto image={userData?.files?.find((file) => file.type === 'Аватар')?.path_url ?? ''}/>
+        <UserPhoto image={userData?.files?.find((file) => file.type === 'Аватар')?.path_url ?? ''} />
         <div className={styles.headingInfo}>
           <div className={styles.headingInfoTitle}>
             <Title
@@ -100,19 +101,19 @@ export const LkPage = (props: LkPageProps) => {
               <StatusBadge status={userModerationStatus[userData.moderation_status]} className={styles.moderationStatus}>
                 {userData.moderation_status === ModerationStatuses.APPROVED && (
                   <>
-                    <Check width={14} height={14}/>
+                    <Check width={14} height={14} />
                     Профиль подтвержден
                   </>
                 )}
                 {userData.moderation_status === ModerationStatuses.PENDING && (
                   <>
-                    <Hourglass width={14} height={14}/>
+                    <Hourglass width={14} height={14} />
                     Профиль на модерации
                   </>
                 )}
                 {userData.moderation_status === ModerationStatuses.REJECTED && (
                   <>
-                    <Info width={14} height={14}/>
+                    <Info width={14} height={14} />
                     Профиль не подтвержден
                   </>
                 )}
@@ -131,6 +132,13 @@ export const LkPage = (props: LkPageProps) => {
             <Text weight={TextWeight.BOLD} size={TextSize.L}>Основной ОКВЭД</Text>
             <Text color={TextColor.GREY} size={TextSize.L}>{userData?.okved || "Не указано"}</Text>
           </div>
+          {
+            userData?.type === "ООО" &&
+            <div className={styles.headingInfoItem}>
+              <Text weight={TextWeight.BOLD} size={TextSize.L}>Основной ОКВЭД</Text>
+              <Text color={TextColor.GREY} size={TextSize.L}>{userData?.okved || "Не указано"}</Text>
+            </div>
+          }
         </div>
         {isEditingAllowed && userData?.moderation_status !== ModerationStatuses.PENDING &&
           <Button
@@ -146,21 +154,21 @@ export const LkPage = (props: LkPageProps) => {
       </div>
       {userData?.moderation_status !== ModerationStatuses.PENDING ?
         <Tabs saveInParams>
-        <div className={styles.tabsHeading}>
-          <Tab value={0}>Личные данные</Tab>
-          {isShowDocumentsTab && <Tab value={1}>Документы</Tab>}
-        </div>
-        <TabPanel value={0}>
-          {userData &&
-            <PersonalData user={userData} files={userData?.files}/>
-          }
-        </TabPanel>
-        {isShowDocumentsTab &&
-          <TabPanel value={1}>
-            <DocsList/>
+          <div className={styles.tabsHeading}>
+            <Tab value={0}>Личные данные</Tab>
+            {isShowDocumentsTab && <Tab value={1}>Документы</Tab>}
+          </div>
+          <TabPanel value={0}>
+            {userData &&
+              <PersonalData user={userData} files={userData?.files} />
+            }
           </TabPanel>
-        }
-      </Tabs> :
+          {isShowDocumentsTab &&
+            <TabPanel value={1}>
+              <DocsList />
+            </TabPanel>
+          }
+        </Tabs> :
         <NotFoundBlock
           Icon={Hourglass}
           title='Ваш профиль проходит модерацию'
