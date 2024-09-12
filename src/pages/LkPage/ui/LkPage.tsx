@@ -121,7 +121,7 @@ export const LkPage = (props: LkPageProps) => {
           </div>
           <div className={styles.headingInfoItem}>
             <Text weight={TextWeight.BOLD} size={TextSize.L}>ИНН</Text>
-            <Text color={TextColor.GREY} size={TextSize.L}>{userData?.inn || "Не указано"}</Text>
+            <Text color={TextColor.GREY} size={TextSize.L}>{userData?.cinn || "Не указано"}</Text>
           </div>
           <div className={styles.headingInfoItem}>
             <Text weight={TextWeight.BOLD} size={TextSize.L}>ОГРН</Text>

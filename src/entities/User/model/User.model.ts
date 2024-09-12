@@ -15,6 +15,7 @@ export interface MainOrganisationInfo {
   accountant_phone: string
   director_name: string
   director_surname: string
+  director_lastname: string
   short_name: string
   full_name: string
   juridical_address: string

@@ -96,7 +96,7 @@ export const PersonalData = ({ user, files }: PersonalData) => {
             <div className={styles.note}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Директор</Text>
               <Text as="p" size={TextSize.L}
-                weight={TextWeight.MEDIUM}>{user.director_surname + ` ${user.director_name}`}</Text>
+                weight={TextWeight.MEDIUM}>{`${user.director_surname} ${user.director_name} ${user.director_lastname ?? ''}`}</Text>
             </div>
           }
         </div>
