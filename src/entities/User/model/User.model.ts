@@ -21,7 +21,7 @@ export interface MainOrganisationInfo {
   juridical_address: string
   office_address: string
   tax_system: string
-  cinn: number
+  cinn: string
   cshort_name: string
   cfull_name: string
   cregion: string

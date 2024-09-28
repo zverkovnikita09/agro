@@ -72,11 +72,11 @@ export const EditProfile = () => {
       snils: userInfo?.snils ?? "",
       tax_system: userInfo?.tax_system ?? "",
       type: userInfo?.type,
-      kpp: userInfo?.kpp,
-      cfull_name: userInfo?.cfull_name,
-      cinn: userInfo?.cinn,
-      cregion: userInfo?.cregion,
-      cshort_name: userInfo?.cshort_name
+      kpp: userInfo?.kpp ?? "",
+      cfull_name: userInfo?.cfull_name ?? "",
+      cinn: userInfo?.cinn ?? "",
+      cregion: userInfo?.cregion ?? "",
+      cshort_name: userInfo?.cshort_name ?? ""
     }
   });
 
