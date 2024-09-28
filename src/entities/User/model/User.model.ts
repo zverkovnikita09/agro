@@ -8,7 +8,7 @@ export enum ModerationStatuses {
 
 export interface MainOrganisationInfo {
   type?: "ИП" | "ООО"
-  inn: number
+  inn: string
   ogrn: string
   okved: string
   region: string
@@ -29,8 +29,8 @@ export interface MainOrganisationInfo {
 }
 
 export interface PersonalData {
-  series: number
-  number: number
+  series: string
+  number: string
   name: string
   surname: string
   patronymic: string
