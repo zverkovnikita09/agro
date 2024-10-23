@@ -17,6 +17,10 @@ import { HeaderButtonsState } from "@shared/ui/MainLayout/model/mainLayout.model
 import { Role, UserSelectors } from "@entities/User";
 import { SearchOnMap } from "@features/SearchOnMap";
 import { ApplicationModel } from "@entities/Application";
+import Plus from "@images/plus.svg"
+import Download from "@images/download.svg"
+import { useGetData } from "@shared/hook/useGetData";
+import { InfoBlockIconColor } from "@shared/ui/InfoBlock";
 
 interface HeaderProps {
   className?: string;
@@ -68,6 +72,13 @@ export const Header = (props: HeaderProps) => {
   const allFilters = useSelector(FiltersSelectors.selectAllFilters);
   const filteredValues = Object.values(allFilters).filter(filter => filter !== undefined && filter !== "");
 
+  const { isLoading: isOrdersExportLoading, refetch: exportOrders } = useGetData({
+    url: "/api/v1/orders-export",
+    isEnabled: false,
+    params: { ...allFilters },
+    withAuthToken: true,
+  });
+
   return (
     <div className={cn(styles.header, className)}>
       {isTablet &&
@@ -93,25 +104,54 @@ export const Header = (props: HeaderProps) => {
           <Button className={searchClasses} onClick={() => handleButtonsStateToggle("search")}>
             <SearchIcon width={18} height={18} />
           </Button>
-        )
-
-      }
-
+        )}
       {userRole === Role.LOGIST &&
-        <div className={styles.buttonWrapper}>
-          <Button
-            className={styles.button}
-            theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
-            size={ButtonSize.S}
-            as={Link}
-            to={RouterPaths.NEW_APPLICATION}
-            state={{
-              allowPrevUrl: true
-            }}
-          >
-            Разместить заявку
-          </Button>
-        </div>}
+        <div className={styles.buttons}>
+          <div className={styles.buttonWrapper}>
+            <Button
+              className={styles.button}
+              theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+              size={ButtonSize.S}
+              as={Link}
+              to={RouterPaths.NEW_APPLICATION}
+              state={{
+                allowPrevUrl: true
+              }}
+            >
+              {!isMobile ? 'Разместить заявку' : <Plus />}
+            </Button>
+          </div>
+          {
+            !isMobile ?
+              <div className={styles.buttonWrapper}>
+                <Button
+                  className={styles.unloadButton}
+                  theme={ButtonTheme.GREY}
+                  size={ButtonSize.S}
+                >
+                  Выгрузить заявки
+                </Button>
+              </div>
+              :
+              <Button
+                className={styles.toggleButton}
+                withConfirm
+                alertPopupProps={{
+                  confirmText: "Вы действительно хотите выгрузить заявки?",
+                  additionalText: "Все заявки по выбранным фильтрам будут выгружены в WhatsApp",
+                  iconColor: InfoBlockIconColor.ACCENT,
+                  buttonThemes: {
+                    confirm: ButtonTheme.OUTLINE
+                  }
+                }}
+                isLoading={isOrdersExportLoading}
+                onClick={exportOrders}
+              >
+                <Download width={24} height={24} />
+              </Button>
+          }
+        </div>
+      }
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { RouterPaths } from "@src/app/router";
 import cn from 'classnames';
 import styles from './MainLayout.module.scss'
 import { Navigate, useLocation, useNavigate, useOutlet } from "react-router-dom";
@@ -5,10 +6,9 @@ import { Header } from "@widgets/Header";
 import { Sidebar } from "@widgets/Sidebar";
 import { useSelector } from "react-redux";
 import { UserSelectors, fetchUserData } from "@entities/User";
-import { RouterPaths } from "@src/app/router";
 import { useGetData } from "@shared/hook/useGetData";
 import { LoadingBlock } from "@shared/ui/LoadingBlock";
-import { Dispatch, SetStateAction, createContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, createContext, useEffect, useMemo, useState } from 'react';
 import { Filters, FiltersSelectors } from "@entities/Filters";
 import { YandexMap } from "@widgets/YandexMap";
 import { Notifications } from '@entities/Notifications';
@@ -23,7 +23,6 @@ import { ApplicationModel } from '@entities/Application';
 interface MainLayoutContextProps {
   openOverlay: () => void;
   closeOverlay: () => void;
-  disableFilters: (status: boolean) => void;
   applications?: ApplicationModel[]
   setApplications: Dispatch<SetStateAction<ApplicationModel[]>>
 }
@@ -31,6 +30,11 @@ interface MainLayoutContextProps {
 export const MainLayoutContext = createContext<MainLayoutContextProps>({} as MainLayoutContextProps)
 
 export const MainLayout = () => {
+  const routesWithHeader = [
+    RouterPaths.MAIN,
+    RouterPaths.CHECKLIST
+  ]
+
   const outlet = useOutlet();
   const windowSize = useWindowSize();
 
@@ -59,10 +63,6 @@ export const MainLayout = () => {
   const openOverlay = () => setIsOverlayOpen(true)
   const closeOverlay = () => setIsOverlayOpen(false)
 
-  const disableFilters = (status: boolean) => {
-    setFiltersDisabled(status)
-  }
-
   const token = useSelector(UserSelectors.selectToken);
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -71,6 +71,10 @@ export const MainLayout = () => {
   const isError = useSelector(UserSelectors.selectIsUserDataError)
 
   const user = useSelector(UserSelectors.selectUserData)
+
+  const showHeader = useMemo(() => {
+    return routesWithHeader.includes(location.pathname as RouterPaths);
+  }, [location])
 
   useEffect(() => {
     dispatch(fetchUserData())
@@ -102,18 +106,18 @@ export const MainLayout = () => {
   if (isError) return <Navigate to={RouterPaths.LOGIN} replace />
 
   return (
-    <MainLayoutContext.Provider value={{ openOverlay, closeOverlay, disableFilters, applications, setApplications }}>
+    <MainLayoutContext.Provider value={{ openOverlay, closeOverlay, applications, setApplications }}>
       <Notifications />
       <div className={cn(styles.overlay, { [styles.active]: isOverlayOpen })} />
 
-      <div className={styles.mainLayout}>
+      <div className={cn(styles.mainLayout, { [styles.withHeader]: showHeader })}>
         <YandexMap
           mapCenter={mapCenter}
           className={styles.map}
           applications={applications}
         />
 
-        <div className={styles.header}>
+        {showHeader && <div className={styles.header}>
           <Header
             handleButtonsStateToggle={handleButtonsStateToggle}
             buttonsState={headerButtonsState}
@@ -138,7 +142,7 @@ export const MainLayout = () => {
               setPoints={setMapCenter}
             />
           }
-        </div>
+        </div>}
 
         {!isTablet(windowSize)
           ? (
@@ -157,7 +161,10 @@ export const MainLayout = () => {
         }
 
         {outlet &&
-          <div className={cn(styles.content, { [styles.mainPage]: location.pathname === RouterPaths.MAIN })}>
+          <div className={cn(styles.content, {
+            [styles.mainPage]: location.pathname === RouterPaths.MAIN,
+            [styles.withHeader]: showHeader
+          })}>
             {outlet}
           </div>
         }

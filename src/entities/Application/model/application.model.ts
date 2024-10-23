@@ -46,6 +46,7 @@ export interface ApplicationModel {
   load_types: string[];
   order_number: number;
   is_full_charter?: number;
+  manager_id?: string;
   unload_methods?: string[];
   created_at?: string;
   view_counter: number;

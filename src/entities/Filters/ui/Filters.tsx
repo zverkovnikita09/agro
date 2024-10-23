@@ -22,6 +22,7 @@ import { setFilters } from '../model/Filters.slice';
 import { LoadingBlock } from '@shared/ui/LoadingBlock';
 import styles from './Filters.module.scss'
 import { addNotification, NotificationType } from "@entities/Notifications";
+import { IManager } from '@entities/Manager';
 
 interface FiltersProps {
   className?: string;
@@ -114,10 +115,12 @@ export const Filters = (props: FiltersProps) => {
     if (distance_to === maxDistance) setValue('distance_to', undefined)
   }, [distance_to, distance_from]);
 
+  const { data: managers, isSuccess: isManagersSuccess } = useGetData<IManager[]>({ url: "/api/v1/managers" });
+
   return (
     <CardContainer className={cn(styles.filters, className, { [styles.open]: isOpen })}>
       {
-        (!isRegionsSuccess || !isOptionsSuccess) && <div className={styles.loading}><LoadingBlock /></div>
+        (!isRegionsSuccess || !isOptionsSuccess /* || !isManagersSuccess */) && <div className={styles.loading}><LoadingBlock /></div>
       }
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <div className={styles.heading}>
@@ -357,6 +360,38 @@ export const Filters = (props: FiltersProps) => {
                 />
               )}
             />
+          </Accordion>
+          <Accordion className={styles.accordion} accordionTitle={'Менеджер'}>
+            {/*FIX*/}
+            <Input
+              value={searchLoadRegion}
+              onChange={e => setSearchLoadRegion(e.target.value)}
+              theme={InputTheme.FILTERS}
+              placeholder="Начните вводить..."
+              className={styles.searchInput}
+            />
+            <div className={styles.accordionContent}>
+              {managers?.map((item) => {
+                if (!item) return (
+                  <Controller
+                    name="manager_id"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <RadioButton checked={value === undefined} onChange={() => onChange(undefined)}>Не указано</RadioButton>
+                    )}
+                  />
+                )
+                return (
+                  <Controller
+                    name="manager_id"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <RadioButton checked={value === item.id} onChange={() => onChange(item.id)}>{item.name}</RadioButton>
+                    )}
+                  />
+                )
+              })}
+            </div>
           </Accordion>
           <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
             <MultiCheckbox>

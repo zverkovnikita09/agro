@@ -1,7 +1,7 @@
-import {Button, ButtonSize, ButtonTheme} from "../Button"
-import {Popup, PopupProps} from "../Popup"
+import { Button, ButtonSize, ButtonTheme } from "../Button"
+import { Popup, PopupProps } from "../Popup"
 import style from './ConfirmPopup.module.scss'
-import {InfoBlock, InfoBlockIcons} from "@shared/ui/InfoBlock";
+import { InfoBlock, InfoBlockIconColor, InfoBlockIcons } from "@shared/ui/InfoBlock";
 
 export interface ConfirmPopupProps extends Omit<PopupProps, "children"> {
   confirmText: string
@@ -10,6 +10,11 @@ export interface ConfirmPopupProps extends Omit<PopupProps, "children"> {
   onCancelButtonClick?: () => void
   confirmButtonText?: string
   onConfirmButtonClick?: () => void
+  iconColor?: InfoBlockIconColor
+  buttonThemes?: {
+    confirm?: ButtonTheme;
+    cancel?: ButtonTheme;
+  }
 }
 
 export const ConfirmPopup = ({
@@ -20,6 +25,8 @@ export const ConfirmPopup = ({
   onConfirmButtonClick,
   confirmButtonText,
   closePopup,
+  iconColor,
+  buttonThemes,
   ...props
 }: ConfirmPopupProps) => {
 
@@ -41,11 +48,12 @@ export const ConfirmPopup = ({
           additionalText={additionalText}
           icon={InfoBlockIcons.INFO_ICON}
           iconSize={46}
+          iconColor={iconColor}
         >
           <div className={style.buttons}>
             <Button
               className={style.button}
-              theme={ButtonTheme.OUTLINE_ALERT}
+              theme={buttonThemes?.confirm ?? ButtonTheme.OUTLINE_ALERT}
               size={ButtonSize.S}
               onClick={onConfirm}
             >
@@ -53,7 +61,7 @@ export const ConfirmPopup = ({
             </Button>
             <Button
               className={style.button}
-              theme={ButtonTheme.ACCENT_WITH_BLACK_TEXT}
+              theme={buttonThemes?.cancel ?? ButtonTheme.ACCENT_WITH_BLACK_TEXT}
               size={ButtonSize.S}
               onClick={onCancel}
             >

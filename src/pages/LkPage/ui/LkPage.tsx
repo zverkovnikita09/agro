@@ -34,14 +34,6 @@ const userModerationStatus: Record<ModerationStatuses, StatusType> = {
 export const LkPage = (props: LkPageProps) => {
   const { className } = props;
 
-  const { disableFilters } = useContext(MainLayoutContext)
-
-  useLayoutEffect(() => {
-    disableFilters(true)
-
-    return () => disableFilters(false)
-  }, [])
-
   const isLoading = useSelector(UserSelectors.selectIsUserDataLoading)
   const isError = useSelector(UserSelectors.selectIsUserDataError)
 

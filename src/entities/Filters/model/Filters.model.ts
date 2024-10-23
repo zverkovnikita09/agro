@@ -2,7 +2,7 @@ import { ApplicationModel } from "@entities/Application/model/application.model"
 
 export interface Filters extends Pick<
   Partial<ApplicationModel>,
-  "load_types" | "is_overload" | "scale_length" | "clarification_of_the_weekend" | "is_full_charter" | "height_limit"
+  "load_types" | "is_overload" | "scale_length" | "clarification_of_the_weekend" | "is_full_charter" | "height_limit" | "manager_id"
 > {
   distance_from?: number
   distance_to?: number

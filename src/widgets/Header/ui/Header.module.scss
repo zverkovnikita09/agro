@@ -6,7 +6,7 @@
   gap: 8px;
 }
 
-.toggleButton{
+.toggleButton {
   position: relative;
   display: flex;
   gap: 8px;
@@ -17,7 +17,7 @@
   position: relative;
   border-radius: 12px;
   overflow: unset;
-  
+
   @media (max-width: $mobile) {
     padding: 12px;
   }
@@ -39,7 +39,7 @@
     flex-shrink: 0;
   }
 
-  & > .buttonText {
+  &>.buttonText {
     max-width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -56,12 +56,14 @@
   }
 }
 
-.activeFilter, .activeSorting, .activeSearch {
+.activeFilter,
+.activeSorting,
+.activeSearch {
   background-color: var(--primary-yellow);
 }
 
 .activeFilter {
-  & .counter{
+  & .counter {
     background-color: var(--white-color);
   }
 }
@@ -126,9 +128,11 @@
   border-radius: 12px;
   padding: 3.5px 4px;
   box-shadow: var(--shadow-bottom);
+  flex: 1;
 
   @media (max-width: $mobile) {
     margin-left: auto;
+    max-width: 100px;
   }
 }
 
@@ -140,18 +144,29 @@
   min-width: 159px;
 
   @media (max-width: $mobile) {
+    color: white;
     min-width: unset;
     width: 100%;
     padding: 10px 23px;
   }
 }
 
-.disabledFilters{
+.unloadButton {
+  white-space: nowrap;
+  color: black;
+  font-weight: 600;
+
+  @media (max-width: $mobile) {
+    padding: 12px;
+  }
+}
+
+.disabledFilters {
   pointer-events: none;
   color: var(--disabled-color);
 }
 
-.counter{
+.counter {
   position: absolute;
   display: flex;
   align-items: center;
@@ -167,8 +182,18 @@
   transition: background-color .1s ease;
 }
 
-.buttonText{
+.buttonText {
   @media (max-width: $tablet) {
     display: none;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+
+  @media (max-width: $mobile) {
+    flex-direction: row-reverse;
   }
 }

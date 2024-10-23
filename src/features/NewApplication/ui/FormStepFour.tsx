@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import styles from './NewApplication.module.scss'
 import { NewApplicationContext } from './NewApplication'
 import { Text, TextSize, TextWeight } from '@shared/ui/Text'
@@ -7,6 +7,10 @@ import { Input } from '@shared/ui/Input'
 import { TextArea } from '@shared/ui/TextArea'
 import { Button, ButtonSize, ButtonTheme } from '@shared/ui/Button'
 import BurgerIcon from '@images/two-lines-burger.svg'
+import { useGetData } from '@shared/hook/useGetData'
+import { IManager } from '@entities/Manager'
+import { LoadingBlock } from '@shared/ui/LoadingBlock'
+import { Select } from '@shared/ui/Select'
 
 interface FormStepFourProps {
   prevStep: () => void
@@ -15,9 +19,25 @@ interface FormStepFourProps {
 }
 
 export const FormStepFour = ({ isLoading, prevStep, toAdditional }: FormStepFourProps) => {
-  const { control } = useContext(NewApplicationContext)
+  const { control, watch } = useContext(NewApplicationContext)
+  const { data: managers, isSuccess: isManagersSuccess } = useGetData<IManager[]>({ url: "/api/v1/managers" });
+
+  const managersOptions = managers?.map(({ id, name }) => ({ name, value: id })) ?? [];
+  const selectedManager = watch("manager_id");
+
+  const managerPhone = useMemo(() => {
+    if (!managers?.length || !selectedManager) return "";
+
+    return managers.find(({ id }) => selectedManager === id)?.phone ?? "";
+  }, [selectedManager])
+
   return (
     <>
+   {/*    {!isManagersSuccess && (
+        <div className={styles.loading}>
+          <LoadingBlock />
+        </div>
+      )} */}
       <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}
@@ -60,6 +80,36 @@ export const FormStepFour = ({ isLoading, prevStep, toAdditional }: FormStepFour
                 error={errors[name]?.message as string}
               />
             )}
+          />
+        </div>
+      </div>
+      <div className={styles.inputBlock}>
+        <Text
+          weight={TextWeight.BOLD}
+          size={TextSize.XL}
+        >
+          Менеджер
+        </Text>
+        <div className={styles.inputsRow}>
+          <Controller
+            name="manager_id"
+            control={control}
+            rules={{ required: "Поле обязательно к заполнению" }}
+            render={({ field: { value, name, onChange }, formState: { errors } }) => (
+              <Select
+                options={managersOptions}
+                setValue={onChange}
+                value={value}
+                error={errors[name]?.message as string}
+                label='Выберите менеджера'
+                withInputSearch
+              />
+            )}
+          />
+          <Input
+            label='Номер телефона'
+            value={managerPhone}
+            disabled
           />
         </div>
       </div>

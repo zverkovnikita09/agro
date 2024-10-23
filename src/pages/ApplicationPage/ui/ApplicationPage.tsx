@@ -45,14 +45,6 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
 
   const { data: userApplications, isSuccess: isUserApplicationsSuccess } = useGetData<ApplicationModel[]>({ url: '/api/v1/user-orders', dataFlag: true, withAuthToken: true })
 
-  const { disableFilters } = useContext(MainLayoutContext)
-
-  useLayoutEffect(() => {
-    disableFilters(true)
-
-    return () => disableFilters(false)
-  }, [])
-
   const {
     order_number,
     start_order_at,
