@@ -115,12 +115,12 @@ export const Filters = (props: FiltersProps) => {
     if (distance_to === maxDistance) setValue('distance_to', undefined)
   }, [distance_to, distance_from]);
 
-  const { data: managers, isSuccess: isManagersSuccess } = useGetData<IManager[]>({ url: "/api/v1/managers" });
+  const { data: managers, isSuccess: isManagersSuccess } = useGetData<IManager[]>({ url: "/api/v1/managers", dataFlag: true, withAuthToken: true });
 
   return (
     <CardContainer className={cn(styles.filters, className, { [styles.open]: isOpen })}>
       {
-        (!isRegionsSuccess || !isOptionsSuccess /* || !isManagersSuccess */) && <div className={styles.loading}><LoadingBlock /></div>
+        (!isRegionsSuccess || !isOptionsSuccess || !isManagersSuccess) && <div className={styles.loading}><LoadingBlock /></div>
       }
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <div className={styles.heading}>
@@ -362,7 +362,6 @@ export const Filters = (props: FiltersProps) => {
             />
           </Accordion>
           <Accordion className={styles.accordion} accordionTitle={'Менеджер'}>
-            {/*FIX*/}
             <Input
               value={searchLoadRegion}
               onChange={e => setSearchLoadRegion(e.target.value)}

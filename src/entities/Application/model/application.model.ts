@@ -1,3 +1,5 @@
+import { IManager } from "@entities/Manager";
+
 export interface Coord {
   x: string | number;
   y: string | number;
@@ -50,4 +52,5 @@ export interface ApplicationModel {
   unload_methods?: string[];
   created_at?: string;
   view_counter: number;
+  manager: IManager;
 }

@@ -20,9 +20,12 @@ interface FormStepFourProps {
 
 export const FormStepFour = ({ isLoading, prevStep, toAdditional }: FormStepFourProps) => {
   const { control, watch } = useContext(NewApplicationContext)
-  const { data: managers, isSuccess: isManagersSuccess } = useGetData<IManager[]>({ url: "/api/v1/managers" });
+  const { data: managers, isSuccess: isManagersSuccess } = useGetData<IManager[]>({ url: "/api/v1/managers", dataFlag: true, withAuthToken: true });
 
-  const managersOptions = managers?.map(({ id, name }) => ({ name, value: id })) ?? [];
+  const managersOptions = useMemo(() => {
+    if (!managers?.length) return [];
+    return managers.map(({ id, name }) => ({ name, value: id }))
+  }, [managers]);
   const selectedManager = watch("manager_id");
 
   const managerPhone = useMemo(() => {
@@ -33,11 +36,11 @@ export const FormStepFour = ({ isLoading, prevStep, toAdditional }: FormStepFour
 
   return (
     <>
-   {/*    {!isManagersSuccess && (
+      {!isManagersSuccess && (
         <div className={styles.loading}>
           <LoadingBlock />
         </div>
-      )} */}
+      )}
       <div className={styles.inputBlock}>
         <Text
           weight={TextWeight.BOLD}

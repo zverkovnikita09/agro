@@ -26,7 +26,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
 import { ApplicationInfoItem } from '@shared/ui/ApplicationInfoItem';
 import { Role, UserSelectors } from '@entities/User';
-import {SelectedApplicationSelectors} from "@entities/SelectedApplication/model/SelectedApplication.selectors";
+import { SelectedApplicationSelectors } from "@entities/SelectedApplication/model/SelectedApplication.selectors";
 import {
   clearSelectedApplication,
   setSelectedApplication
@@ -84,6 +84,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     is_full_charter,
     unload_methods,
     created_at,
+    manager,
   } = applicationInfo ?? {}
 
   const tariffWithNds = tariff && nds_percent && Math.ceil(tariff * nds_percent / 100 + tariff);
@@ -98,7 +99,7 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
     url: '/api/v1/offers/create', withAuthToken: true, onSuccess: () => {
       dispatch(addNotification({ message: "Вы успешно откликнулись, скоро с вами свяжется логист", type: NotificationType.Success }))
       // setApplications(prev => prev.filter(item => item.id !== id));
-      if (selectedApplication.find(item => item.id === id)){
+      if (selectedApplication.find(item => item.id === id)) {
         dispatch(clearSelectedApplication());
       }
     }
@@ -286,6 +287,17 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
               {contact_phone}
             </ApplicationInfoItem>
           </div>
+          <Title as="h2" size={TitleSize.APPLICATION_TITLE}>
+            Менеджер
+          </Title>
+          {manager && <div className={styles.infoGrid}>
+            <ApplicationInfoItem title='Контактное лицо'>
+              {manager.name}
+            </ApplicationInfoItem>
+            <ApplicationInfoItem title='Номер телефона'>
+              {manager.phone}
+            </ApplicationInfoItem>
+          </div>}
           {description &&
             <div className={styles.note}>
               <Text as="p" size={TextSize.L} weight={TextWeight.MEDIUM} color={TextColor.GREY}>Примечание</Text>

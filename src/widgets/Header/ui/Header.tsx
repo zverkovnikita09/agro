@@ -128,6 +128,7 @@ export const Header = (props: HeaderProps) => {
                   className={styles.unloadButton}
                   theme={ButtonTheme.GREY}
                   size={ButtonSize.S}
+                  onClick={exportOrders}
                 >
                   Выгрузить заявки
                 </Button>

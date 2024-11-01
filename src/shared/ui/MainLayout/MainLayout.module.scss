@@ -93,6 +93,7 @@
   justify-self: center;
   padding: 16px;
   width: 100%;
+  height: 100vh;
 
   &.withHeader {
     height: calc(100dvh - var(--header-height));

@@ -33,7 +33,7 @@ export const Router = () => (
       } />
       <Route path={RouterPaths.CHECKLIST} element={<CheckList />} />
       <Route path={RouterPaths.NEW_APPLICATION} element={
-        <ProtectedRoute targetRole={Role.CLIENT}>
+        <ProtectedRoute targetRole={Role.LOGIST}>
           <NewApplication />
         </ProtectedRoute>
       } />
