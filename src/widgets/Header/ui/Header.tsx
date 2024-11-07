@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { RouterPaths } from '@src/app/router';
 import cn from 'classnames';
 import { Text, TextSize, TextWeight } from "@shared/ui/Text";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SortBySelectors } from "@entities/SortBy/model/SortBy.selector";
 import { sortByNames } from "@entities/SortBy";
 import { FiltersSelectors } from "@entities/Filters";
@@ -21,6 +21,7 @@ import Plus from "@images/plus.svg"
 import Download from "@images/download.svg"
 import { useGetData } from "@shared/hook/useGetData";
 import { InfoBlockIconColor } from "@shared/ui/InfoBlock";
+import { addNotification, NotificationType } from "@entities/Notifications";
 
 interface HeaderProps {
   className?: string;
@@ -46,6 +47,7 @@ export const Header = (props: HeaderProps) => {
   } = props;
 
   const userRole = useSelector(UserSelectors.selectUserRole);
+  const dispatch = useDispatch();
 
   const filterClasses = cn(
     styles.toggleButton,
@@ -77,6 +79,10 @@ export const Header = (props: HeaderProps) => {
     isEnabled: false,
     params: { ...allFilters },
     withAuthToken: true,
+    onSuccess: () => addNotification({ message: "Выбранные заявки успешно выгружены в WhatsApp", type: NotificationType.Success }),
+    onError: (error) => {
+      dispatch(addNotification({ message: error.message, type: NotificationType.Error }))
+    }
   });
 
   return (
@@ -105,7 +111,7 @@ export const Header = (props: HeaderProps) => {
             <SearchIcon width={18} height={18} />
           </Button>
         )}
-      {userRole === Role.LOGIST &&
+      {userRole === Role.CLIENT &&
         <div className={styles.buttons}>
           <div className={styles.buttonWrapper}>
             <Button
@@ -129,13 +135,23 @@ export const Header = (props: HeaderProps) => {
                   theme={ButtonTheme.GREY}
                   size={ButtonSize.S}
                   onClick={exportOrders}
+                  withConfirm
+                  alertPopupProps={{
+                    confirmText: "Вы действительно хотите выгрузить заявки?",
+                    additionalText: "Все заявки по выбранным фильтрам будут выгружены в WhatsApp",
+                    iconColor: InfoBlockIconColor.ACCENT,
+                    buttonThemes: {
+                      confirm: ButtonTheme.OUTLINE
+                    }
+                  }}
+                  isLoading={isOrdersExportLoading}
                 >
                   Выгрузить заявки
                 </Button>
               </div>
               :
               <Button
-                className={styles.toggleButton}
+                className={cn(styles.toggleButton, styles.unloadMobileButton)}
                 withConfirm
                 alertPopupProps={{
                   confirmText: "Вы действительно хотите выгрузить заявки?",

@@ -1,5 +1,5 @@
 export const isTablet = (windowWidth: number) => {
-  if (windowWidth <= 992) return true
+  if (windowWidth <= 1100) return true
 
   return false
 }

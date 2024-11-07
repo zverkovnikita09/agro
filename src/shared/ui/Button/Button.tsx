@@ -77,6 +77,7 @@ export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
     className,
     style[size],
     style[theme],
+    { [style.isLoading]: isLoading },
     { [style.fullWidth]: fullWidth }
   ]
 

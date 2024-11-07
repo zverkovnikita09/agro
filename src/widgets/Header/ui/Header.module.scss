@@ -161,6 +161,10 @@
   }
 }
 
+.unloadMobileButton {
+  overflow: hidden;
+}
+
 .disabledFilters {
   pointer-events: none;
   color: var(--disabled-color);
