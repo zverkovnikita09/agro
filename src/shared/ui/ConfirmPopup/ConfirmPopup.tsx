@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button, ButtonSize, ButtonTheme } from "../Button"
 import { Popup, PopupProps } from "../Popup"
 import style from './ConfirmPopup.module.scss'
@@ -29,14 +30,33 @@ export const ConfirmPopup = ({
   buttonThemes,
   ...props
 }: ConfirmPopupProps) => {
+  const [isLoading, setIsloading] = useState(false)
 
   const onCancel = () => {
-    onConfirmButtonClick?.();
+    onCancelButtonClick?.()
     closePopup()
   }
 
-  const onConfirm = () => {
-    onCancelButtonClick?.()
+  const onConfirm = async () => {
+    if (onConfirmButtonClick) {
+      //Проверка является ли функция асинхронной
+      //@ts-ignore
+      if (onConfirmButtonClick[Symbol.toStringTag] === "AsyncFunction") {
+        try {
+          setIsloading(true);
+          await onConfirmButtonClick();
+        }
+        catch (e){
+          console.log(e);
+        }
+        finally{
+          setIsloading(false);
+        }
+      }
+      else {
+        onConfirmButtonClick();
+      }
+    }
     closePopup()
   }
 
@@ -56,6 +76,7 @@ export const ConfirmPopup = ({
               theme={buttonThemes?.confirm ?? ButtonTheme.OUTLINE_ALERT}
               size={ButtonSize.S}
               onClick={onConfirm}
+              isLoading={isLoading}
             >
               {confirmButtonText || 'Подтвердить'}
             </Button>

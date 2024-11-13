@@ -1,26 +1,26 @@
 @import "@src/app/styles/mediaQueries";
 
-.sortBy {
+
+.ordersExport {
   position: absolute;
   /*TO FIX*/
   top: 75px;
-  left: 140px;
-  width: 261px;
-  max-height: calc(100dvh - 90px);
+  right: 15px;
+  width: 158px;
   overflow: hidden;
   z-index: 5;
-  padding: 24px 12px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
 
   @media (max-width: $tablet) {
-    left: 125px;
+    right: 10px;
   }
 
   @media (max-width: $mobile) {
-    left: 110px;
+    left: 100px;
   }
 
   @media (max-width: $mobileSmall) {
@@ -39,8 +39,4 @@
   &:hover {
     background-color: var(--special-yellow);
   }
-}
-
-.active {
-  background-color: var(--special-yellow);
 }

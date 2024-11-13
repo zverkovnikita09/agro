@@ -92,8 +92,9 @@ export const Button = (props: PropsWithChildren<ComponentButtonProps>) => {
           closePopup={closeConfirm}
           {...(alertPopupProps ?? {})}
           confirmText={alertPopupProps?.confirmText || 'Подтвердите действие'}
-          onCancelButtonClick={onClick}
+          onCancelButtonClick={closeConfirm}
           isActive={isConfirmOpen}
+          onConfirmButtonClick={onClick}
         />
       )}
       <Component

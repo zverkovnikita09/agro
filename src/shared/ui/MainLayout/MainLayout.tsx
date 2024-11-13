@@ -19,6 +19,7 @@ import { HeaderButtonsState } from "@shared/ui/MainLayout/model/mainLayout.model
 import { useAppDispatch } from '@src/app/store/model/hook';
 import { SearchOnMap } from '@features/SearchOnMap';
 import { ApplicationModel } from '@entities/Application';
+import { OrdersExport } from "@features/OrdersExport";
 
 interface MainLayoutContextProps {
   openOverlay: () => void;
@@ -40,13 +41,12 @@ export const MainLayout = () => {
 
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
-  const [isFiltersDisabled, setFiltersDisabled] = useState(false)
-
   const [headerButtonsState, setHeaderButtonsState] = useState<HeaderButtonsState>({
     burger: false,
     filters: false,
     search: false,
     sortBy: false,
+    exportOrder: false,
   });
 
   const handleButtonsStateToggle = (name: keyof HeaderButtonsState, buttonValue?: boolean) => {
@@ -121,7 +121,6 @@ export const MainLayout = () => {
           <Header
             handleButtonsStateToggle={handleButtonsStateToggle}
             buttonsState={headerButtonsState}
-            isFiltersDisabled={isFiltersDisabled}
             isTablet={isTablet(windowSize)}
             isMobile={isMobile(windowSize)}
             applications={applications}
@@ -142,6 +141,10 @@ export const MainLayout = () => {
               setPoints={setMapCenter}
             />
           }
+          <OrdersExport
+            isOpen={headerButtonsState.exportOrder}
+            closeExport={() => handleButtonsStateToggle("exportOrder", false)}
+          />
         </div>}
 
         {!isTablet(windowSize)

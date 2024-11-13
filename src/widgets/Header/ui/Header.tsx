@@ -20,14 +20,12 @@ import { ApplicationModel } from "@entities/Application";
 import Plus from "@images/plus.svg"
 import Download from "@images/download.svg"
 import { useGetData } from "@shared/hook/useGetData";
-import { InfoBlockIconColor } from "@shared/ui/InfoBlock";
 import { addNotification, NotificationType } from "@entities/Notifications";
 
 interface HeaderProps {
   className?: string;
   buttonsState: HeaderButtonsState;
   handleButtonsStateToggle: (name: keyof HeaderButtonsState) => void;
-  isFiltersDisabled?: boolean;
   isTablet?: boolean;
   isMobile?: boolean;
   applications?: ApplicationModel[]
@@ -37,9 +35,8 @@ interface HeaderProps {
 export const Header = (props: HeaderProps) => {
   const {
     className,
-    buttonsState: { search, sortBy, filters },
+    buttonsState: { search, sortBy, filters, exportOrder },
     handleButtonsStateToggle,
-    isFiltersDisabled,
     isMobile,
     isTablet,
     applications,
@@ -47,43 +44,34 @@ export const Header = (props: HeaderProps) => {
   } = props;
 
   const userRole = useSelector(UserSelectors.selectUserRole);
-  const dispatch = useDispatch();
 
   const filterClasses = cn(
     styles.toggleButton,
     styles.filter,
     { [styles.activeFilter]: filters },
-    { [styles.disabledFilters]: isFiltersDisabled }
   )
 
   const sortingClasses = cn(
     styles.toggleButton,
     styles.sorting,
     { [styles.activeSorting]: sortBy },
-    { [styles.disabledFilters]: isFiltersDisabled }
   )
 
   const searchClasses = cn(
     styles.toggleButton,
     styles.searchButton,
     { [styles.activeSearch]: search },
-    { [styles.disabledFilters]: isFiltersDisabled }
+  )
+
+  const exportOrders = cn(
+    styles.toggleButton,
+    styles.unloadMobileButton,
+    { [styles.activeSearch]: exportOrder }
   )
 
   const sortByValue = useSelector(SortBySelectors.selectSortByValue);
   const allFilters = useSelector(FiltersSelectors.selectAllFilters);
   const filteredValues = Object.values(allFilters).filter(filter => filter !== undefined && filter !== "");
-
-  const { isLoading: isOrdersExportLoading, refetch: exportOrders } = useGetData({
-    url: "/api/v1/orders-export",
-    isEnabled: false,
-    params: { ...allFilters },
-    withAuthToken: true,
-    onSuccess: () => addNotification({ message: "Выбранные заявки успешно выгружены в WhatsApp", type: NotificationType.Success }),
-    onError: (error) => {
-      dispatch(addNotification({ message: error.message, type: NotificationType.Error }))
-    }
-  });
 
   return (
     <div className={cn(styles.header, className)}>
@@ -104,14 +92,14 @@ export const Header = (props: HeaderProps) => {
         <Chevron width={18} height={18} />
       </Button>
       {!isMobile ? (
-        <SearchOnMap applications={applications} className={cn(styles.searchWrapper, { [styles.disabledFilters]: isFiltersDisabled })} setPoints={setPoints} />
+        <SearchOnMap applications={applications} className={cn(styles.searchWrapper)} setPoints={setPoints} />
       )
         : (
           <Button className={searchClasses} onClick={() => handleButtonsStateToggle("search")}>
             <SearchIcon width={18} height={18} />
           </Button>
         )}
-      {userRole === Role.CLIENT &&
+      {userRole === Role.LOGIST &&
         <div className={styles.buttons}>
           <div className={styles.buttonWrapper}>
             <Button
@@ -134,35 +122,15 @@ export const Header = (props: HeaderProps) => {
                   className={styles.unloadButton}
                   theme={ButtonTheme.GREY}
                   size={ButtonSize.S}
-                  onClick={exportOrders}
-                  withConfirm
-                  alertPopupProps={{
-                    confirmText: "Вы действительно хотите выгрузить заявки?",
-                    additionalText: "Все заявки по выбранным фильтрам будут выгружены в WhatsApp",
-                    iconColor: InfoBlockIconColor.ACCENT,
-                    buttonThemes: {
-                      confirm: ButtonTheme.OUTLINE
-                    }
-                  }}
-                  isLoading={isOrdersExportLoading}
+                  onClick={() => handleButtonsStateToggle("exportOrder")}
                 >
                   Выгрузить заявки
                 </Button>
               </div>
               :
               <Button
-                className={cn(styles.toggleButton, styles.unloadMobileButton)}
-                withConfirm
-                alertPopupProps={{
-                  confirmText: "Вы действительно хотите выгрузить заявки?",
-                  additionalText: "Все заявки по выбранным фильтрам будут выгружены в WhatsApp",
-                  iconColor: InfoBlockIconColor.ACCENT,
-                  buttonThemes: {
-                    confirm: ButtonTheme.OUTLINE
-                  }
-                }}
-                isLoading={isOrdersExportLoading}
-                onClick={exportOrders}
+                onClick={() => handleButtonsStateToggle("exportOrder")}
+                className={exportOrders}
               >
                 <Download width={24} height={24} />
               </Button>

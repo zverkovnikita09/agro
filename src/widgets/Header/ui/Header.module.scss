@@ -129,6 +129,7 @@
   padding: 3.5px 4px;
   box-shadow: var(--shadow-bottom);
   flex: 1;
+  position: relative;
 
   @media (max-width: $mobile) {
     margin-left: auto;
@@ -163,11 +164,6 @@
 
 .unloadMobileButton {
   overflow: hidden;
-}
-
-.disabledFilters {
-  pointer-events: none;
-  color: var(--disabled-color);
 }
 
 .counter {

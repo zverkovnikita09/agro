@@ -3,4 +3,5 @@ export interface HeaderButtonsState {
   filters: boolean;
   sortBy: boolean;
   search: boolean;
+  exportOrder: boolean;
 }
