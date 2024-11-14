@@ -12,16 +12,15 @@ import { MainLayoutContext } from '@shared/ui/MainLayout';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CloseButton } from '@shared/ui/CloseButton';
 import { useDocumentEvent } from '@shared/hook/useDocumentEvent';
-import { Control, UseFormGetFieldState, UseFormResetField, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
+import { Control, UseFormResetField, UseFormSetValue, UseFormWatch, useForm } from 'react-hook-form';
 import { ApplicationModel, Coord } from '@entities/Application/model/application.model';
 import { Stepper } from "@shared/ui/Stepper";
 import { Step } from "@shared/ui/Stepper/Step";
 import { useSendData } from '@shared/hook/useSendData';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { NotificationType, addNotification } from '@entities/Notifications';
 import { RouterPaths } from '@src/app/router';
 import { FormStepFour } from './FormStepFour';
-import { Role, UserSelectors } from '@entities/User';
 
 interface NewApplicationProps {
   className?: string;
@@ -64,6 +63,8 @@ export const NewApplication = (props: NewApplicationProps) => {
   const { handleSubmit, watch, control, setValue, resetField, formState: { isDirty } } = useForm<ApplicationModel>({
     mode: "onBlur", defaultValues: {
       unit_of_measurement_for_cargo_shortage_rate: "%",
+      contact_name: "Агро-Логистика",
+      contact_phone: "+79281699009"
     }
   });
 

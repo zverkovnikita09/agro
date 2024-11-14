@@ -251,9 +251,14 @@ export const ApplicationPage = (props: ApplicationPageProps) => {
             <ApplicationInfoItem title='Возможность перегруза'>
               {is_overload ? 'Да' : 'Нет'}
             </ApplicationInfoItem>
-            <ApplicationInfoItem title='Длина весов'>
-              {scale_length?.toString().replace('.', ',')} м
-            </ApplicationInfoItem>
+            {
+              Number(scale_length) &&
+              (
+                <ApplicationInfoItem title='Длина весов'>
+                  {scale_length?.toString().replace('.', ',')} м
+                </ApplicationInfoItem>
+              )
+            }
             <ApplicationInfoItem title='Ограничения по высоте'>
               {height_limit?.toString().replace('.', ',')} м
             </ApplicationInfoItem>

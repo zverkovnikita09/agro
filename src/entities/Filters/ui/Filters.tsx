@@ -23,6 +23,7 @@ import { LoadingBlock } from '@shared/ui/LoadingBlock';
 import styles from './Filters.module.scss'
 import { addNotification, NotificationType } from "@entities/Notifications";
 import { IManager } from '@entities/Manager';
+import { Role, UserSelectors } from '@entities/User';
 
 interface FiltersProps {
   className?: string;
@@ -116,6 +117,7 @@ export const Filters = (props: FiltersProps) => {
   }, [distance_to, distance_from]);
 
   const { data: managers, isSuccess: isManagersSuccess } = useGetData<IManager[]>({ url: "/api/v1/managers", dataFlag: true, withAuthToken: true });
+  const userRole = useSelector(UserSelectors.selectUserRole);
 
   return (
     <CardContainer className={cn(styles.filters, className, { [styles.open]: isOpen })}>
@@ -369,28 +371,30 @@ export const Filters = (props: FiltersProps) => {
               placeholder="Начните вводить..."
               className={styles.searchInput}
             />
-            <div className={styles.accordionContent}>
-              {managers?.map((item) => {
-                if (!item) return (
-                  <Controller
-                    name="manager_id"
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <RadioButton checked={value === undefined} onChange={() => onChange(undefined)}>Не указано</RadioButton>
-                    )}
-                  />
-                )
-                return (
-                  <Controller
-                    name="manager_id"
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <RadioButton checked={value === item.id} onChange={() => onChange(item.id)}>{item.name}</RadioButton>
-                    )}
-                  />
-                )
-              })}
-            </div>
+            {userRole === Role.LOGIST && (
+              <div className={styles.accordionContent}>
+                {managers?.map((item) => {
+                  if (!item) return (
+                    <Controller
+                      name="manager_id"
+                      control={control}
+                      render={({ field: { value, onChange } }) => (
+                        <RadioButton checked={value === undefined} onChange={() => onChange(undefined)}>Не указано</RadioButton>
+                      )}
+                    />
+                  )
+                  return (
+                    <Controller
+                      name="manager_id"
+                      control={control}
+                      render={({ field: { value, onChange } }) => (
+                        <RadioButton checked={value === item.id} onChange={() => onChange(item.id)}>{item.name}</RadioButton>
+                      )}
+                    />
+                  )
+                })}
+              </div>
+            )}
           </Accordion>
           <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
             <MultiCheckbox>

@@ -151,7 +151,7 @@ export const FormStepThree = (props: FormStepThreeProps) => {
             name="height_limit"
             control={control}
             rules={{
-              required: "Поле обязательно к заполнению",
+              required: false,
               min: { value: 1, message: "Ограничение по высоте должно быть натуральным числом" }
             }}
             render={({ field: { value, name, onChange, onBlur }, formState: { errors } }) => (
