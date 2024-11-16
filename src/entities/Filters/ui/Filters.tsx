@@ -111,6 +111,8 @@ export const Filters = (props: FiltersProps) => {
       ([name, value]) => setValue(name as keyof FiltersType, value));
   }, []);
 
+  console.log(allFilters);
+
   useEffect(() => {
     if (distance_from === minDistance) setValue('distance_from', undefined);
     if (distance_to === maxDistance) setValue('distance_to', undefined)
@@ -363,15 +365,16 @@ export const Filters = (props: FiltersProps) => {
               )}
             />
           </Accordion>
-          <Accordion className={styles.accordion} accordionTitle={'Менеджер'}>
-            <Input
-              value={searchLoadRegion}
-              onChange={e => setSearchLoadRegion(e.target.value)}
-              theme={InputTheme.FILTERS}
-              placeholder="Начните вводить..."
-              className={styles.searchInput}
-            />
-            {userRole === Role.LOGIST && (
+          {userRole === Role.LOGIST && (
+            <Accordion className={styles.accordion} accordionTitle={'Менеджер'}>
+              <Input
+                value={searchLoadRegion}
+                onChange={e => setSearchLoadRegion(e.target.value)}
+                theme={InputTheme.FILTERS}
+                placeholder="Начните вводить..."
+                className={styles.searchInput}
+              />
+
               <div className={styles.accordionContent}>
                 {managers?.map((item) => {
                   if (!item) return (
@@ -394,9 +397,8 @@ export const Filters = (props: FiltersProps) => {
                   )
                 })}
               </div>
-            )}
-          </Accordion>
-          <Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
+            </Accordion>)}
+          < Accordion className={cn(styles.accordion, styles.checkboxContainer)} accordionTitle={'Грузят в выходные'}>
             <MultiCheckbox>
               <ControlCheckbox className={styles.controlCheckbox}>Грузят в выходные</ControlCheckbox>
               <NestedCheckbox
@@ -483,6 +485,6 @@ export const Filters = (props: FiltersProps) => {
           </Button>
         </div>
       </form>
-    </CardContainer>
+    </CardContainer >
   )
 }
