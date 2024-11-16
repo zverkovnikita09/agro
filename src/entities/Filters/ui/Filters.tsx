@@ -111,8 +111,6 @@ export const Filters = (props: FiltersProps) => {
       ([name, value]) => setValue(name as keyof FiltersType, value));
   }, []);
 
-  console.log(allFilters);
-
   useEffect(() => {
     if (distance_from === minDistance) setValue('distance_from', undefined);
     if (distance_to === maxDistance) setValue('distance_to', undefined)
